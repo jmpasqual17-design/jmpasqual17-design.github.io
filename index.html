@@ -1166,6 +1166,18 @@
   // ==========================================================
   async function sendWithEmailJS(data, pdfDataUrl) {
     try {
+      async function sendWithEmailJS(data, pdfDataUrl) {
+  try {
+    // ⭐ AJOUTE CES LIGNES POUR LE DEBUG
+    console.log('📧 Données reçues :', data);
+    console.log('📧 Email propriétaire :', data.ownerEmail);
+    console.log('📧 Email locataire :', data.renterEmail);
+
+    showToast('📧 Préparation de l\'email...', 'info');
+
+    // ... le reste du code ...
+  }
+}
       showToast('📧 Préparation de l\'email...', 'info');
 
       // 1. Construire le rapport des contrôles vélo
