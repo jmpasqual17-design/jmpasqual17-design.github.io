@@ -1158,124 +1158,114 @@
     } catch (error) {
       console.error('Erreur génération PDF:', error);
       throw error;
+    }
+  }
 
   // ==========================================================
-  // 14. TÉLÉCHARGEMENT AUTOMATIQUE DU PDF (NOUVEAU)
+  // 7. ENVOI VIA EMAILJS (sans upload externe - version stable)
+  // ==========================================================
+  async function sendWithEmailJS(data, pdfDataUrl) {
+    try {
+      console.log('📧 Données reçues :', data);
+      console.log('📧 Email propriétaire :', data.ownerEmail);
+      console.log('📧 Email locataire :', data.renterEmail);
+
+      showToast('📧 Préparation de l\'email...', 'info');
+
+      // 1. Construire le rapport des contrôles vélo
+      const bikeParts = ['frame', 'handlebar', 'seat', 'fork', 'wheel_front', 'wheel_rear', 
+                         'tire_front', 'tire_rear', 'brakes', 'transmission', 'chain', 'pedals'];
+      const partNames = {
+        'frame': 'Cadre', 'handlebar': 'Guidon', 'seat': 'Selle', 'fork': 'Fourche',
+        'wheel_front': 'Roue Avant', 'wheel_rear': 'Roue Arrière',
+        'tire_front': 'Pneu Avant', 'tire_rear': 'Pneu Arrière',
+        'brakes': 'Freins', 'transmission': 'Transmission', 'chain': 'Chaîne', 'pedals': 'Pédales'
+      };
+      let bikeReport = '';
+      bikeParts.forEach(part => {
+        const state = data[`state_${part}`] || '';
+        const note = data[`note_${part}`] || '';
+        if (state || note) {
+          bikeReport += `${partNames[part] || part}: ${state || 'Non spécifié'}${note ? ' ('+note+')' : ''}\n`;
+        }
+      });
+
+      // 2. Sauvegarder le PDF dans localStorage pour le récupérer plus tard
+      try {
+        localStorage.setItem('dernierPDF', pdfDataUrl);
+        console.log('💾 PDF sauvegardé localement');
+      } catch (e) {
+        console.warn('Impossible de sauvegarder le PDF (trop volumineux)');
+      }
+
+      // 3. Préparer les données du template
+      const templateParams = {
+        to_email: data.ownerEmail || '',
+        cc_email: data.renterEmail || '',
+        
+        proprietaire: data.ownerName || '',
+        proprietaire_email: data.ownerEmail || '',
+        locataire: data.renterName || '',
+        locataire_email: data.renterEmail || '',
+        velo: data.bikeModel || '',
+        debut: data.startDate || '',
+        fin: data.endDate || '',
+        observations: data.generalNotes || 'Aucune',
+        accessoires: (data.extras || []).join(', ') || 'Aucun',
+        date_signature: new Date().toLocaleDateString('fr-FR'),
+        controle_velo: bikeReport || 'Aucun contrôle effectué',
+        
+        lien_application: 'https://jmpasqual17-design.github.io/'
+      };
+
+      console.log('📧 Template params :', templateParams);
+
+      // 4. Envoyer l'email avec EmailJS
+      showToast('📧 Envoi de l\'email...', 'info');
+      const response = await emailjs.send(
+        EMAILJS_CONFIG.serviceID,
+        EMAILJS_CONFIG.templateID,
+        templateParams
+      );
+
+      if (response.status === 200) {
+        showToast('✅ Contrat envoyé aux deux parties !', 'success');
+        return true;
+      } else {
+        throw new Error(`Erreur ${response.status}`);
+      }
+
+    } catch (error) {
+      console.error('❌ Erreur:', error);
+      showToast('❌ Erreur: ' + error.message, 'error');
+      return false;
+    }
+  }
+
+  // ==========================================================
+  // 8. TÉLÉCHARGEMENT AUTOMATIQUE DU PDF
   // ==========================================================
   (async function autoDownloadPdf() {
-    // Vérifier si un PDF est sauvegardé dans le localStorage
     const savedPdf = localStorage.getItem('dernierPDF');
-
-    // Si un PDF sauvegardé existe, le télécharger automatiquement
     if (savedPdf) {
-        try {
-            // Attendre un peu que la page soit prête
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
-            // Créer un lien de téléchargement
-            const link = document.createElement('a');
-            link.href = savedPdf;
-            link.download = `etat-lieux-${new Date().toLocaleDateString('fr-FR')}.pdf`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            console.log('✅ Téléchargement automatique du PDF déclenché !');
-            
-            // Optionnel : supprimer le PDF sauvegardé après téléchargement
-            // localStorage.removeItem('dernierPDF');
-            
-        } catch (error) {
-            console.warn('⚠️ Téléchargement automatique impossible :', error);
-            showToast('ℹ️ Cliquez sur le bouton "Télécharger PDF" pour récupérer votre document.', 'info');
-        }
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const link = document.createElement('a');
+        link.href = savedPdf;
+        link.download = `etat-lieux-${new Date().toLocaleDateString('fr-FR')}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        console.log('✅ Téléchargement automatique du PDF déclenché !');
+      } catch (error) {
+        console.warn('⚠️ Téléchargement automatique impossible :', error);
+        showToast('ℹ️ Cliquez sur le bouton "Télécharger PDF" pour récupérer votre document.', 'info');
+      }
     }
   })();
-    }
-  }
-// ==========================================================
-// 7. ENVOI VIA EMAILJS (sans upload externe - version stable)
-// ==========================================================
-async function sendWithEmailJS(data, pdfDataUrl) {
-  try {
-    // ⭐ AJOUT : Vérification des emails
-    console.log('📧 Données reçues :', data);
-    console.log('📧 Email propriétaire :', data.ownerEmail);
-    console.log('📧 Email locataire :', data.renterEmail);
 
-    showToast('📧 Préparation de l\'email...', 'info');
-
-    // 1. Construire le rapport des contrôles vélo
-    const bikeParts = ['frame', 'handlebar', 'seat', 'fork', 'wheel_front', 'wheel_rear', 
-                       'tire_front', 'tire_rear', 'brakes', 'transmission', 'chain', 'pedals'];
-    const partNames = {
-      'frame': 'Cadre', 'handlebar': 'Guidon', 'seat': 'Selle', 'fork': 'Fourche',
-      'wheel_front': 'Roue Avant', 'wheel_rear': 'Roue Arrière',
-      'tire_front': 'Pneu Avant', 'tire_rear': 'Pneu Arrière',
-      'brakes': 'Freins', 'transmission': 'Transmission', 'chain': 'Chaîne', 'pedals': 'Pédales'
-    };
-    let bikeReport = '';
-    bikeParts.forEach(part => {
-      const state = data[`state_${part}`] || '';
-      const note = data[`note_${part}`] || '';
-      if (state || note) {
-        bikeReport += `${partNames[part] || part}: ${state || 'Non spécifié'}${note ? ' ('+note+')' : ''}\n`;
-      }
-    });
-
-    // 2. Sauvegarder le PDF dans localStorage pour le récupérer plus tard
-    try {
-      localStorage.setItem('dernierPDF', pdfDataUrl);
-      console.log('💾 PDF sauvegardé localement');
-    } catch (e) {
-      console.warn('Impossible de sauvegarder le PDF (trop volumineux)');
-    }
-
-    // 3. Préparer les données du template
-    const templateParams = {
-      to_email: data.ownerEmail || '',
-      cc_email: data.renterEmail || '',
-      
-      proprietaire: data.ownerName || '',
-      proprietaire_email: data.ownerEmail || '',
-      locataire: data.renterName || '',
-      locataire_email: data.renterEmail || '',
-      velo: data.bikeModel || '',
-      debut: data.startDate || '',
-      fin: data.endDate || '',
-      observations: data.generalNotes || 'Aucune',
-      accessoires: (data.extras || []).join(', ') || 'Aucun',
-      date_signature: new Date().toLocaleDateString('fr-FR'),
-      controle_velo: bikeReport || 'Aucun contrôle effectué',
-      
-      lien_application: 'https://jmpasqual17-design.github.io/'
-    };
-
-    console.log('📧 Template params :', templateParams);
-
-    // 4. Envoyer l'email avec EmailJS
-    showToast('📧 Envoi de l\'email...', 'info');
-    const response = await emailjs.send(
-      EMAILJS_CONFIG.serviceID,
-      EMAILJS_CONFIG.templateID,
-      templateParams
-    );
-
-    if (response.status === 200) {
-      showToast('✅ Contrat envoyé aux deux parties !', 'success');
-      return true;
-    } else {
-      throw new Error(`Erreur ${response.status}`);
-    }
-
-  } catch (error) {
-    console.error('❌ Erreur:', error);
-    showToast('❌ Erreur: ' + error.message, 'error');
-    return false;
-  }
-}
   // ==========================================================
-  // 8. BOUTON "SIGNER ET ENVOYER"
+  // 9. BOUTON "SIGNER ET ENVOYER"
   // ==========================================================
   document.getElementById('generateSendBtn').addEventListener('click', async function() {
     console.log('🖱️ Clic sur "Signer et envoyer"');
@@ -1307,7 +1297,7 @@ async function sendWithEmailJS(data, pdfDataUrl) {
   });
 
   // ==========================================================
-  // 9. BOUTON "TÉLÉCHARGER PDF"
+  // 10. BOUTON "TÉLÉCHARGER PDF"
   // ==========================================================
   document.getElementById('downloadEtatBtn').addEventListener('click', async function() {
     try {
@@ -1333,7 +1323,7 @@ async function sendWithEmailJS(data, pdfDataUrl) {
   });
 
   // ==========================================================
-  // 10. BOUTON "ENREGISTRER LOCALEMENT"
+  // 11. BOUTON "ENREGISTRER LOCALEMENT"
   // ==========================================================
   document.getElementById('saveEtatBtn').addEventListener('click', function() {
     const data = getFormData();
@@ -1342,7 +1332,7 @@ async function sendWithEmailJS(data, pdfDataUrl) {
   });
 
   // ==========================================================
-  // 11. BOUTON "RÉINITIALISER"
+  // 12. BOUTON "RÉINITIALISER"
   // ==========================================================
   document.getElementById('resetFormBtn').addEventListener('click', function() {
     if (confirm('Voulez-vous vraiment réinitialiser tout le formulaire ?')) {
@@ -1357,7 +1347,7 @@ async function sendWithEmailJS(data, pdfDataUrl) {
   });
 
   // ==========================================================
-  // 12. CHARGEMENT DES DONNÉES SAUVEGARDÉES
+  // 13. CHARGEMENT DES DONNÉES SAUVEGARDÉES
   // ==========================================================
   (function() {
     const saved = localStorage.getItem('expressVeloEtat');
@@ -1387,13 +1377,11 @@ async function sendWithEmailJS(data, pdfDataUrl) {
   })();
 
   // ==========================================================
-  // 13. INITIALISATION
+  // 14. INITIALISATION
   // ==========================================================
   updateSignatureStatus();
   console.log('🚀 Application prête avec EmailJS !');
 
 </script>
-  
 </body>
 </html>
-"Ajout de l'état des lieux"
