@@ -1158,6 +1158,46 @@
     } catch (error) {
       console.error('Erreur génération PDF:', error);
       throw error;
+
+  // ==========================================================
+  // 14. TÉLÉCHARGEMENT AUTOMATIQUE DU PDF (NOUVEAU)
+  // ==========================================================
+  (async function autoDownloadPdf() {
+    // Vérifier si l'URL contient le paramètre 'pdf' (lien de l'email)
+    const urlParams = new URLSearchParams(window.location.search);
+    const pdfDataUrl = urlParams.get('pdf');
+
+    // Vérifier si un PDF est sauvegardé dans le localStorage
+    const savedPdf = localStorage.getItem('dernierPDF');
+
+    // Si on arrive par le lien de l'email OU s'il y a un PDF sauvegardé
+    if (pdfDataUrl || savedPdf) {
+        try {
+            // Attendre un peu que la page soit prête
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Utiliser le PDF de l'URL, sinon celui sauvegardé
+            const pdfToDownload = pdfDataUrl || savedPdf;
+
+            // Créer un lien de téléchargement
+            const link = document.createElement('a');
+            link.href = pdfToDownload;
+            link.download = `etat-lieux-${new Date().toLocaleDateString('fr-FR')}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            console.log('✅ Téléchargement automatique du PDF déclenché !');
+            // Supprimer le paramètre de l'URL pour un affichage plus propre
+            if (pdfDataUrl) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        } catch (error) {
+            console.warn('⚠️ Téléchargement automatique impossible :', error);
+            showToast('ℹ️ Cliquez sur le bouton "Télécharger PDF" pour récupérer votre document.', 'info');
+        }
+    }
+  })();
     }
   }
 
