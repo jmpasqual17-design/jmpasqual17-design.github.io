@@ -3,251 +3,371 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>État des lieux vélo</title>
+  <title>État des lieux de départ - Location vélo</title>
 
   <style>
     :root {
-      --primary: #0f2b4a;
-      --primary-light: #1a4068;
-      --success: #0d7a3e;
-      --error: #b13030;
-      --gray-100: #f5f7fa;
-      --gray-200: #e2e6ee;
-      --gray-300: #c8d0da;
-      --gray-500: #6b7f94;
-      --gray-600: #4a5f74;
-      --gray-700: #2d4157;
-      --shadow: 0 4px 16px rgba(0,0,0,0.08);
-      --radius: 10px;
+      --primary: #1a1a2e;
+      --primary-light: #16213e;
+      --accent: #0f3460;
+      --gold: #c9a84c;
+      --success: #2d6a4f;
+      --error: #c1121f;
+      --gray-50: #f8f9fa;
+      --gray-100: #f1f3f5;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #6c757d;
+      --gray-700: #495057;
+      --gray-800: #343a40;
+      --gray-900: #212529;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow: 0 4px 20px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+      --radius: 8px;
+      --radius-lg: 12px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--gray-100);
-      color: var(--gray-700);
-      line-height: 1.5;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      color: var(--gray-800);
+      line-height: 1.6;
       min-height: 100vh;
-      padding: 16px;
+      padding: 24px;
       display: flex;
       justify-content: center;
+      align-items: flex-start;
     }
 
     .document-wrapper {
       width: 100%;
-      max-width: 800px;
+      max-width: 900px;
+      background: white;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
     }
 
     /* HEADER */
     .header {
       background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
       color: white;
-      padding: 24px 28px;
-      border-radius: var(--radius) var(--radius) 0 0;
+      padding: 32px 40px;
+      border-bottom: 3px solid var(--gold);
     }
-    .header h1 { font-size: 22px; font-weight: 700; }
-    .header h1 span { color: #7bb3d6; }
-    .header p { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+    .header-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+    .header h1 span {
+      color: var(--gold);
+      font-weight: 300;
+    }
+    .header .subtitle {
+      font-size: 14px;
+      opacity: 0.8;
+      font-weight: 400;
+      margin-bottom: 16px;
+    }
     .header .meta {
       display: flex;
-      gap: 16px;
-      margin-top: 8px;
+      gap: 20px;
       font-size: 12px;
-      opacity: 0.8;
+      opacity: 0.75;
       flex-wrap: wrap;
+    }
+    .header .meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .header .meta .dot {
+      width: 5px;
+      height: 5px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: inline-block;
     }
 
     /* FORM */
     .form-body {
-      background: white;
-      padding: 24px 28px 28px;
-      border-radius: 0 0 var(--radius) var(--radius);
-      box-shadow: var(--shadow);
+      padding: 32px 40px 40px;
     }
 
-    .section { margin-bottom: 20px; }
-    .section:last-child { margin-bottom: 0; }
+    .section {
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .section:last-of-type {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
 
-    .section-title {
+    .section-header {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--primary);
-      padding-bottom: 6px;
-      border-bottom: 2px solid var(--gray-200);
-      margin-bottom: 12px;
+      gap: 12px;
+      margin-bottom: 20px;
     }
-    .section-title .step {
+    .section-number {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 24px;
-      height: 24px;
+      width: 32px;
+      height: 32px;
       background: var(--primary);
       color: white;
-      border-radius: 50%;
-      font-size: 11px;
+      border-radius: 6px;
+      font-size: 13px;
       font-weight: 700;
       flex-shrink: 0;
     }
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gray-900);
+      letter-spacing: -0.3px;
+    }
+    .section-subtitle {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-left: auto;
+    }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px 16px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px 20px; }
     .full { grid-column: 1 / -1; }
 
     .field {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 6px;
     }
     .field label {
       font-size: 12px;
       font-weight: 600;
-      color: var(--gray-600);
+      color: var(--gray-700);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    .field label .required { color: var(--error); margin-left: 2px; }
+    .field label .required {
+      color: var(--error);
+      margin-left: 3px;
+    }
+    .field .hint {
+      font-size: 11px;
+      color: var(--gray-500);
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+    }
 
     .field input,
     .field select,
     .field textarea {
       width: 100%;
-      padding: 7px 10px;
-      border: 1.5px solid var(--gray-200);
-      border-radius: 6px;
-      font-size: 13px;
+      padding: 10px 14px;
+      border: 1.5px solid var(--gray-300);
+      border-radius: var(--radius);
+      font-size: 14px;
       font-family: inherit;
-      color: var(--gray-700);
+      color: var(--gray-900);
       background: white;
-      transition: 0.2s;
+      transition: all 0.2s;
+      line-height: 1.5;
     }
     .field input:focus,
     .field select:focus,
     .field textarea:focus {
       outline: none;
-      border-color: var(--primary-light);
-      box-shadow: 0 0 0 3px rgba(26, 64, 104, 0.10);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.08);
+      background: var(--gray-50);
     }
-    .field textarea { min-height: 50px; resize: vertical; }
+    .field input::placeholder,
+    .field textarea::placeholder {
+      color: var(--gray-400);
+      font-style: italic;
+    }
+    .field textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
 
-    /* Bike grid and items remain the same */
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23495057' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 40px;
+    }
+
+    /* BIKE GRID */
     .bike-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 10px;
     }
     .bike-item {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      background: var(--gray-100);
-      border-radius: 6px;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--gray-50);
+      border-radius: var(--radius);
       border: 1px solid var(--gray-200);
-      flex-wrap: wrap;
     }
-    .bike-item .icon { font-size: 14px; font-weight: 600; color: var(--primary); min-width: 50px; }
+    .bike-item .part-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+      min-width: 85px;
+    }
     .bike-item select,
     .bike-item input {
-      padding: 4px 6px;
-      border: 1px solid var(--gray-200);
-      border-radius: 4px;
-      font-size: 12px;
+      padding: 7px 10px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 13px;
       background: white;
       flex: 1;
-      min-width: 60px;
+      min-width: 85px;
+      height: 36px;
+      font-family: inherit;
     }
-    .bike-item select:focus,
-    .bike-item input:focus {
-      outline: none;
-      border-color: var(--primary-light);
+    .bike-item input {
+      flex: 1.5;
+      min-width: 100px;
     }
-    .bike-item input { flex: 1.5; min-width: 70px; }
 
-    /* Accessories */
+    /* ACCESSORIES */
     .accessory-item {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      background: var(--gray-100);
-      border-radius: 6px;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--gray-50);
+      border-radius: var(--radius);
       border: 1px solid var(--gray-200);
-      flex-wrap: wrap;
     }
-    .accessory-item .checkbox {
+    .accessory-item .checkbox-label {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 8px;
       cursor: pointer;
       font-size: 13px;
       font-weight: 500;
-      min-width: 70px;
+      color: var(--gray-700);
+      min-width: 90px;
+      user-select: none;
     }
-    .accessory-item .checkbox input[type="checkbox"] {
-      width: 15px;
-      height: 15px;
-      accent-color: var(--primary);
+    .accessory-item .checkbox-label input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
       cursor: pointer;
-      margin: 0;
     }
     .accessory-item select,
     .accessory-item input {
-      padding: 4px 6px;
-      border: 1px solid var(--gray-200);
-      border-radius: 4px;
-      font-size: 12px;
+      padding: 7px 10px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 13px;
       background: white;
       flex: 1;
-      min-width: 60px;
+      min-width: 85px;
+      height: 36px;
+      font-family: inherit;
     }
-    .accessory-item select:focus,
-    .accessory-item input:focus {
-      outline: none;
-      border-color: var(--primary-light);
+    .accessory-item input {
+      flex: 1.5;
+      min-width: 100px;
     }
-    .accessory-item input { flex: 1.5; min-width: 70px; }
 
-    /* Photos */
+    /* PHOTOS */
     .photo-upload {
       border: 2px dashed var(--gray-300);
       border-radius: var(--radius);
-      padding: 16px;
+      padding: 28px;
       text-align: center;
       cursor: pointer;
-      transition: 0.2s;
-      background: var(--gray-100);
+      transition: all 0.3s;
+      background: var(--gray-50);
     }
-    .photo-upload:hover { border-color: var(--primary-light); background: white; }
-    .photo-upload .icon { font-size: 28px; display: block; }
-    .photo-upload p { font-size: 13px; color: var(--gray-500); }
-    .photo-upload .sub { font-size: 11px; color: var(--gray-400); }
-    .photo-upload input[type="file"] { display: none; }
+    .photo-upload:hover {
+      border-color: var(--accent);
+      background: white;
+    }
+    .photo-upload .upload-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 12px;
+      background: var(--gray-200);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--gray-600);
+    }
+    .photo-upload .upload-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 4px;
+    }
+    .photo-upload .upload-hint {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+    .photo-upload input[type="file"] {
+      display: none;
+    }
 
     .photos-preview {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       flex-wrap: wrap;
-      margin-top: 8px;
+      margin-top: 10px;
     }
     .photos-preview .photo-item {
       position: relative;
-      width: 70px;
-      height: 55px;
-      border-radius: 4px;
+      width: 85px;
+      height: 65px;
+      border-radius: 6px;
       overflow: hidden;
       border: 2px solid var(--gray-200);
     }
-    .photos-preview .photo-item img { width: 100%; height: 100%; object-fit: cover; }
-    .photos-preview .photo-item .remove {
+    .photos-preview .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .photos-preview .photo-item .remove-photo {
       position: absolute;
-      top: 2px;
-      right: 2px;
-      width: 16px;
-      height: 16px;
-      background: rgba(0,0,0,0.6);
+      top: 3px;
+      right: 3px;
+      width: 18px;
+      height: 18px;
+      background: rgba(0,0,0,0.7);
       color: white;
       border: none;
       border-radius: 50%;
@@ -257,107 +377,154 @@
       align-items: center;
       justify-content: center;
     }
-    .photos-preview .photo-item .remove:hover { background: rgba(177, 48, 48, 0.9); }
+    .photos-preview .photo-item .remove-photo:hover {
+      background: rgba(193, 18, 31, 0.9);
+    }
 
-    /* Signatures */
-    .sign-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    /* SIGNATURES */
+    .sign-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
     .sign-box {
-      background: var(--gray-100);
-      border-radius: var(--radius);
-      padding: 12px 14px 14px;
-      border: 1px solid var(--gray-200);
+      background: var(--gray-50);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px 24px;
+      border: 1.5px solid var(--gray-200);
     }
     .sign-box .sign-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
     }
-    .sign-box .sign-header .name { font-weight: 700; font-size: 13px; color: var(--primary); }
+    .sign-box .sign-header .name {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--gray-900);
+    }
     .sign-box .sign-header .badge {
       font-size: 10px;
-      padding: 1px 10px;
+      padding: 3px 12px;
       border-radius: 20px;
-      font-weight: 600;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
-    .sign-box .sign-header .badge-owner { background: #dbeafe; color: #1a4068; }
-    .sign-box .sign-header .badge-renter { background: #d1fae5; color: #0d7a3e; }
-    .sign-box .mention { font-size: 11px; color: var(--gray-500); font-style: italic; margin-bottom: 4px; }
+    .badge-owner {
+      background: #e8f0fe;
+      color: #1a56db;
+    }
+    .badge-renter {
+      background: #e6f4ea;
+      color: #137333;
+    }
+    .sign-box .mention {
+      font-size: 12px;
+      color: var(--gray-500);
+      font-style: italic;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--gray-200);
+    }
     .sign-box .signature-canvas {
       width: 100%;
-      height: 70px;
+      height: 90px;
       background: white;
-      border-radius: 6px;
-      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius);
+      border: 1.5px solid var(--gray-300);
       cursor: crosshair;
       display: block;
       touch-action: none;
     }
-    .sign-box .signature-canvas:hover { border-color: var(--gray-300); }
     .sign-box .sign-actions {
       display: flex;
-      gap: 6px;
-      margin-top: 4px;
+      gap: 8px;
+      margin-top: 8px;
       align-items: center;
     }
-    .sign-box .sign-actions .btn-ghost {
+    .sign-box .sign-actions .btn-text {
       background: transparent;
-      border: 1px solid var(--gray-200);
-      padding: 2px 10px;
+      border: 1px solid var(--gray-300);
+      padding: 5px 14px;
       border-radius: 20px;
       font-size: 11px;
-      color: var(--gray-500);
+      color: var(--gray-600);
       cursor: pointer;
+      font-weight: 500;
+      font-family: inherit;
     }
-    .sign-box .sign-actions .btn-ghost:hover { background: var(--gray-200); }
     .sign-box .sign-status {
       font-size: 12px;
-      color: var(--gray-400);
       margin-left: auto;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: var(--gray-100);
+      color: var(--gray-500);
     }
-    .sign-box .sign-status.signed { color: var(--success); font-weight: 600; }
+    .sign-box .sign-status.signed {
+      background: #e6f4ea;
+      color: #137333;
+      font-weight: 600;
+    }
 
-    /* Buttons */
+    /* BUTTONS */
     .actions {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
-      margin-top: 18px;
-      padding-top: 18px;
+      margin-top: 28px;
+      padding-top: 20px;
       border-top: 2px solid var(--gray-200);
     }
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      padding: 9px 20px;
+      gap: 8px;
+      padding: 12px 24px;
       border: none;
-      border-radius: 8px;
-      font-size: 13px;
+      border-radius: var(--radius);
+      font-size: 14px;
       font-weight: 600;
       font-family: inherit;
       cursor: pointer;
-      transition: 0.2s;
+      transition: all 0.2s;
       flex: 1 1 auto;
-      min-width: 120px;
+      min-width: 140px;
     }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
-    .btn:hover:not(:disabled) { transform: translateY(-2px); }
-
-    .btn-success { background: var(--success); color: white; box-shadow: 0 4px 12px rgba(13, 122, 62, 0.25); }
-    .btn-success:hover:not(:disabled) { background: #0b6b35; }
-
-    .btn-secondary { background: white; color: var(--gray-700); border: 1.5px solid var(--gray-200); }
-    .btn-secondary:hover:not(:disabled) { background: #f9fafb; }
-
-    .btn-outline { background: transparent; color: var(--gray-600); border: 1.5px solid var(--gray-300); }
-    .btn-outline:hover:not(:disabled) { background: #f9fafb; }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: #16213e;
+    }
+    .btn-outline {
+      background: white;
+      color: var(--gray-700);
+      border: 1.5px solid var(--gray-300);
+    }
+    .btn-outline:hover:not(:disabled) {
+      background: var(--gray-50);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--gray-600);
+    }
+    .btn-ghost:hover:not(:disabled) {
+      background: var(--gray-50);
+    }
 
     .spinner {
       display: inline-block;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border: 2.5px solid rgba(255,255,255,0.3);
       border-radius: 50%;
       border-top-color: #fff;
@@ -365,54 +532,61 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* TOAST */
     .toast-container {
       position: fixed;
-      bottom: 20px;
+      bottom: 24px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 9999;
       width: 100%;
-      max-width: 480px;
+      max-width: 500px;
       padding: 0 16px;
     }
     .toast {
-      background: var(--primary);
+      background: var(--gray-900);
       color: white;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-weight: 500;
+      padding: 14px 24px;
+      border-radius: var(--radius);
       font-size: 13px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      box-shadow: var(--shadow-lg);
       opacity: 0;
-      transform: translateY(20px) scale(0.95);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translateY(20px);
+      transition: all 0.4s;
       width: 100%;
       text-align: center;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
-    .toast.show { opacity: 1; transform: translateY(0) scale(1); }
-    .toast.success { background: var(--success); }
-    .toast.error { background: var(--error); }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .toast.success {
+      background: #1b4332;
+    }
+    .toast.error {
+      background: #5a1118;
+    }
 
     @media (max-width: 768px) {
+      body { padding: 12px; }
+      .header { padding: 24px; }
+      .header h1 { font-size: 22px; }
+      .form-body { padding: 24px; }
       .grid-2 { grid-template-columns: 1fr; }
       .grid-3 { grid-template-columns: 1fr 1fr; }
       .bike-grid { grid-template-columns: 1fr; }
       .sign-grid { grid-template-columns: 1fr; }
-      .header { padding: 18px 20px; }
-      .header h1 { font-size: 19px; }
-      .form-body { padding: 18px 20px 20px; }
+      .actions { flex-direction: column; }
+      .btn { width: 100%; }
     }
 
     @media (max-width: 520px) {
       .grid-3 { grid-template-columns: 1fr; }
-      .actions { flex-direction: column; }
-      .btn { width: 100%; justify-content: center; min-width: unset; }
-      .bike-item { flex-direction: column; align-items: stretch; }
-      .bike-item .icon { min-width: unset; }
-      .accessory-item { flex-direction: column; align-items: stretch; }
-      .accessory-item .checkbox { min-width: unset; }
-      .header h1 { font-size: 17px; }
+      .bike-item, .accessory-item {
+        flex-direction: column;
+        align-items: stretch;
+      }
     }
   </style>
 </head>
@@ -420,201 +594,234 @@
 
 <div class="document-wrapper">
   <header class="header">
-    <h1>État des lieux <span>vélo</span></h1>
-    <p>Contrat de location entre particuliers</p>
+    <div class="header-label">Contrat de location</div>
+    <h1>ÉTAT DES LIEUX <span>DE DÉPART</span></h1>
+    <p class="subtitle">Document contractuel entre le propriétaire et le locataire</p>
     <div class="meta">
-      <span>📅 <span id="currentDate"></span></span>
-      <span>🔒 Document à valeur légale</span>
-      <span>✍️ Signature électronique</span>
+      <span><span class="dot"></span> Date : <span id="currentDate"></span></span>
+      <span><span class="dot"></span> Document juridique</span>
+      <span><span class="dot"></span> Signature électronique</span>
     </div>
   </header>
 
   <div class="form-body" id="contractContainer">
     <form id="etatForm" novalidate>
 
-      <!-- SECTION 1 : PARTIES -->
+      <!-- SECTION 1 -->
       <div class="section">
-        <div class="section-title"><span class="step">1</span>Parties</div>
+        <div class="section-header">
+          <span class="section-number">1</span>
+          <span class="section-title">Identification des parties</span>
+          <span class="section-subtitle">Informations obligatoires</span>
+        </div>
         <div class="grid-2">
           <div class="field">
-            <label>Propriétaire <span class="required">*</span></label>
-            <input type="text" id="ownerName" name="ownerName" placeholder="Nom complet" required>
-            <input type="email" id="ownerEmail" name="ownerEmail" placeholder="Email du propriétaire" required style="margin-top:6px;">
+            <label>Propriétaire / Bailleur <span class="required">*</span></label>
+            <input type="text" id="ownerName" name="ownerName" placeholder="Nom et prénom" required>
+            <input type="email" id="ownerEmail" name="ownerEmail" placeholder="Adresse email" required style="margin-top:8px;">
           </div>
           <div class="field">
-            <label>Locataire <span class="required">*</span></label>
-            <input type="text" id="renterName" name="renterName" placeholder="Nom complet" required>
-            <input type="email" id="renterEmail" name="renterEmail" placeholder="Email du locataire" required style="margin-top:6px;">
+            <label>Locataire / Preneur <span class="required">*</span></label>
+            <input type="text" id="renterName" name="renterName" placeholder="Nom et prénom" required>
+            <input type="email" id="renterEmail" name="renterEmail" placeholder="Adresse email" required style="margin-top:8px;">
           </div>
         </div>
       </div>
 
-      <!-- SECTION 2 : LOCATION -->
+      <!-- SECTION 2 -->
       <div class="section">
-        <div class="section-title"><span class="step">2</span>Location</div>
-        <div class="grid-3">
-          <div class="field"><label>Date de début</label><input type="date" id="startDate" name="startDate" required></div>
-          <div class="field"><label>Date de fin</label><input type="date" id="endDate" name="endDate" required></div>
-          <div class="field"><label>Modèle du vélo</label><input type="text" id="bikeModel" name="bikeModel" placeholder="Marque / modèle" required></div>
+        <div class="section-header">
+          <span class="section-number">2</span>
+          <span class="section-title">Détails de la location</span>
         </div>
-        <div class="field full" style="margin-top:8px;">
-          <label>Numéro de série</label>
-          <input type="text" id="serialNumber" name="serialNumber" placeholder="Numéro de série (optionnel)">
+        <div class="grid-3">
+          <div class="field">
+            <label>Date de début <span class="required">*</span></label>
+            <input type="date" id="startDate" name="startDate" required>
+          </div>
+          <div class="field">
+            <label>Date de fin <span class="required">*</span></label>
+            <input type="date" id="endDate" name="endDate" required>
+          </div>
+          <div class="field">
+            <label>Modèle du vélo <span class="required">*</span></label>
+            <input type="text" id="bikeModel" name="bikeModel" placeholder="Marque / modèle" required>
+          </div>
+        </div>
+        <div class="field full" style="margin-top:12px;">
+          <label>Numéro de série <span class="hint">(optionnel)</span></label>
+          <input type="text" id="serialNumber" name="serialNumber" placeholder="Numéro d'identification du vélo">
         </div>
       </div>
 
-      <!-- SECTION 3 : CONTRÔLE DU VÉLO -->
+      <!-- SECTION 3 -->
       <div class="section">
-        <div class="section-title"><span class="step">3</span>Contrôle du vélo</div>
+        <div class="section-header">
+          <span class="section-number">3</span>
+          <span class="section-title">Inspection du vélo</span>
+        </div>
         <div class="bike-grid">
-          <div class="bike-item"><span class="icon">🚲 Cadre</span>
+          <div class="bike-item"><span class="part-name">Cadre</span>
             <select name="state_frame"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="rouille">Rouille</option><option value="fissure">Fissure</option><option value="cassé">Cassé</option></select>
             <input type="text" name="note_frame" placeholder="Note">
           </div>
-          <div class="bike-item"><span class="icon">🔄 Guidon</span>
+          <div class="bike-item"><span class="part-name">Guidon</span>
             <select name="state_handlebar"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="rouille">Rouille</option><option value="torsadé">Torsadé</option></select>
             <input type="text" name="note_handlebar" placeholder="Note">
           </div>
-          <div class="bike-item"><span class="icon">🪑 Selle</span>
-            <select name="state_seat"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="déchiré">Déchiré</option><option value="usé">Usé</option><option value="cassé">Cassé</option><option value="manquant">Manquant</option></select>
+          <div class="bike-item"><span class="part-name">Selle</span>
+            <select name="state_seat"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="déchiré">Déchiré</option><option value="usé">Usé</option><option value="cassé">Cassé</option></select>
             <input type="text" name="note_seat" placeholder="Note">
           </div>
-          <div class="bike-item"><span class="icon">🔧 Fourche</span>
+          <div class="bike-item"><span class="part-name">Fourche</span>
             <select name="state_fork"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="rouille">Rouille</option><option value="fissure">Fissure</option></select>
             <input type="text" name="note_fork" placeholder="Note">
           </div>
-          <div class="bike-item"><span class="icon">⚫ Roue Av</span>
-            <select name="state_wheel_front"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="voilé">Voilé</option><option value="cassé">Cassé</option></select>
+          <div class="bike-item"><span class="part-name">Roue avant</span>
+            <select name="state_wheel_front"><option value="">État</option><option value="bon">Bon</option><option value="voilé">Voilé</option><option value="choc">Choc</option><option value="cassé">Cassé</option></select>
             <input type="text" name="note_wheel_front" placeholder="Note">
           </div>
-          <div class="bike-item"><span class="icon">⚫ Roue Ar</span>
-            <select name="state_wheel_rear"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="voilé">Voilé</option><option value="cassé">Cassé</option></select>
+          <div class="bike-item"><span class="part-name">Roue arrière</span>
+            <select name="state_wheel_rear"><option value="">État</option><option value="bon">Bon</option><option value="voilé">Voilé</option><option value="choc">Choc</option><option value="cassé">Cassé</option></select>
             <input type="text" name="note_wheel_rear" placeholder="Note">
           </div>
-          <div class="bike-item"><span class="icon">⭕ Pneu Av</span>
+          <div class="bike-item"><span class="part-name">Pneu avant</span>
             <select name="state_tire_front"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="crevé">Crevé</option><option value="fissuré">Fissuré</option></select>
             <input type="text" name="note_tire_front" placeholder="Note">
           </div>
-          <div class="bike-item"><span class="icon">⭕ Pneu Ar</span>
+          <div class="bike-item"><span class="part-name">Pneu arrière</span>
             <select name="state_tire_rear"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="crevé">Crevé</option><option value="fissuré">Fissuré</option></select>
             <input type="text" name="note_tire_rear" placeholder="Note">
           </div>
-          <div class="bike-item"><span class="icon">⛔ Freins</span>
-            <select name="state_brakes"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="à_serrer">À serrer</option><option value="à_changer">À changer</option><option value="cassé">Cassé</option></select>
+          <div class="bike-item"><span class="part-name">Freins</span>
+            <select name="state_brakes"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="à_régler">À régler</option><option value="défaillant">Défaillant</option></select>
             <input type="text" name="note_brakes" placeholder="Note">
           </div>
-          <div class="bike-item"><span class="icon">⚙️ Transm.</span>
-            <select name="state_transmission"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="bruyant">Bruyant</option><option value="à_régler">À régler</option><option value="cassé">Cassé</option></select>
+          <div class="bike-item"><span class="part-name">Transmission</span>
+            <select name="state_transmission"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="bruyant">Bruyant</option><option value="à_régler">À régler</option></select>
             <input type="text" name="note_transmission" placeholder="Note">
           </div>
-          <div class="bike-item"><span class="icon">🔗 Chaîne</span>
-            <select name="state_chain"><option value="">État</option><option value="bon">Bon</option><option value="rouillé">Rouillé</option><option value="détendue">Détendue</option><option value="à_changer">À changer</option><option value="cassée">Cassée</option></select>
+          <div class="bike-item"><span class="part-name">Chaîne</span>
+            <select name="state_chain"><option value="">État</option><option value="bon">Bon</option><option value="rouillé">Rouillée</option><option value="détendue">Détendue</option><option value="usée">Usée</option></select>
             <input type="text" name="note_chain" placeholder="Note">
           </div>
-          <div class="bike-item"><span class="icon">🦶 Pédales</span>
-            <select name="state_pedals"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="rayé">Rayé</option><option value="cassé">Cassé</option></select>
+          <div class="bike-item"><span class="part-name">Pédales</span>
+            <select name="state_pedals"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usées</option><option value="cassé">Cassées</option></select>
             <input type="text" name="note_pedals" placeholder="Note">
           </div>
         </div>
-        <div class="field full" style="margin-top:10px;">
+        <div class="field full" style="margin-top:14px;">
           <label>Observations générales</label>
-          <textarea id="generalNotes" name="generalNotes" placeholder="État général, kilométrage, anomalies..."></textarea>
+          <textarea id="generalNotes" name="generalNotes" placeholder="État général, kilométrage estimé, anomalies..."></textarea>
         </div>
       </div>
 
-      <!-- SECTION 4 : ACCESSOIRES -->
+      <!-- SECTION 4 -->
       <div class="section">
-        <div class="section-title"><span class="step">4</span>Accessoires</div>
+        <div class="section-header">
+          <span class="section-number">4</span>
+          <span class="section-title">Accessoires fournis</span>
+        </div>
         <div class="bike-grid">
           <div class="accessory-item">
-            <label class="checkbox"><input type="checkbox" name="extras" value="helmet"><span>Casque</span></label>
-            <select name="state_helmet"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <label class="checkbox-label"><input type="checkbox" name="extras" value="helmet">Casque</label>
+            <select name="state_helmet"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="endommagé">Endommagé</option></select>
             <input type="text" name="note_helmet" placeholder="Note">
           </div>
           <div class="accessory-item">
-            <label class="checkbox"><input type="checkbox" name="extras" value="lock"><span>Antivol</span></label>
-            <select name="state_lock"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <label class="checkbox-label"><input type="checkbox" name="extras" value="lock">Antivol</label>
+            <select name="state_lock"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="défaillant">Défaillant</option></select>
             <input type="text" name="note_lock" placeholder="Note">
           </div>
           <div class="accessory-item">
-            <label class="checkbox"><input type="checkbox" name="extras" value="lights"><span>Éclairage</span></label>
-            <select name="state_lights"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <label class="checkbox-label"><input type="checkbox" name="extras" value="lights">Éclairage</label>
+            <select name="state_lights"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="défaillant">Défaillant</option></select>
             <input type="text" name="note_lights" placeholder="Note">
           </div>
           <div class="accessory-item">
-            <label class="checkbox"><input type="checkbox" name="extras" value="basket"><span>Panier</span></label>
-            <select name="state_basket"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <label class="checkbox-label"><input type="checkbox" name="extras" value="basket">Panier</label>
+            <select name="state_basket"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="cassé">Cassé</option></select>
             <input type="text" name="note_basket" placeholder="Note">
           </div>
           <div class="accessory-item">
-            <label class="checkbox"><input type="checkbox" name="extras" value="repairkit"><span>Kit réparation</span></label>
-            <select name="state_repairkit"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <label class="checkbox-label"><input type="checkbox" name="extras" value="repairkit">Kit réparation</label>
+            <select name="state_repairkit"><option value="">État</option><option value="bon">Bon</option><option value="incomplet">Incomplet</option></select>
             <input type="text" name="note_repairkit" placeholder="Note">
           </div>
           <div class="accessory-item">
-            <label class="checkbox"><input type="checkbox" name="extras" value="other"><span>Autre</span></label>
-            <select name="state_other"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <label class="checkbox-label"><input type="checkbox" name="extras" value="other">Autre</label>
+            <select name="state_other"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option></select>
             <input type="text" name="note_other" placeholder="Détail">
           </div>
         </div>
       </div>
 
-      <!-- SECTION 5 : PHOTOS -->
+      <!-- SECTION 5 -->
       <div class="section">
-        <div class="section-title"><span class="step">5</span>Photos</div>
+        <div class="section-header">
+          <span class="section-number">5</span>
+          <span class="section-title">Photos du vélo</span>
+          <span class="section-subtitle">6 maximum</span>
+        </div>
         <div class="photo-upload" id="photoDropZone">
-          <span class="icon">📸</span>
-          <p><strong>Cliquez ou glissez-déposez</strong></p>
-          <p class="sub">JPG, PNG — 6 max</p>
+          <div class="upload-icon">+</div>
+          <p class="upload-text">Cliquez ou déposez vos photos ici</p>
+          <p class="upload-hint">JPG, PNG — Taille max recommandée : 5 MB</p>
           <input id="photosInput" type="file" accept="image/*" multiple>
         </div>
         <div id="photosPreview" class="photos-preview"></div>
       </div>
 
-      <!-- SECTION 6 : SIGNATURES -->
+      <!-- SECTION 6 -->
       <div class="section">
-        <div class="section-title"><span class="step">6</span>Signatures <span style="font-weight:400;font-size:12px;color:var(--gray-500);">— obligatoires</span></div>
+        <div class="section-header">
+          <span class="section-number">6</span>
+          <span class="section-title">Signatures électroniques</span>
+          <span class="section-subtitle">Obligatoires</span>
+        </div>
         <div class="sign-grid">
           <div class="sign-box">
-            <div class="sign-header"><span class="name">🔵 Propriétaire</span><span class="badge badge-owner">Bailleur</span></div>
-            <div class="mention">« Lu et approuvé »</div>
+            <div class="sign-header">
+              <span class="name">Propriétaire</span>
+              <span class="badge badge-owner">Bailleur</span>
+            </div>
+            <div class="mention">« Lu et approuvé — Bon pour accord »</div>
             <canvas class="signature-canvas" id="signature-owner"></canvas>
             <div class="sign-actions">
-              <button type="button" class="btn-ghost" onclick="clearSignature('owner')">🗑️ Effacer</button>
-              <span class="sign-status" id="ownerStatus">Non signé</span>
+              <button type="button" class="btn-text" onclick="clearSignature('owner')">Effacer</button>
+              <span class="sign-status" id="ownerStatus">En attente</span>
             </div>
             <input type="hidden" name="signatureOwner" id="signatureOwner">
           </div>
           <div class="sign-box">
-            <div class="sign-header"><span class="name">🟢 Locataire</span><span class="badge badge-renter">Preneur</span></div>
-            <div class="mention">« Lu et approuvé »</div>
+            <div class="sign-header">
+              <span class="name">Locataire</span>
+              <span class="badge badge-renter">Preneur</span>
+            </div>
+            <div class="mention">« Lu et approuvé — Bon pour accord »</div>
             <canvas class="signature-canvas" id="signature-renter"></canvas>
             <div class="sign-actions">
-              <button type="button" class="btn-ghost" onclick="clearSignature('renter')">🗑️ Effacer</button>
-              <span class="sign-status" id="renterStatus">Non signé</span>
+              <button type="button" class="btn-text" onclick="clearSignature('renter')">Effacer</button>
+              <span class="sign-status" id="renterStatus">En attente</span>
             </div>
             <input type="hidden" name="signatureRenter" id="signatureRenter">
           </div>
         </div>
       </div>
 
-      <!-- BOUTONS -->
+      <!-- ACTIONS -->
       <div class="actions">
-        <button type="button" class="btn btn-success" id="generateSendBtn">✉️ Signer et envoyer</button>
-        <button type="button" class="btn btn-secondary" id="downloadEtatBtn">⬇️ Télécharger PDF</button>
-        <button type="button" class="btn btn-outline" id="saveEtatBtn">💾 Enregistrer</button>
-        <button type="button" class="btn btn-outline" id="resetFormBtn">🔄 Réinitialiser</button>
+        <button type="button" class="btn btn-primary" id="generateSendBtn">Signer et envoyer le document</button>
+        <button type="button" class="btn btn-outline" id="downloadEtatBtn">Télécharger le PDF</button>
+        <button type="button" class="btn btn-outline" id="saveEtatBtn">Enregistrer le brouillon</button>
+        <button type="button" class="btn btn-ghost" id="resetFormBtn">Réinitialiser</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- ============================================================ -->
-<!-- BIBLIOTHÈQUES                                                -->
-<!-- ============================================================ -->
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -623,51 +830,28 @@
 <script>
   'use strict';
 
-  // ==========================================================
-  // CONFIGURATION EMAILJS
-  // ==========================================================
   const EMAILJS_CONFIG = {
     publicKey: 'zz4KdlO2Xyw0Y5Gej',
     serviceID: 'service_g1ip1lt',
     templateID: 'template_sozwa7c'
   };
 
-  // Initialisation EmailJS
   (function() {
-    try {
-      emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
-      console.log('✅ EmailJS initialisé avec succès');
-    } catch (error) {
-      console.error('❌ Erreur initialisation EmailJS:', error);
-    }
+    try { emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey }); } catch(e) {}
   })();
 
-  // ==========================================================
-  // DATE ACTUELLE
-  // ==========================================================
-  document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR', {
-    day: 'numeric', month: 'long', year: 'numeric'
-  });
+  document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
-  // ==========================================================
-  // TOAST NOTIFICATIONS
-  // ==========================================================
   function showToast(message, type = 'info') {
     const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
+    toast.className = 'toast ' + type;
     toast.textContent = message;
     container.appendChild(toast);
     requestAnimationFrame(() => toast.classList.add('show'));
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 400);
-    }, 4500);
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 4000);
   }
 
-  // ==========================================================
-  // GESTION DES PHOTOS
-  // ==========================================================
   const photosInput = document.getElementById('photosInput');
   const photosPreview = document.getElementById('photosPreview');
   let photosDataUrls = [];
@@ -683,8 +867,7 @@
           if (w > maxWidth) { h = (h * maxWidth) / w; w = maxWidth; }
           if (h > maxHeight) { w = (w * maxHeight) / h; h = maxHeight; }
           canvas.width = w; canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
           resolve(canvas.toDataURL('image/jpeg', quality));
         };
         img.onerror = reject;
@@ -695,43 +878,27 @@
     });
   }
 
-  function removePhoto(index) {
-    photosDataUrls.splice(index, 1);
-    renderPhotos();
-  }
+  function removePhoto(index) { photosDataUrls.splice(index, 1); renderPhotos(); }
 
   function renderPhotos() {
     photosPreview.innerHTML = '';
     photosDataUrls.forEach((dataUrl, index) => {
       const div = document.createElement('div');
       div.className = 'photo-item';
-      div.innerHTML = `
-        <img src="${dataUrl}" alt="Photo ${index + 1}">
-        <button class="remove" data-index="${index}">✕</button>
-      `;
+      div.innerHTML = '<img src="' + dataUrl + '" alt="Photo ' + (index + 1) + '"><button class="remove-photo" data-index="' + index + '">&times;</button>';
       photosPreview.appendChild(div);
     });
-    document.querySelectorAll('.photo-item .remove').forEach(btn => {
-      btn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        removePhoto(parseInt(this.dataset.index));
-      });
+    document.querySelectorAll('.photo-item .remove-photo').forEach(btn => {
+      btn.addEventListener('click', function(e) { e.stopPropagation(); removePhoto(parseInt(this.dataset.index)); });
     });
   }
 
   photosInput.addEventListener('change', async (e) => {
     const files = Array.from(e.target.files);
-    if (photosDataUrls.length + files.length > 6) {
-      showToast('⚠️ Maximum 6 photos autorisées', 'error');
-      return;
-    }
+    if (photosDataUrls.length + files.length > 6) { showToast('Maximum 6 photos autorisées', 'error'); return; }
     for (const file of files) {
       if (!file.type.startsWith('image/')) continue;
-      try {
-        photosDataUrls.push(await compressImage(file));
-      } catch (err) {
-        console.error('Erreur compression:', err);
-      }
+      try { photosDataUrls.push(await compressImage(file)); } catch(err) {}
     }
     renderPhotos();
     photosInput.value = '';
@@ -739,38 +906,19 @@
 
   const dropZone = document.getElementById('photoDropZone');
   dropZone.addEventListener('click', () => photosInput.click());
-  dropZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropZone.style.borderColor = 'var(--primary-light)';
-    dropZone.style.background = 'white';
-  });
-  dropZone.addEventListener('dragleave', () => {
-    dropZone.style.borderColor = 'var(--gray-300)';
-    dropZone.style.background = 'var(--gray-100)';
+  ['dragover', 'dragleave', 'drop'].forEach(evt => {
+    dropZone.addEventListener(evt, (e) => { e.preventDefault(); });
   });
   dropZone.addEventListener('drop', async (e) => {
-    e.preventDefault();
-    dropZone.style.borderColor = 'var(--gray-300)';
-    dropZone.style.background = 'var(--gray-100)';
     const files = Array.from(e.dataTransfer.files);
-    if (photosDataUrls.length + files.length > 6) {
-      showToast('⚠️ Maximum 6 photos autorisées', 'error');
-      return;
-    }
+    if (photosDataUrls.length + files.length > 6) { showToast('Maximum 6 photos autorisées', 'error'); return; }
     for (const file of files) {
       if (!file.type.startsWith('image/')) continue;
-      try {
-        photosDataUrls.push(await compressImage(file));
-      } catch (err) {
-        console.error('Erreur compression:', err);
-      }
+      try { photosDataUrls.push(await compressImage(file)); } catch(err) {}
     }
     renderPhotos();
   });
 
-  // ==========================================================
-  // GESTION DES SIGNATURES
-  // ==========================================================
   const canvasOwner = document.getElementById('signature-owner');
   const canvasRenter = document.getElementById('signature-renter');
   const ownerStatus = document.getElementById('ownerStatus');
@@ -780,526 +928,218 @@
     const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     canvas.width = rect.width * dpr;
-    canvas.height = 70 * dpr;
-    canvas.style.height = '70px';
+    canvas.height = 90 * dpr;
+    canvas.style.height = '90px';
     canvas.style.width = '100%';
-    const ctx = canvas.getContext('2d');
-    ctx.scale(dpr, dpr);
+    canvas.getContext('2d').scale(dpr, dpr);
   }
-
   resizeCanvas(canvasOwner);
   resizeCanvas(canvasRenter);
 
-  const sigPadOwner = new SignaturePad(canvasOwner, { 
-    backgroundColor: 'white', 
-    penColor: '#0f2b4a', 
-    minWidth: 1.5, 
-    maxWidth: 3 
-  });
-  
-  const sigPadRenter = new SignaturePad(canvasRenter, { 
-    backgroundColor: 'white', 
-    penColor: '#0f2b4a', 
-    minWidth: 1.5, 
-    maxWidth: 3 
-  });
+  const sigPadOwner = new SignaturePad(canvasOwner, { backgroundColor: 'white', penColor: '#1a1a2e', minWidth: 1.5, maxWidth: 3 });
+  const sigPadRenter = new SignaturePad(canvasRenter, { backgroundColor: 'white', penColor: '#1a1a2e', minWidth: 1.5, maxWidth: 3 });
 
   function updateSignatureStatus() {
-    const ownerSigned = !sigPadOwner.isEmpty();
-    const renterSigned = !sigPadRenter.isEmpty();
-    
-    ownerStatus.textContent = ownerSigned ? '✅ Signé' : 'Non signé';
-    ownerStatus.className = 'sign-status' + (ownerSigned ? ' signed' : '');
-    
-    renterStatus.textContent = renterSigned ? '✅ Signé' : 'Non signé';
-    renterStatus.className = 'sign-status' + (renterSigned ? ' signed' : '');
-    
-    document.getElementById('signatureOwner').value = ownerSigned ? sigPadOwner.toDataURL() : '';
-    document.getElementById('signatureRenter').value = renterSigned ? sigPadRenter.toDataURL() : '';
+    ownerStatus.textContent = sigPadOwner.isEmpty() ? 'En attente' : 'Signé';
+    ownerStatus.className = 'sign-status' + (sigPadOwner.isEmpty() ? '' : ' signed');
+    renterStatus.textContent = sigPadRenter.isEmpty() ? 'En attente' : 'Signé';
+    renterStatus.className = 'sign-status' + (sigPadRenter.isEmpty() ? '' : ' signed');
+    document.getElementById('signatureOwner').value = sigPadOwner.isEmpty() ? '' : sigPadOwner.toDataURL();
+    document.getElementById('signatureRenter').value = sigPadRenter.isEmpty() ? '' : sigPadRenter.toDataURL();
   }
 
   sigPadOwner.addEventListener('endStroke', updateSignatureStatus);
   sigPadRenter.addEventListener('endStroke', updateSignatureStatus);
 
   window.clearSignature = function(type) {
-    if (type === 'owner') { 
-      sigPadOwner.clear(); 
-    }
-    if (type === 'renter') { 
-      sigPadRenter.clear(); 
-    }
+    if (type === 'owner') sigPadOwner.clear();
+    else sigPadRenter.clear();
     updateSignatureStatus();
   };
 
   window.addEventListener('resize', () => {
-    const ownerData = sigPadOwner.toData();
-    const renterData = sigPadRenter.toData();
-    
-    resizeCanvas(canvasOwner);
-    resizeCanvas(canvasRenter);
-    
-    sigPadOwner.fromData(ownerData);
-    sigPadRenter.fromData(renterData);
+    const oD = sigPadOwner.toData(), rD = sigPadRenter.toData();
+    resizeCanvas(canvasOwner); resizeCanvas(canvasRenter);
+    sigPadOwner.fromData(oD); sigPadRenter.fromData(rD);
   });
 
-  // ==========================================================
-  // RÉCUPÉRATION DES DONNÉES
-  // ==========================================================
   function getFormData() {
     const form = document.getElementById('etatForm');
-    const formData = new FormData(form);
+    const fd = new FormData(form);
     const data = {};
-    
-    for (const [key, value] of formData.entries()) {
-      if (key === 'extras') {
-        if (!data.extras) data.extras = [];
-        data.extras.push(value);
-      } else {
-        data[key] = value;
-      }
+    for (const [k, v] of fd.entries()) {
+      if (k === 'extras') { if (!data.extras) data.extras = []; data.extras.push(v); }
+      else data[k] = v;
     }
-    
     data.photos = photosDataUrls;
     data.signatureOwner = sigPadOwner.isEmpty() ? '' : sigPadOwner.toDataURL();
     data.signatureRenter = sigPadRenter.isEmpty() ? '' : sigPadRenter.toDataURL();
-    
     return data;
   }
 
   function validateForm() {
-    const ownerName = document.getElementById('ownerName').value.trim();
-    const ownerEmail = document.getElementById('ownerEmail').value.trim();
-    const renterName = document.getElementById('renterName').value.trim();
-    const renterEmail = document.getElementById('renterEmail').value.trim();
-    const bikeModel = document.getElementById('bikeModel').value.trim();
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    
-    if (!ownerName || !ownerEmail) {
-      showToast('❌ Veuillez remplir les informations du propriétaire', 'error');
-      return false;
-    }
-    if (!renterName || !renterEmail) {
-      showToast('❌ Veuillez remplir les informations du locataire', 'error');
-      return false;
-    }
-    if (!bikeModel || !startDate || !endDate) {
-      showToast('❌ Veuillez remplir tous les champs de location', 'error');
-      return false;
-    }
-    if (sigPadOwner.isEmpty()) {
-      showToast('❌ Le propriétaire doit signer', 'error');
-      return false;
-    }
-    if (sigPadRenter.isEmpty()) {
-      showToast('❌ Le locataire doit signer', 'error');
-      return false;
-    }
-    
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(ownerEmail)) {
-      showToast('❌ Email du propriétaire invalide', 'error');
-      return false;
-    }
-    if (!emailRegex.test(renterEmail)) {
-      showToast('❌ Email du locataire invalide', 'error');
-      return false;
-    }
-    
+    const oN = document.getElementById('ownerName').value.trim();
+    const oE = document.getElementById('ownerEmail').value.trim();
+    const rN = document.getElementById('renterName').value.trim();
+    const rE = document.getElementById('renterEmail').value.trim();
+    const bM = document.getElementById('bikeModel').value.trim();
+    const sD = document.getElementById('startDate').value;
+    const eD = document.getElementById('endDate').value;
+    if (!oN || !oE) { showToast('Veuillez remplir les informations du propriétaire', 'error'); return false; }
+    if (!rN || !rE) { showToast('Veuillez remplir les informations du locataire', 'error'); return false; }
+    if (!bM || !sD || !eD) { showToast('Veuillez remplir tous les champs de location', 'error'); return false; }
+    if (sigPadOwner.isEmpty()) { showToast('Le propriétaire doit signer', 'error'); return false; }
+    if (sigPadRenter.isEmpty()) { showToast('Le locataire doit signer', 'error'); return false; }
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!re.test(oE)) { showToast('Email du propriétaire invalide', 'error'); return false; }
+    if (!re.test(rE)) { showToast('Email du locataire invalide', 'error'); return false; }
     return true;
   }
 
-  // ==========================================================
-  // GÉNÉRATION DU PDF OPTIMISÉ (TAILLE RÉDUITE)
-  // ==========================================================
   async function generateOptimizedPDF(containerEl) {
-    try {
-      const { jsPDF } = window.jspdf;
-      
-      // Capturer avec une résolution plus basse
-      const canvas = await html2canvas(containerEl, { 
-        scale: 1.5,  // Réduit de 2 à 1.5
-        useCORS: true, 
-        backgroundColor: '#ffffff', 
-        logging: false,
-        imageTimeout: 0,
-        allowTaint: true
-      });
-      
-      // Compresser davantage
-      const imgData = canvas.toDataURL('image/jpeg', 0.5);  // Qualité réduite à 50%
-      
-      const doc = new jsPDF({ 
-        unit: 'pt', 
-        format: 'a4',
-        orientation: 'portrait',
-        compress: true  // Compression activée
-      });
-      
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
-      const margin = 30;
-      const usableWidth = pageWidth - margin * 2;
-      const imgProps = doc.getImageProperties(imgData);
-      const imgHeight = usableWidth / (imgProps.width / imgProps.height);
-      
-      doc.addImage(imgData, 'JPEG', margin, margin, usableWidth, Math.min(imgHeight, pageHeight - margin * 2));
-      
-      // Ne pas inclure les photos dans le PDF pour réduire la taille
-      // Les photos seront disponibles dans l'interface web
-      
-      // Retourner en base64
-      const pdfBase64 = doc.output('datauristring');
-      console.log('📄 Taille PDF optimisé:', (pdfBase64.length / 1024).toFixed(2), 'KB');
-      
-      return pdfBase64;
-    } catch (error) {
-      console.error('Erreur génération PDF:', error);
-      throw new Error('Erreur lors de la génération du PDF');
-    }
+    const { jsPDF } = window.jspdf;
+    const canvas = await html2canvas(containerEl, { scale: 1.5, useCORS: true, backgroundColor: '#ffffff', logging: false });
+    const imgData = canvas.toDataURL('image/jpeg', 0.5);
+    const doc = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'portrait', compress: true });
+    const pw = doc.internal.pageSize.getWidth(), ph = doc.internal.pageSize.getHeight(), m = 30;
+    const uw = pw - m * 2;
+    const ip = doc.getImageProperties(imgData);
+    const ih = uw / (ip.width / ip.height);
+    doc.addImage(imgData, 'JPEG', m, m, uw, Math.min(ih, ph - m * 2));
+    return doc.output('datauristring');
   }
 
-  // ==========================================================
-  // UPLOAD SUR UN SERVICE GRATUIT (PAS DE LIMITE DE TAILLE)
-  // ==========================================================
   async function uploadPDF(pdfBase64, fileName) {
     try {
-      showToast('📤 Mise en ligne du PDF...', 'info');
-      
-      // Convertir base64 en blob
       const base64Data = pdfBase64.split(',')[1] || pdfBase64;
-      const byteCharacters = atob(base64Data);
-      const byteArrays = [];
-      
-      for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-        const slice = byteCharacters.slice(offset, offset + 512);
-        const byteNumbers = new Array(slice.length);
-        for (let i = 0; i < slice.length; i++) {
-          byteNumbers[i] = slice.charCodeAt(i);
-        }
-        byteArrays.push(new Uint8Array(byteNumbers));
+      const bc = atob(base64Data);
+      const ba = [];
+      for (let o = 0; o < bc.length; o += 512) {
+        const s = bc.slice(o, o + 512);
+        const bn = new Array(s.length);
+        for (let i = 0; i < s.length; i++) bn[i] = s.charCodeAt(i);
+        ba.push(new Uint8Array(bn));
       }
-      
-      const blob = new Blob(byteArrays, { type: 'application/pdf' });
-      
-      // Utiliser tmpfiles.org (gratuit, pas d'inscription, fichiers gardés 1 heure)
-      const formData = new FormData();
-      formData.append('file', blob, fileName);
-      
-      const response = await fetch('https://tmpfiles.org/api/v1/upload', {
-        method: 'POST',
-        body: formData
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        // Modifier l'URL pour le téléchargement direct
-        const downloadUrl = result.data.url.replace('https://tmpfiles.org/', 'https://tmpfiles.org/dl/');
-        console.log('📎 Lien de téléchargement:', downloadUrl);
-        return downloadUrl;
-      } else {
-        throw new Error('Erreur upload');
+      const blob = new Blob(ba, { type: 'application/pdf' });
+      const fd = new FormData();
+      fd.append('file', blob, fileName);
+      const r = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: fd });
+      if (r.ok) {
+        const j = await r.json();
+        return j.data.url.replace('https://tmpfiles.org/', 'https://tmpfiles.org/dl/');
       }
-    } catch (error) {
-      console.error('❌ Erreur upload:', error);
-      // Fallback : créer un lien data URL temporaire
-      showToast('⚠️ Utilisation du mode dégradé...', 'info');
-      return pdfBase64;  // Retourner le base64 directement
+      throw new Error('Upload failed');
+    } catch(e) {
+      return pdfBase64;
     }
   }
 
-  // ==========================================================
-  // ENVOI AVEC EMAILJS + LIEN DE TÉLÉCHARGEMENT
-  // ==========================================================
   async function sendWithEmailJS(data, pdfBase64) {
-    try {
-      showToast('📤 Préparation des emails...', 'info');
-      
-      // Générer un nom de fichier unique
-      const renterName = (data.renterName || 'location').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-      const dateStr = new Date().toISOString().split('T')[0];
-      const fileName = `etat_des_lieux_velo_${renterName}_${dateStr}.pdf`;
-      
-      // Uploader le PDF et obtenir un lien
-      const pdfLink = await uploadPDF(pdfBase64, fileName);
-      
-      // Construire le rapport des contrôles
-      const bikeParts = ['frame', 'handlebar', 'seat', 'fork', 'wheel_front', 'wheel_rear', 
-                         'tire_front', 'tire_rear', 'brakes', 'transmission', 'chain', 'pedals'];
-      
-      const partNames = {
-        'frame': 'Cadre', 'handlebar': 'Guidon', 'seat': 'Selle', 'fork': 'Fourche',
-        'wheel_front': 'Roue Avant', 'wheel_rear': 'Roue Arrière',
-        'tire_front': 'Pneu Avant', 'tire_rear': 'Pneu Arrière',
-        'brakes': 'Freins', 'transmission': 'Transmission', 'chain': 'Chaîne', 'pedals': 'Pédales'
-      };
-      
-      let bikeReport = '';
-      bikeParts.forEach(part => {
-        const state = data[`state_${part}`] || '';
-        const note = data[`note_${part}`] || '';
-        if (state || note) {
-          bikeReport += `• ${partNames[part] || part}: ${state || 'Non spécifié'}${note ? ' (' + note + ')' : ''}\n`;
-        }
-      });
-      
-      const dateSignature = new Date().toLocaleDateString('fr-FR', {
-        day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
-      });
-      
-      // Paramètres communs
-      const commonParams = {
-        proprietaire: data.ownerName,
-        proprietaire_email: data.ownerEmail,
-        locataire: data.renterName,
-        locataire_email: data.renterEmail,
-        velo: data.bikeModel,
-        numero_serie: data.serialNumber || 'Non spécifié',
-        debut: data.startDate,
-        fin: data.endDate,
-        observations: data.generalNotes || 'Aucune observation',
-        accessoires: (data.extras && data.extras.length > 0) ? data.extras.join(', ') : 'Aucun',
-        controle_velo: bikeReport || 'Aucun contrôle effectué',
-        date_signature: dateSignature,
-        pdf_link: pdfLink
-      };
-      
-      // Envoyer au propriétaire
-      showToast('📧 Envoi au propriétaire...', 'info');
-      
-      await emailjs.send(
-        EMAILJS_CONFIG.serviceID,
-        EMAILJS_CONFIG.templateID,
-        {
-          ...commonParams,
-          to_email: data.ownerEmail,
-          to_name: data.ownerName,
-          message: `Bonjour ${data.ownerName},\n\nVoici l'état des lieux pour votre vélo ${data.bikeModel}.\n\n📎 Téléchargez le PDF signé : ${pdfLink}`
-        }
-      );
-      
-      // Envoyer au locataire
-      showToast('📧 Envoi au locataire...', 'info');
-      
-      await emailjs.send(
-        EMAILJS_CONFIG.serviceID,
-        EMAILJS_CONFIG.templateID,
-        {
-          ...commonParams,
-          to_email: data.renterEmail,
-          to_name: data.renterName,
-          message: `Bonjour ${data.renterName},\n\nVoici l'état des lieux pour le vélo ${data.bikeModel} que vous louez.\n\n📎 Téléchargez le PDF signé : ${pdfLink}`
-        }
-      );
-      
-      showToast('✅ État des lieux envoyé avec succès aux deux parties !', 'success');
-      
-      // Proposer le téléchargement direct
-      if (confirm('✅ Emails envoyés ! Voulez-vous télécharger le PDF maintenant ?')) {
-        const link = document.createElement('a');
-        link.href = pdfBase64;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-      
-      return true;
-      
-    } catch (error) {
-      console.error('❌ Erreur EmailJS:', error);
-      throw new Error('Erreur lors de l\'envoi: ' + error.message);
+    const rn = (data.renterName || 'location').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const ds = new Date().toISOString().split('T')[0];
+    const fn = 'etat_des_lieux_depart_' + rn + '_' + ds + '.pdf';
+    showToast('Mise en ligne du PDF...', 'info');
+    const pdfLink = await uploadPDF(pdfBase64, fn);
+
+    const bp = ['frame','handlebar','seat','fork','wheel_front','wheel_rear','tire_front','tire_rear','brakes','transmission','chain','pedals'];
+    const pn = { frame:'Cadre',handlebar:'Guidon',seat:'Selle',fork:'Fourche',wheel_front:'Roue avant',wheel_rear:'Roue arrière',tire_front:'Pneu avant',tire_rear:'Pneu arrière',brakes:'Freins',transmission:'Transmission',chain:'Chaîne',pedals:'Pédales' };
+    let br = '';
+    bp.forEach(p => { const s = data['state_'+p]||'', n = data['note_'+p]||''; if(s||n) br += '• ' + (pn[p]||p) + ': ' + (s||'Non spécifié') + (n?' ('+n+')':'') + '\n'; });
+
+    const dsig = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    const cp = {
+      proprietaire: data.ownerName, proprietaire_email: data.ownerEmail,
+      locataire: data.renterName, locataire_email: data.renterEmail,
+      velo: data.bikeModel, numero_serie: data.serialNumber || 'Non spécifié',
+      debut: data.startDate, fin: data.endDate,
+      observations: data.generalNotes || 'Aucune',
+      accessoires: (data.extras && data.extras.length > 0) ? data.extras.join(', ') : 'Aucun',
+      controle_velo: br || 'Aucun contrôle', date_signature: dsig, pdf_link: pdfLink
+    };
+
+    showToast('Envoi au propriétaire...', 'info');
+    await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, { ...cp, to_email: data.ownerEmail, to_name: data.ownerName });
+    showToast('Envoi au locataire...', 'info');
+    await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, { ...cp, to_email: data.renterEmail, to_name: data.renterName });
+    showToast('Document envoyé aux deux parties', 'success');
+    if (confirm('Document envoyé. Télécharger une copie du PDF ?')) {
+      const a = document.createElement('a'); a.href = pdfBase64; a.download = fn;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
     }
+    return true;
   }
 
-  // ==========================================================
-  // BOUTON PRINCIPAL : SIGNER ET ENVOYER
-  // ==========================================================
   document.getElementById('generateSendBtn').addEventListener('click', async function() {
-    console.log('🖱️ Clic sur "Signer et envoyer"');
-    
     if (!validateForm()) return;
-    
     this.disabled = true;
-    const originalHTML = this.innerHTML;
-    this.innerHTML = '<span class="spinner"></span> Traitement en cours...';
-    
+    const oh = this.innerHTML;
+    this.innerHTML = '<span class="spinner"></span> Traitement...';
     try {
       const data = getFormData();
-      
-      // Générer le PDF optimisé
-      showToast('📄 Génération du PDF...', 'info');
-      const container = document.getElementById('contractContainer');
-      const pdfBase64 = await generateOptimizedPDF(container);
-      
-      // Envoyer par email avec lien de téléchargement
+      const pdfBase64 = await generateOptimizedPDF(document.getElementById('contractContainer'));
       await sendWithEmailJS(data, pdfBase64);
-      
-    } catch (error) {
-      console.error('❌ Erreur:', error);
-      showToast('❌ ' + error.message, 'error');
-    } finally {
-      this.disabled = false;
-      this.innerHTML = originalHTML;
-    }
+    } catch(e) { showToast('Erreur: ' + e.message, 'error'); }
+    this.disabled = false;
+    this.innerHTML = oh;
   });
 
-  // ==========================================================
-  // BOUTON TÉLÉCHARGER PDF (VERSION COMPLÈTE AVEC PHOTOS)
-  // ==========================================================
   document.getElementById('downloadEtatBtn').addEventListener('click', async function() {
+    this.disabled = true;
     try {
-      this.disabled = true;
-      const originalText = this.textContent;
-      this.textContent = '⏳ Génération...';
-      
       const data = getFormData();
-      const container = document.getElementById('contractContainer');
-      
-      // Version complète avec photos pour le téléchargement
       const { jsPDF } = window.jspdf;
-      
-      const canvas = await html2canvas(container, { 
-        scale: 2, 
-        useCORS: true, 
-        backgroundColor: '#ffffff', 
-        logging: false 
-      });
-      
+      const canvas = await html2canvas(document.getElementById('contractContainer'), { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false });
       const imgData = canvas.toDataURL('image/jpeg', 0.8);
-      const doc = new jsPDF({ 
-        unit: 'pt', 
-        format: 'a4',
-        orientation: 'portrait'
+      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+      const pw = doc.internal.pageSize.getWidth(), ph = doc.internal.pageSize.getHeight(), m = 30, uw = pw - m * 2;
+      const ip = doc.getImageProperties(imgData), ih = uw / (ip.width / ip.height);
+      doc.addImage(imgData, 'JPEG', m, m, uw, Math.min(ih, ph - m * 2));
+      if (data.photos) data.photos.forEach((p, i) => {
+        doc.addPage();
+        const pip = doc.getImageProperties(p), pih = uw / (pip.width / pip.height);
+        doc.addImage(p, 'JPEG', m, m + 20, uw, Math.min(pih, ph - m - 40));
       });
-      
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
-      const margin = 30;
-      const usableWidth = pageWidth - margin * 2;
-      const imgProps = doc.getImageProperties(imgData);
-      const imgHeight = usableWidth / (imgProps.width / imgProps.height);
-      
-      doc.addImage(imgData, 'JPEG', margin, margin, usableWidth, Math.min(imgHeight, pageHeight - margin * 2));
-      
-      // Ajouter les photos
-      if (data.photos && data.photos.length > 0) {
-        for (let i = 0; i < data.photos.length; i++) {
-          doc.addPage();
-          doc.setFontSize(12);
-          doc.setTextColor(15, 43, 74);
-          doc.text(`Photo ${i + 1}`, margin, margin);
-          
-          const pImgProps = doc.getImageProperties(data.photos[i]);
-          const pHeight = usableWidth / (pImgProps.width / pImgProps.height);
-          const photoY = margin + 20;
-          
-          doc.addImage(data.photos[i], 'JPEG', margin, photoY, usableWidth, Math.min(pHeight, pageHeight - photoY - margin));
-        }
-      }
-      
-      const pdfBase64 = doc.output('datauristring');
-      
-      // Télécharger
-      const link = document.createElement('a');
-      link.href = pdfBase64;
-      
-      const renterName = (data.renterName || 'location').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-      const dateStr = new Date().toISOString().split('T')[0];
-      link.download = `etat_des_lieux_velo_complet_${renterName}_${dateStr}.pdf`;
-      
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      showToast('✅ PDF téléchargé avec succès !', 'success');
-    } catch (error) {
-      console.error('❌ Erreur téléchargement:', error);
-      showToast('❌ Erreur lors du téléchargement du PDF', 'error');
-    } finally {
-      this.disabled = false;
-      this.textContent = '⬇️ Télécharger PDF';
-    }
+      const rn = (data.renterName || 'location').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const a = document.createElement('a');
+      a.href = doc.output('datauristring');
+      a.download = 'etat_des_lieux_depart_' + rn + '_' + new Date().toISOString().split('T')[0] + '.pdf';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      showToast('PDF téléchargé', 'success');
+    } catch(e) { showToast('Erreur téléchargement', 'error'); }
+    this.disabled = false;
   });
 
-  // ==========================================================
-  // BOUTON ENREGISTRER
-  // ==========================================================
   document.getElementById('saveEtatBtn').addEventListener('click', function() {
-    try {
-      const data = getFormData();
-      localStorage.setItem('expressVeloEtat', JSON.stringify(data));
-      showToast('✅ État des lieux enregistré localement', 'success');
-    } catch (error) {
-      console.error('❌ Erreur sauvegarde:', error);
-      showToast('❌ Erreur lors de la sauvegarde', 'error');
-    }
+    localStorage.setItem('expressVeloEtat', JSON.stringify(getFormData()));
+    showToast('Brouillon enregistré', 'success');
   });
 
-  // ==========================================================
-  // BOUTON RÉINITIALISER
-  // ==========================================================
   document.getElementById('resetFormBtn').addEventListener('click', function() {
-    if (confirm('⚠️ Voulez-vous vraiment réinitialiser tout le formulaire ?')) {
+    if (confirm('Réinitialiser le formulaire ?')) {
       document.getElementById('etatForm').reset();
-      sigPadOwner.clear();
-      sigPadRenter.clear();
-      photosDataUrls = [];
-      renderPhotos();
+      sigPadOwner.clear(); sigPadRenter.clear();
+      photosDataUrls = []; renderPhotos();
       updateSignatureStatus();
-      showToast('🔄 Formulaire réinitialisé', 'info');
+      showToast('Formulaire réinitialisé', 'info');
     }
   });
 
-  // ==========================================================
-  // CHARGEMENT DES DONNÉES SAUVEGARDÉES
-  // ==========================================================
-  (function loadSavedData() {
+  (function() {
+    const s = localStorage.getItem('expressVeloEtat');
+    if (!s) return;
     try {
-      const saved = localStorage.getItem('expressVeloEtat');
-      if (!saved) return;
-      
-      const data = JSON.parse(saved);
-      
-      Object.keys(data).forEach(key => {
-        if (['extras', 'photos', 'signatureOwner', 'signatureRenter'].includes(key)) return;
-        
-        const el = document.querySelector(`[name="${key}"]`);
-        if (el) {
-          if (el.type === 'checkbox') {
-            el.checked = data[key];
-          } else {
-            el.value = data[key] || '';
-          }
-        }
+      const d = JSON.parse(s);
+      Object.keys(d).forEach(k => {
+        if (['extras','photos','signatureOwner','signatureRenter'].includes(k)) return;
+        const el = document.querySelector('[name="'+k+'"]');
+        if (el) el.value = d[k] || '';
       });
-      
-      if (data.extras && Array.isArray(data.extras)) {
-        data.extras.forEach(val => {
-          const cb = document.querySelector(`input[name="extras"][value="${val}"]`);
-          if (cb) cb.checked = true;
-        });
-      }
-      
-      if (data.photos && Array.isArray(data.photos) && data.photos.length > 0) {
-        photosDataUrls = data.photos;
-        renderPhotos();
-      }
-      
-      console.log('📂 Données sauvegardées chargées avec succès');
-    } catch (e) {
-      console.error('Erreur lors du chargement des données:', e);
-      localStorage.removeItem('expressVeloEtat');
-    }
+      if (d.extras) d.extras.forEach(v => { const cb = document.querySelector('input[name="extras"][value="'+v+'"]'); if(cb) cb.checked = true; });
+      if (d.photos && d.photos.length) { photosDataUrls = d.photos; renderPhotos(); }
+    } catch(e) { localStorage.removeItem('expressVeloEtat'); }
   })();
 
-  // ==========================================================
-  // INITIALISATION
-  // ==========================================================
   updateSignatureStatus();
-  console.log('🚀 Application prête !');
-  
 </script>
-
 </body>
 </html>
