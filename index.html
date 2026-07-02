@@ -3,426 +3,313 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>État des lieux de départ</title>
+  <title>État des lieux vélo</title>
 
   <style>
     :root {
       --primary: #0f2b4a;
       --primary-light: #1a4068;
-      --primary-dark: #0a1d33;
-      --accent: #2a7faa;
       --success: #0d7a3e;
       --error: #b13030;
-      --gray-50: #f8fafc;
-      --gray-100: #f1f4f8;
-      --gray-200: #e4e8ee;
+      --gray-100: #f5f7fa;
+      --gray-200: #e2e6ee;
       --gray-300: #c8d0da;
-      --gray-400: #9aa8b9;
       --gray-500: #6b7f94;
       --gray-600: #4a5f74;
       --gray-700: #2d4157;
-      --gray-800: #1a2a3d;
-      --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
-      --radius: 12px;
-      --radius-lg: 16px;
-      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --shadow: 0 4px 16px rgba(0,0,0,0.08);
+      --radius: 10px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: var(--gray-100);
       color: var(--gray-700);
-      line-height: 1.6;
+      line-height: 1.5;
       min-height: 100vh;
-      padding: 24px;
+      padding: 16px;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
     }
 
     .document-wrapper {
       width: 100%;
-      max-width: 920px;
-      margin: 0 auto;
+      max-width: 800px;
     }
 
-    .document-header {
+    /* HEADER */
+    .header {
       background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
       color: white;
-      padding: 32px 40px;
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-      position: relative;
-      overflow: hidden;
+      padding: 24px 28px;
+      border-radius: var(--radius) var(--radius) 0 0;
     }
-    .document-header::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -10%;
-      width: 300px;
-      height: 300px;
-      background: rgba(255,255,255,0.04);
-      border-radius: 50%;
-    }
-    .document-header .badge {
-      display: inline-block;
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(4px);
-      padding: 4px 16px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-    .document-header h1 {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      position: relative;
-      z-index: 1;
-    }
-    .document-header h1 span { color: #7bb3d6; }
-    .document-header p {
-      font-size: 15px;
-      opacity: 0.85;
-      margin-top: 4px;
-      position: relative;
-      z-index: 1;
-    }
-    .document-header .meta-info {
+    .header h1 { font-size: 22px; font-weight: 700; }
+    .header h1 span { color: #7bb3d6; }
+    .header p { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+    .header .meta {
       display: flex;
-      gap: 24px;
-      margin-top: 12px;
-      font-size: 13px;
+      gap: 16px;
+      margin-top: 8px;
+      font-size: 12px;
       opacity: 0.8;
       flex-wrap: wrap;
-      position: relative;
-      z-index: 1;
     }
-    .document-header .meta-info span { display: flex; align-items: center; gap: 6px; }
 
+    /* FORM */
     .form-body {
       background: white;
-      padding: 32px 40px 40px;
-      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-      box-shadow: var(--shadow-lg);
+      padding: 24px 28px 28px;
+      border-radius: 0 0 var(--radius) var(--radius);
+      box-shadow: var(--shadow);
     }
 
-    .section { margin-bottom: 28px; }
+    .section { margin-bottom: 20px; }
     .section:last-child { margin-bottom: 0; }
 
     .section-title {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-size: 16px;
+      gap: 8px;
+      font-size: 14px;
       font-weight: 700;
       color: var(--primary);
-      padding-bottom: 10px;
+      padding-bottom: 6px;
       border-bottom: 2px solid var(--gray-200);
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
     .section-title .step {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 28px;
-      height: 28px;
+      width: 24px;
+      height: 24px;
       background: var(--primary);
       color: white;
       border-radius: 50%;
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 700;
       flex-shrink: 0;
     }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px 20px; }
-    .full-width { grid-column: 1 / -1; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px 16px; }
+    .full { grid-column: 1 / -1; }
 
     .field {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
     }
     .field label {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       color: var(--gray-600);
-      letter-spacing: 0.3px;
     }
-    .field label .required {
-      color: var(--error);
-      margin-left: 2px;
-    }
+    .field label .required { color: var(--error); margin-left: 2px; }
 
     .field input,
     .field select,
     .field textarea {
       width: 100%;
-      padding: 10px 14px;
+      padding: 7px 10px;
       border: 1.5px solid var(--gray-200);
-      border-radius: 8px;
-      font-size: 14px;
+      border-radius: 6px;
+      font-size: 13px;
       font-family: inherit;
       color: var(--gray-700);
       background: white;
-      transition: var(--transition);
+      transition: 0.2s;
     }
     .field input:focus,
     .field select:focus,
     .field textarea:focus {
       outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(42, 127, 170, 0.12);
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(26, 64, 104, 0.10);
     }
-    .field textarea { min-height: 80px; resize: vertical; }
+    .field textarea { min-height: 50px; resize: vertical; }
 
-    .bike-part-item {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding: 14px 16px;
-      background: var(--gray-50);
-      border-radius: 8px;
-      border: 1px solid var(--gray-200);
-      transition: var(--transition);
-    }
-    .bike-part-item:hover {
-      border-color: var(--gray-300);
-      background: white;
-    }
-    .bike-part-item .part-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--primary);
-    }
-    .bike-part-item .part-header .icon { font-size: 18px; }
-    .bike-part-item .part-controls {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .bike-part-item .part-controls select,
-    .bike-part-item .part-controls input {
-      flex: 1;
-      min-width: 120px;
-      padding: 6px 10px;
-      border: 1.5px solid var(--gray-200);
-      border-radius: 6px;
-      font-size: 13px;
-      background: white;
-      transition: var(--transition);
-    }
-    .bike-part-item .part-controls select:focus,
-    .bike-part-item .part-controls input:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(42, 127, 170, 0.12);
-    }
-    .bike-part-item .part-controls input {
-      flex: 2;
-      min-width: 150px;
-    }
-
-    .accessories-grid {
+    /* CONTRÔLE VÉLO - COMPACT */
+    .bike-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 8px;
     }
+    .bike-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: var(--gray-100);
+      border-radius: 6px;
+      border: 1px solid var(--gray-200);
+      flex-wrap: wrap;
+    }
+    .bike-item .icon { font-size: 14px; font-weight: 600; color: var(--primary); min-width: 50px; }
+    .bike-item select,
+    .bike-item input {
+      padding: 4px 6px;
+      border: 1px solid var(--gray-200);
+      border-radius: 4px;
+      font-size: 12px;
+      background: white;
+      flex: 1;
+      min-width: 60px;
+    }
+    .bike-item select:focus,
+    .bike-item input:focus {
+      outline: none;
+      border-color: var(--primary-light);
+    }
+    .bike-item input { flex: 1.5; min-width: 70px; }
+
+    /* ACCESSOIRES */
     .accessory-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      background: var(--gray-50);
-      border-radius: 8px;
+      gap: 6px;
+      padding: 6px 10px;
+      background: var(--gray-100);
+      border-radius: 6px;
       border: 1px solid var(--gray-200);
-      transition: var(--transition);
       flex-wrap: wrap;
     }
-    .accessory-item:hover { border-color: var(--gray-300); background: white; }
     .accessory-item .checkbox {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 4px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
-      color: var(--gray-700);
-      min-width: 100px;
+      min-width: 70px;
     }
     .accessory-item .checkbox input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
+      width: 15px;
+      height: 15px;
       accent-color: var(--primary);
       cursor: pointer;
       margin: 0;
-      flex-shrink: 0;
     }
-    .accessory-item .state-select {
-      padding: 5px 10px;
+    .accessory-item select,
+    .accessory-item input {
+      padding: 4px 6px;
       border: 1px solid var(--gray-200);
-      border-radius: 6px;
-      font-size: 13px;
+      border-radius: 4px;
+      font-size: 12px;
       background: white;
-      color: var(--gray-600);
       flex: 1;
-      min-width: 100px;
+      min-width: 60px;
     }
-    .accessory-item .state-select:focus { outline: none; border-color: var(--accent); }
-    .accessory-item .note-input {
-      padding: 5px 10px;
-      border: 1px solid var(--gray-200);
-      border-radius: 6px;
-      font-size: 13px;
-      flex: 1;
-      min-width: 100px;
-      background: white;
+    .accessory-item select:focus,
+    .accessory-item input:focus {
+      outline: none;
+      border-color: var(--primary-light);
     }
-    .accessory-item .note-input:focus { outline: none; border-color: var(--accent); }
+    .accessory-item input { flex: 1.5; min-width: 70px; }
 
-    .photo-upload-area {
+    /* PHOTOS */
+    .photo-upload {
       border: 2px dashed var(--gray-300);
       border-radius: var(--radius);
-      padding: 24px;
+      padding: 16px;
       text-align: center;
       cursor: pointer;
-      transition: var(--transition);
-      background: var(--gray-50);
+      transition: 0.2s;
+      background: var(--gray-100);
     }
-    .photo-upload-area:hover {
-      border-color: var(--accent);
-      background: white;
-    }
-    .photo-upload-area .icon { font-size: 36px; display: block; margin-bottom: 4px; }
-    .photo-upload-area p { font-size: 14px; color: var(--gray-500); }
-    .photo-upload-area .sub { font-size: 12px; color: var(--gray-400); }
-    .photo-upload-area input[type="file"] { display: none; }
+    .photo-upload:hover { border-color: var(--primary-light); background: white; }
+    .photo-upload .icon { font-size: 28px; display: block; }
+    .photo-upload p { font-size: 13px; color: var(--gray-500); }
+    .photo-upload .sub { font-size: 11px; color: var(--gray-400); }
+    .photo-upload input[type="file"] { display: none; }
 
     .photos-preview {
       display: flex;
-      gap: 10px;
+      gap: 6px;
       flex-wrap: wrap;
-      margin-top: 12px;
+      margin-top: 8px;
     }
     .photos-preview .photo-item {
       position: relative;
-      width: 120px;
-      height: 80px;
-      border-radius: 8px;
+      width: 70px;
+      height: 55px;
+      border-radius: 4px;
       overflow: hidden;
       border: 2px solid var(--gray-200);
     }
-    .photos-preview .photo-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .photos-preview .photo-item .remove-photo {
+    .photos-preview .photo-item img { width: 100%; height: 100%; object-fit: cover; }
+    .photos-preview .photo-item .remove {
       position: absolute;
-      top: 4px;
-      right: 4px;
-      width: 22px;
-      height: 22px;
+      top: 2px;
+      right: 2px;
+      width: 16px;
+      height: 16px;
       background: rgba(0,0,0,0.6);
       color: white;
       border: none;
       border-radius: 50%;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: var(--transition);
     }
-    .photos-preview .photo-item .remove-photo:hover { background: rgba(177, 48, 48, 0.9); }
+    .photos-preview .photo-item .remove:hover { background: rgba(177, 48, 48, 0.9); }
 
-    .signatures-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
+    /* SIGNATURES */
+    .sign-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .sign-box {
-      background: var(--gray-50);
+      background: var(--gray-100);
       border-radius: var(--radius);
-      padding: 16px 18px 18px;
+      padding: 12px 14px 14px;
       border: 1px solid var(--gray-200);
-      transition: var(--transition);
     }
-    .sign-box:hover { border-color: var(--gray-300); }
     .sign-box .sign-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
-    .sign-box .sign-header .name {
-      font-weight: 700;
-      font-size: 14px;
-      color: var(--primary);
-    }
-    .sign-box .sign-header .badge-owner {
-      font-size: 11px;
-      background: #dbeafe;
-      color: #1a4068;
-      padding: 2px 12px;
+    .sign-box .sign-header .name { font-weight: 700; font-size: 13px; color: var(--primary); }
+    .sign-box .sign-header .badge {
+      font-size: 10px;
+      padding: 1px 10px;
       border-radius: 20px;
       font-weight: 600;
     }
-    .sign-box .sign-header .badge-renter {
-      font-size: 11px;
-      background: #d1fae5;
-      color: #0d7a3e;
-      padding: 2px 12px;
-      border-radius: 20px;
-      font-weight: 600;
-    }
-    .sign-box .mention {
-      font-size: 12px;
-      color: var(--gray-500);
-      font-style: italic;
-      margin-bottom: 8px;
-    }
+    .sign-box .sign-header .badge-owner { background: #dbeafe; color: #1a4068; }
+    .sign-box .sign-header .badge-renter { background: #d1fae5; color: #0d7a3e; }
+    .sign-box .mention { font-size: 11px; color: var(--gray-500); font-style: italic; margin-bottom: 4px; }
     .sign-box .signature-canvas {
       width: 100%;
-      height: 100px;
+      height: 70px;
       background: white;
-      border-radius: 8px;
+      border-radius: 6px;
       border: 1.5px solid var(--gray-200);
       cursor: crosshair;
       display: block;
       touch-action: none;
-      transition: var(--transition);
     }
     .sign-box .signature-canvas:hover { border-color: var(--gray-300); }
     .sign-box .sign-actions {
       display: flex;
-      gap: 8px;
-      margin-top: 8px;
+      gap: 6px;
+      margin-top: 4px;
       align-items: center;
     }
     .sign-box .sign-actions .btn-ghost {
       background: transparent;
       border: 1px solid var(--gray-200);
-      padding: 4px 14px;
+      padding: 2px 10px;
       border-radius: 20px;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--gray-500);
       cursor: pointer;
-      transition: var(--transition);
     }
-    .sign-box .sign-actions .btn-ghost:hover {
-      background: var(--gray-200);
-      color: var(--gray-700);
-    }
+    .sign-box .sign-actions .btn-ghost:hover { background: var(--gray-200); }
     .sign-box .sign-status {
       font-size: 12px;
       color: var(--gray-400);
@@ -430,71 +317,47 @@
     }
     .sign-box .sign-status.signed { color: var(--success); font-weight: 600; }
 
+    /* BOUTONS */
     .actions {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       flex-wrap: wrap;
-      margin-top: 24px;
-      padding-top: 24px;
+      margin-top: 18px;
+      padding-top: 18px;
       border-top: 2px solid var(--gray-200);
     }
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 12px 28px;
+      gap: 6px;
+      padding: 9px 20px;
       border: none;
-      border-radius: 10px;
-      font-size: 15px;
+      border-radius: 8px;
+      font-size: 13px;
       font-weight: 600;
       font-family: inherit;
       cursor: pointer;
-      transition: var(--transition);
+      transition: 0.2s;
       flex: 1 1 auto;
-      min-width: 180px;
+      min-width: 120px;
     }
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none !important;
-    }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
     .btn:hover:not(:disabled) { transform: translateY(-2px); }
 
-    .btn-success {
-      background: var(--success);
-      color: white;
-      box-shadow: 0 4px 12px rgba(13, 122, 62, 0.25);
-    }
-    .btn-success:hover:not(:disabled) {
-      background: #0b6b35;
-      box-shadow: 0 6px 20px rgba(13, 122, 62, 0.30);
-    }
+    .btn-success { background: var(--success); color: white; box-shadow: 0 4px 12px rgba(13, 122, 62, 0.25); }
+    .btn-success:hover:not(:disabled) { background: #0b6b35; }
 
-    .btn-secondary {
-      background: white;
-      color: var(--gray-700);
-      border: 1.5px solid var(--gray-200);
-    }
-    .btn-secondary:hover:not(:disabled) {
-      background: var(--gray-50);
-      border-color: var(--gray-300);
-    }
+    .btn-secondary { background: white; color: var(--gray-700); border: 1.5px solid var(--gray-200); }
+    .btn-secondary:hover:not(:disabled) { background: var(--gray-50); }
 
-    .btn-outline {
-      background: transparent;
-      color: var(--gray-600);
-      border: 1.5px solid var(--gray-300);
-    }
-    .btn-outline:hover:not(:disabled) {
-      background: var(--gray-50);
-      border-color: var(--gray-400);
-    }
+    .btn-outline { background: transparent; color: var(--gray-600); border: 1.5px solid var(--gray-300); }
+    .btn-outline:hover:not(:disabled) { background: var(--gray-50); }
 
     .spinner {
       display: inline-block;
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       border: 2.5px solid rgba(255,255,255,0.3);
       border-radius: 50%;
       border-top-color: #fff;
@@ -504,77 +367,62 @@
 
     .toast-container {
       position: fixed;
-      bottom: 24px;
+      bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      align-items: center;
-      pointer-events: none;
       width: 100%;
       max-width: 480px;
       padding: 0 16px;
     }
     .toast {
-      pointer-events: auto;
       background: var(--primary);
       color: white;
-      padding: 14px 24px;
-      border-radius: 12px;
+      padding: 10px 18px;
+      border-radius: 8px;
       font-weight: 500;
-      font-size: 14px;
+      font-size: 13px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.15);
       opacity: 0;
       transform: translateY(20px) scale(0.95);
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       width: 100%;
       text-align: center;
+      margin-bottom: 6px;
     }
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
+    .toast.show { opacity: 1; transform: translateY(0) scale(1); }
     .toast.success { background: var(--success); }
     .toast.error { background: var(--error); }
-    .toast.info { background: var(--primary); }
 
-    @media (max-width: 820px) {
+    @media (max-width: 768px) {
       .grid-2 { grid-template-columns: 1fr; }
       .grid-3 { grid-template-columns: 1fr 1fr; }
-      .accessories-grid { grid-template-columns: 1fr; }
-      .signatures-grid { grid-template-columns: 1fr; }
-      .document-header { padding: 24px 28px; }
-      .form-body { padding: 24px 28px 32px; }
-      .document-header h1 { font-size: 22px; }
+      .bike-grid { grid-template-columns: 1fr; }
+      .sign-grid { grid-template-columns: 1fr; }
+      .header { padding: 18px 20px; }
+      .header h1 { font-size: 19px; }
+      .form-body { padding: 18px 20px 20px; }
     }
 
     @media (max-width: 520px) {
-      body { padding: 12px; }
-      .document-header { padding: 20px; border-radius: var(--radius) var(--radius) 0 0; }
-      .document-header h1 { font-size: 19px; }
-      .document-header .meta-info { flex-direction: column; gap: 4px; }
-      .form-body { padding: 16px 18px 24px; border-radius: 0 0 var(--radius) var(--radius); }
       .grid-3 { grid-template-columns: 1fr; }
       .actions { flex-direction: column; }
-      .btn { width: 100%; justify-content: center; }
+      .btn { width: 100%; justify-content: center; min-width: unset; }
+      .bike-item { flex-direction: column; align-items: stretch; }
+      .bike-item .icon { min-width: unset; }
       .accessory-item { flex-direction: column; align-items: stretch; }
       .accessory-item .checkbox { min-width: unset; }
-      .bike-part-item .part-controls { flex-direction: column; }
-      .bike-part-item .part-controls select,
-      .bike-part-item .part-controls input { min-width: unset; }
+      .header h1 { font-size: 17px; }
     }
   </style>
 </head>
 <body>
 
 <div class="document-wrapper">
-  <header class="document-header">
-    <div class="badge">📋 Document officiel</div>
+  <header class="header">
     <h1>État des lieux <span>vélo</span></h1>
-    <p>Contrat de location entre particuliers — À compléter avant la remise du vélo</p>
-    <div class="meta-info">
+    <p>Contrat de location entre particuliers</p>
+    <div class="meta">
       <span>📅 <span id="currentDate"></span></span>
       <span>🔒 Document à valeur légale</span>
       <span>✍️ Signature électronique</span>
@@ -583,185 +431,153 @@
 
   <div class="form-body" id="contractContainer">
     <form id="etatForm" novalidate>
+
+      <!-- SECTION 1 : PARTIES -->
       <div class="section">
-        <div class="section-title"><span class="step">1</span>Parties prenantes</div>
+        <div class="section-title"><span class="step">1</span>Parties</div>
         <div class="grid-2">
           <div class="field">
             <label>Propriétaire <span class="required">*</span></label>
-            <input type="text" id="ownerName" name="ownerName" placeholder="Nom complet du propriétaire" required>
-            <input type="email" id="ownerEmail" name="ownerEmail" placeholder="Email du propriétaire" required style="margin-top:10px;">
+            <input type="text" id="ownerName" name="ownerName" placeholder="Nom complet" required>
+            <input type="email" id="ownerEmail" name="ownerEmail" placeholder="Email" required style="margin-top:6px;">
           </div>
           <div class="field">
             <label>Locataire <span class="required">*</span></label>
-            <input type="text" id="renterName" name="renterName" placeholder="Nom complet du locataire" required>
-            <input type="email" id="renterEmail" name="renterEmail" placeholder="Email du locataire" required style="margin-top:10px;">
+            <input type="text" id="renterName" name="renterName" placeholder="Nom complet" required>
+            <input type="email" id="renterEmail" name="renterEmail" placeholder="Email" required style="margin-top:6px;">
           </div>
         </div>
       </div>
 
+      <!-- SECTION 2 : LOCATION -->
       <div class="section">
-        <div class="section-title"><span class="step">2</span>Informations de location</div>
+        <div class="section-title"><span class="step">2</span>Location</div>
         <div class="grid-3">
-          <div class="field"><label>Date de début</label><input type="date" id="startDate" name="startDate"></div>
-          <div class="field"><label>Date de fin</label><input type="date" id="endDate" name="endDate"></div>
-          <div class="field"><label>Modèle de vélo</label><input type="text" id="bikeModel" name="bikeModel" placeholder="Marque / modèle"></div>
+          <div class="field"><label>Début</label><input type="date" id="startDate" name="startDate"></div>
+          <div class="field"><label>Fin</label><input type="date" id="endDate" name="endDate"></div>
+          <div class="field"><label>Modèle</label><input type="text" id="bikeModel" name="bikeModel" placeholder="Marque / modèle"></div>
         </div>
-        <div class="field full-width" style="margin-top:12px;">
+        <div class="field full" style="margin-top:8px;">
           <label>Numéro de série</label>
-          <input type="text" id="serialNumber" name="serialNumber" placeholder="Numéro de série du vélo (optionnel)">
+          <input type="text" id="serialNumber" name="serialNumber" placeholder="Numéro de série (optionnel)">
         </div>
       </div>
 
+      <!-- SECTION 3 : CONTRÔLE DU VÉLO -->
       <div class="section">
         <div class="section-title"><span class="step">3</span>Contrôle du vélo</div>
-        <div class="grid-3" id="bikePartsContainer">
-          <div class="bike-part-item">
-            <div class="part-header"><span class="icon">🚲</span> Cadre</div>
-            <div class="part-controls">
-              <select name="state_frame" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="rouille">Rouille</option><option value="fissure">Fissure</option><option value="cassé">Cassé</option></select>
-              <input type="text" name="note_frame" class="part-note" placeholder="Remarque">
-            </div>
+        <div class="bike-grid">
+          <div class="bike-item"><span class="icon">🚲 Cadre</span>
+            <select name="state_frame"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="rouille">Rouille</option><option value="fissure">Fissure</option><option value="cassé">Cassé</option></select>
+            <input type="text" name="note_frame" placeholder="Note">
           </div>
-          <div class="bike-part-item">
-            <div class="part-header"><span class="icon">🔄</span> Guidon</div>
-            <div class="part-controls">
-              <select name="state_handlebar" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="rouille">Rouille</option><option value="torsadé">Torsadé</option><option value="cassé">Cassé</option></select>
-              <input type="text" name="note_handlebar" class="part-note" placeholder="Remarque">
-            </div>
+          <div class="bike-item"><span class="icon">🔄 Guidon</span>
+            <select name="state_handlebar"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="rouille">Rouille</option><option value="torsadé">Torsadé</option></select>
+            <input type="text" name="note_handlebar" placeholder="Note">
           </div>
-          <div class="bike-part-item">
-            <div class="part-header"><span class="icon">🪑</span> Selle</div>
-            <div class="part-controls">
-              <select name="state_seat" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="déchiré">Déchiré</option><option value="usé">Usé</option><option value="cassé">Cassé</option><option value="manquant">Manquant</option></select>
-              <input type="text" name="note_seat" class="part-note" placeholder="Remarque">
-            </div>
+          <div class="bike-item"><span class="icon">🪑 Selle</span>
+            <select name="state_seat"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="déchiré">Déchiré</option><option value="usé">Usé</option><option value="cassé">Cassé</option><option value="manquant">Manquant</option></select>
+            <input type="text" name="note_seat" placeholder="Note">
           </div>
-          <div class="bike-part-item">
-            <div class="part-header"><span class="icon">🔧</span> Fourche</div>
-            <div class="part-controls">
-              <select name="state_fork" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="rouille">Rouille</option><option value="fissure">Fissure</option><option value="cassé">Cassé</option></select>
-              <input type="text" name="note_fork" class="part-note" placeholder="Remarque">
-            </div>
+          <div class="bike-item"><span class="icon">🔧 Fourche</span>
+            <select name="state_fork"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="rouille">Rouille</option><option value="fissure">Fissure</option></select>
+            <input type="text" name="note_fork" placeholder="Note">
           </div>
-          <div class="bike-part-item">
-            <div class="part-header"><span class="icon">⚫</span> Roue Avant</div>
-            <div class="part-controls">
-              <select name="state_wheel_front" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="voilé">Voilé</option><option value="cassé">Cassé</option><option value="manquant">Manquant</option></select>
-              <input type="text" name="note_wheel_front" class="part-note" placeholder="Remarque">
-            </div>
+          <div class="bike-item"><span class="icon">⚫ Roue Av</span>
+            <select name="state_wheel_front"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="voilé">Voilé</option><option value="cassé">Cassé</option></select>
+            <input type="text" name="note_wheel_front" placeholder="Note">
           </div>
-          <div class="bike-part-item">
-            <div class="part-header"><span class="icon">⚫</span> Roue Arrière</div>
-            <div class="part-controls">
-              <select name="state_wheel_rear" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="voilé">Voilé</option><option value="cassé">Cassé</option><option value="manquant">Manquant</option></select>
-              <input type="text" name="note_wheel_rear" class="part-note" placeholder="Remarque">
-            </div>
+          <div class="bike-item"><span class="icon">⚫ Roue Ar</span>
+            <select name="state_wheel_rear"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="voilé">Voilé</option><option value="cassé">Cassé</option></select>
+            <input type="text" name="note_wheel_rear" placeholder="Note">
           </div>
-          <div class="bike-part-item">
-            <div class="part-header"><span class="icon">⭕</span> Pneu Avant</div>
-            <div class="part-controls">
-              <select name="state_tire_front" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="crevé">Crevé</option><option value="fissuré">Fissuré</option><option value="manquant">Manquant</option></select>
-              <input type="text" name="note_tire_front" class="part-note" placeholder="Remarque">
-            </div>
+          <div class="bike-item"><span class="icon">⭕ Pneu Av</span>
+            <select name="state_tire_front"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="crevé">Crevé</option><option value="fissuré">Fissuré</option></select>
+            <input type="text" name="note_tire_front" placeholder="Note">
           </div>
-          <div class="bike-part-item">
-            <div class="part-header"><span class="icon">⭕</span> Pneu Arrière</div>
-            <div class="part-controls">
-              <select name="state_tire_rear" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="crevé">Crevé</option><option value="fissuré">Fissuré</option><option value="manquant">Manquant</option></select>
-              <input type="text" name="note_tire_rear" class="part-note" placeholder="Remarque">
-            </div>
+          <div class="bike-item"><span class="icon">⭕ Pneu Ar</span>
+            <select name="state_tire_rear"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="crevé">Crevé</option><option value="fissuré">Fissuré</option></select>
+            <input type="text" name="note_tire_rear" placeholder="Note">
           </div>
-          <div class="bike-part-item">
-            <div class="part-header"><span class="icon">⛔</span> Freins</div>
-            <div class="part-controls">
-              <select name="state_brakes" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="à_serrer">À serrer</option><option value="à_changer">À changer</option><option value="cassé">Cassé</option><option value="manquant">Manquant</option></select>
-              <input type="text" name="note_brakes" class="part-note" placeholder="Remarque">
-            </div>
+          <div class="bike-item"><span class="icon">⛔ Freins</span>
+            <select name="state_brakes"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="à_serrer">À serrer</option><option value="à_changer">À changer</option><option value="cassé">Cassé</option></select>
+            <input type="text" name="note_brakes" placeholder="Note">
           </div>
-          <div class="bike-part-item">
-            <div class="part-header"><span class="icon">⚙️</span> Transmission</div>
-            <div class="part-controls">
-              <select name="state_transmission" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="bruyant">Bruyant</option><option value="à_régler">À régler</option><option value="cassé">Cassé</option><option value="manquant">Manquant</option></select>
-              <input type="text" name="note_transmission" class="part-note" placeholder="Remarque">
-            </div>
+          <div class="bike-item"><span class="icon">⚙️ Transm.</span>
+            <select name="state_transmission"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="bruyant">Bruyant</option><option value="à_régler">À régler</option><option value="cassé">Cassé</option></select>
+            <input type="text" name="note_transmission" placeholder="Note">
           </div>
-          <div class="bike-part-item">
-            <div class="part-header"><span class="icon">🔗</span> Chaîne</div>
-            <div class="part-controls">
-              <select name="state_chain" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="rouillé">Rouillé</option><option value="détendue">Détendue</option><option value="à_changer">À changer</option><option value="cassée">Cassée</option><option value="manquante">Manquante</option></select>
-              <input type="text" name="note_chain" class="part-note" placeholder="Remarque">
-            </div>
+          <div class="bike-item"><span class="icon">🔗 Chaîne</span>
+            <select name="state_chain"><option value="">État</option><option value="bon">Bon</option><option value="rouillé">Rouillé</option><option value="détendue">Détendue</option><option value="à_changer">À changer</option><option value="cassée">Cassée</option></select>
+            <input type="text" name="note_chain" placeholder="Note">
           </div>
-          <div class="bike-part-item">
-            <div class="part-header"><span class="icon">🦶</span> Pédales</div>
-            <div class="part-controls">
-              <select name="state_pedals" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="rayé">Rayé</option><option value="cassé">Cassé</option><option value="manquant">Manquant</option></select>
-              <input type="text" name="note_pedals" class="part-note" placeholder="Remarque">
-            </div>
+          <div class="bike-item"><span class="icon">🦶 Pédales</span>
+            <select name="state_pedals"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="rayé">Rayé</option><option value="cassé">Cassé</option></select>
+            <input type="text" name="note_pedals" placeholder="Note">
           </div>
+        </div>
+        <div class="field full" style="margin-top:10px;">
+          <label>Observations générales</label>
+          <textarea id="generalNotes" name="generalNotes" placeholder="État général, kilométrage, anomalies..."></textarea>
         </div>
       </div>
 
+      <!-- SECTION 4 : ACCESSOIRES -->
       <div class="section">
-        <div class="section-title"><span class="step">4</span>Accessoires et état</div>
-        <div class="accessories-grid">
+        <div class="section-title"><span class="step">4</span>Accessoires</div>
+        <div class="bike-grid">
           <div class="accessory-item">
             <label class="checkbox"><input type="checkbox" name="extras" value="helmet"><span>Casque</span></label>
-            <select name="state_helmet" class="state-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
-            <input type="text" name="note_helmet" class="note-input" placeholder="Remarque">
+            <select name="state_helmet"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <input type="text" name="note_helmet" placeholder="Note">
           </div>
           <div class="accessory-item">
             <label class="checkbox"><input type="checkbox" name="extras" value="lock"><span>Antivol</span></label>
-            <select name="state_lock" class="state-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
-            <input type="text" name="note_lock" class="note-input" placeholder="Remarque">
+            <select name="state_lock"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <input type="text" name="note_lock" placeholder="Note">
           </div>
           <div class="accessory-item">
             <label class="checkbox"><input type="checkbox" name="extras" value="lights"><span>Éclairage</span></label>
-            <select name="state_lights" class="state-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
-            <input type="text" name="note_lights" class="note-input" placeholder="Remarque">
+            <select name="state_lights"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <input type="text" name="note_lights" placeholder="Note">
           </div>
           <div class="accessory-item">
             <label class="checkbox"><input type="checkbox" name="extras" value="basket"><span>Panier</span></label>
-            <select name="state_basket" class="state-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
-            <input type="text" name="note_basket" class="note-input" placeholder="Remarque">
+            <select name="state_basket"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <input type="text" name="note_basket" placeholder="Note">
           </div>
           <div class="accessory-item">
             <label class="checkbox"><input type="checkbox" name="extras" value="repairkit"><span>Kit réparation</span></label>
-            <select name="state_repairkit" class="state-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
-            <input type="text" name="note_repairkit" class="note-input" placeholder="Remarque">
+            <select name="state_repairkit"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <input type="text" name="note_repairkit" placeholder="Note">
           </div>
           <div class="accessory-item">
             <label class="checkbox"><input type="checkbox" name="extras" value="other"><span>Autre</span></label>
-            <select name="state_other" class="state-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
-            <input type="text" name="note_other" class="note-input" placeholder="Accessoire / remarque">
+            <select name="state_other"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <input type="text" name="note_other" placeholder="Détail">
           </div>
-        </div>
-        <div class="field" style="margin-top:16px;">
-          <label>Observations générales</label>
-          <textarea id="generalNotes" name="generalNotes" placeholder="État général du vélo, kilométrage, anomalies, etc."></textarea>
         </div>
       </div>
 
+      <!-- SECTION 5 : PHOTOS -->
       <div class="section">
-        <div class="section-title"><span class="step">5</span>Photos (optionnel)</div>
-        <div class="photo-upload-area" id="photoDropZone">
+        <div class="section-title"><span class="step">5</span>Photos</div>
+        <div class="photo-upload" id="photoDropZone">
           <span class="icon">📸</span>
-          <p><strong>Cliquez ou glissez-déposez des photos</strong></p>
-          <p class="sub">Format JPG, PNG — 6 photos maximum</p>
-          <input id="photosInput" name="photos" type="file" accept="image/*" multiple>
+          <p><strong>Cliquez ou glissez-déposez</strong></p>
+          <p class="sub">JPG, PNG — 6 max</p>
+          <input id="photosInput" type="file" accept="image/*" multiple>
         </div>
         <div id="photosPreview" class="photos-preview"></div>
       </div>
 
+      <!-- SECTION 6 : SIGNATURES -->
       <div class="section">
-        <div class="section-title">
-          <span class="step">6</span>Signatures électroniques
-          <span style="font-weight:400;margin-left:8px;font-size:13px;color:var(--gray-400);">— obligatoires</span>
-        </div>
-        <div class="signatures-grid">
+        <div class="section-title"><span class="step">6</span>Signatures <span style="font-weight:400;font-size:12px;color:var(--gray-500);">— obligatoires</span></div>
+        <div class="sign-grid">
           <div class="sign-box">
-            <div class="sign-header"><span class="name">🔵 Propriétaire</span><span class="badge-owner">Bailleur</span></div>
-            <div class="mention">« Lu et approuvé, bon pour accord »</div>
+            <div class="sign-header"><span class="name">🔵 Propriétaire</span><span class="badge badge-owner">Bailleur</span></div>
+            <div class="mention">« Lu et approuvé »</div>
             <canvas class="signature-canvas" id="signature-owner"></canvas>
             <div class="sign-actions">
               <button type="button" class="btn-ghost" onclick="clearSignature('owner')">🗑️ Effacer</button>
@@ -770,8 +586,8 @@
             <input type="hidden" name="signatureOwner" id="signatureOwner">
           </div>
           <div class="sign-box">
-            <div class="sign-header"><span class="name">🟢 Locataire</span><span class="badge-renter">Preneur</span></div>
-            <div class="mention">« Lu et approuvé, bon pour accord »</div>
+            <div class="sign-header"><span class="name">🟢 Locataire</span><span class="badge badge-renter">Preneur</span></div>
+            <div class="mention">« Lu et approuvé »</div>
             <canvas class="signature-canvas" id="signature-renter"></canvas>
             <div class="sign-actions">
               <button type="button" class="btn-ghost" onclick="clearSignature('renter')">🗑️ Effacer</button>
@@ -782,18 +598,23 @@
         </div>
       </div>
 
+      <!-- BOUTONS -->
       <div class="actions">
-        <button type="button" class="btn btn-success" id="generateSendBtn">✉️ Signer et envoyer aux 2 parties</button>
+        <button type="button" class="btn btn-success" id="generateSendBtn">✉️ Signer et envoyer</button>
         <button type="button" class="btn btn-secondary" id="downloadEtatBtn">⬇️ Télécharger PDF</button>
-        <button type="button" class="btn btn-outline" id="saveEtatBtn">💾 Enregistrer localement</button>
+        <button type="button" class="btn btn-outline" id="saveEtatBtn">💾 Enregistrer</button>
         <button type="button" class="btn btn-outline" id="resetFormBtn">🔄 Réinitialiser</button>
       </div>
     </form>
   </div>
 </div>
 
+<!-- TOAST -->
 <div class="toast-container" id="toastContainer"></div>
 
+<!-- ============================================================ -->
+<!-- BIBLIOTHÈQUES                                                -->
+<!-- ============================================================ -->
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -802,6 +623,9 @@
 <script>
   'use strict';
 
+  // ==========================================================
+  // CONFIGURATION EMAILJS
+  // ==========================================================
   const EMAILJS_CONFIG = {
     publicKey: 'zz4KdlO2Xyw0Y5Gej',
     serviceID: 'service_g1ip1lt',
@@ -810,12 +634,16 @@
 
   emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
 
-  // Date actuelle
+  // ==========================================================
+  // DATE ACTUELLE
+  // ==========================================================
   document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR', {
     day: 'numeric', month: 'long', year: 'numeric'
   });
 
-  // Toast
+  // ==========================================================
+  // TOAST
+  // ==========================================================
   function showToast(message, type = 'info') {
     const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
@@ -829,12 +657,14 @@
     }, 4500);
   }
 
-  // Photos
+  // ==========================================================
+  // PHOTOS
+  // ==========================================================
   const photosInput = document.getElementById('photosInput');
   const photosPreview = document.getElementById('photosPreview');
   let photosDataUrls = [];
 
-  function compressImage(file, maxWidth = 800, maxHeight = 600, quality = 0.7) {
+  function compressImage(file, maxWidth = 600, maxHeight = 450, quality = 0.7) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -869,11 +699,11 @@
       div.className = 'photo-item';
       div.innerHTML = `
         <img src="${dataUrl}" alt="Photo ${index + 1}">
-        <button class="remove-photo" data-index="${index}">✕</button>
+        <button class="remove" data-index="${index}">✕</button>
       `;
       photosPreview.appendChild(div);
     });
-    document.querySelectorAll('.photo-item .remove-photo').forEach(btn => {
+    document.querySelectorAll('.photo-item .remove').forEach(btn => {
       btn.addEventListener('click', function() {
         removePhoto(parseInt(this.dataset.index));
       });
@@ -883,7 +713,7 @@
   photosInput.addEventListener('change', async (e) => {
     const files = Array.from(e.target.files);
     if (photosDataUrls.length + files.length > 6) {
-      showToast('⚠️ Maximum 6 photos autorisées', 'error');
+      showToast('⚠️ Maximum 6 photos', 'error');
       return;
     }
     for (const file of files) {
@@ -900,20 +730,20 @@
   dropZone.addEventListener('click', () => photosInput.click());
   dropZone.addEventListener('dragover', (e) => {
     e.preventDefault();
-    dropZone.style.borderColor = 'var(--accent)';
+    dropZone.style.borderColor = 'var(--primary-light)';
     dropZone.style.background = 'white';
   });
   dropZone.addEventListener('dragleave', () => {
     dropZone.style.borderColor = 'var(--gray-300)';
-    dropZone.style.background = 'var(--gray-50)';
+    dropZone.style.background = 'var(--gray-100)';
   });
   dropZone.addEventListener('drop', async (e) => {
     e.preventDefault();
     dropZone.style.borderColor = 'var(--gray-300)';
-    dropZone.style.background = 'var(--gray-50)';
+    dropZone.style.background = 'var(--gray-100)';
     const files = Array.from(e.dataTransfer.files);
     if (photosDataUrls.length + files.length > 6) {
-      showToast('⚠️ Maximum 6 photos autorisées', 'error');
+      showToast('⚠️ Maximum 6 photos', 'error');
       return;
     }
     for (const file of files) {
@@ -925,7 +755,9 @@
     renderPhotos();
   });
 
-  // Signatures
+  // ==========================================================
+  // SIGNATURES
+  // ==========================================================
   const canvasOwner = document.getElementById('signature-owner');
   const canvasRenter = document.getElementById('signature-renter');
   const ownerStatus = document.getElementById('ownerStatus');
@@ -935,25 +767,15 @@
     const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     canvas.width = rect.width * dpr;
-    canvas.height = 100 * dpr;
-    canvas.style.height = '100px';
+    canvas.height = 70 * dpr;
+    canvas.style.height = '70px';
     canvas.style.width = '100%';
   }
   resizeCanvas(canvasOwner);
   resizeCanvas(canvasRenter);
 
-  const sigPadOwner = new SignaturePad(canvasOwner, { 
-    backgroundColor: 'white', 
-    penColor: '#0f2b4a', 
-    minWidth: 1.5, 
-    maxWidth: 3 
-  });
-  const sigPadRenter = new SignaturePad(canvasRenter, { 
-    backgroundColor: 'white', 
-    penColor: '#0f2b4a', 
-    minWidth: 1.5, 
-    maxWidth: 3 
-  });
+  const sigPadOwner = new SignaturePad(canvasOwner, { backgroundColor: 'white', penColor: '#0f2b4a', minWidth: 1.5, maxWidth: 3 });
+  const sigPadRenter = new SignaturePad(canvasRenter, { backgroundColor: 'white', penColor: '#0f2b4a', minWidth: 1.5, maxWidth: 3 });
 
   function updateSignatureStatus() {
     ownerStatus.textContent = sigPadOwner.isEmpty() ? 'Non signé' : '✅ Signé';
@@ -975,7 +797,9 @@
     resizeCanvas(canvasRenter);
   });
 
-  // Récupération des données
+  // ==========================================================
+  // RÉCUPÉRATION DES DONNÉES
+  // ==========================================================
   function getFormData() {
     const form = document.getElementById('etatForm');
     const data = Object.fromEntries(new FormData(form).entries());
@@ -987,18 +811,14 @@
   }
 
   function checkSignatures() {
-    if (sigPadOwner.isEmpty()) { 
-      showToast('❌ Le propriétaire doit signer', 'error'); 
-      return false; 
-    }
-    if (sigPadRenter.isEmpty()) { 
-      showToast('❌ Le locataire doit signer', 'error'); 
-      return false; 
-    }
+    if (sigPadOwner.isEmpty()) { showToast('❌ Le propriétaire doit signer', 'error'); return false; }
+    if (sigPadRenter.isEmpty()) { showToast('❌ Le locataire doit signer', 'error'); return false; }
     return true;
   }
 
-  // Génération du PDF
+  // ==========================================================
+  // GÉNÉRATION DU PDF
+  // ==========================================================
   async function generatePdf(containerEl, photos = []) {
     try {
       const { jsPDF } = window.jspdf;
@@ -1029,16 +849,16 @@
     }
   }
 
-  // Envoi via EmailJS avec upload GoFile.io
+  // ==========================================================
+  // ENVOI VIA EMAILJS AVEC UPLOAD GOFILE.IO
+  // ==========================================================
   async function sendWithEmailJS(data, pdfDataUrl) {
     try {
       showToast('📤 Upload du PDF...', 'info');
 
-      // Convertir le dataURL en Blob
       const pdfResponse = await fetch(pdfDataUrl);
       const pdfBlob = await pdfResponse.blob();
 
-      // Upload sur GoFile.io
       const formData = new FormData();
       formData.append('file', pdfBlob);
 
@@ -1054,7 +874,7 @@
       const uploadResult = await uploadResponse.json();
       const downloadUrl = uploadResult.data.downloadPage;
 
-      console.log('📎 Lien de téléchargement direct :', downloadUrl);
+      console.log('📎 Lien de téléchargement :', downloadUrl);
 
       // Construire le rapport des contrôles vélo
       const bikeParts = ['frame', 'handlebar', 'seat', 'fork', 'wheel_front', 'wheel_rear', 
@@ -1074,7 +894,6 @@
         }
       });
 
-      // Préparer les données du template
       const templateParams = {
         to_email: data.ownerEmail || '',
         cc_email: data.renterEmail || '',
@@ -1092,7 +911,6 @@
         lien_direct: downloadUrl
       };
 
-      // Envoyer l'email avec EmailJS
       showToast('📧 Envoi de l\'email...', 'info');
       const response = await emailjs.send(
         EMAILJS_CONFIG.serviceID,
@@ -1114,7 +932,9 @@
     }
   }
 
-  // Bouton "Signer et envoyer"
+  // ==========================================================
+  // BOUTONS
+  // ==========================================================
   document.getElementById('generateSendBtn').addEventListener('click', async function() {
     console.log('🖱️ Clic sur "Signer et envoyer"');
     if (!checkSignatures()) return;
@@ -1144,7 +964,6 @@
     }
   });
 
-  // Bouton "Télécharger PDF"
   document.getElementById('downloadEtatBtn').addEventListener('click', async function() {
     try {
       this.disabled = true;
@@ -1168,14 +987,12 @@
     }
   });
 
-  // Bouton "Enregistrer localement"
   document.getElementById('saveEtatBtn').addEventListener('click', function() {
     const data = getFormData();
     localStorage.setItem('expressVeloEtat', JSON.stringify(data));
     showToast('✅ État des lieux enregistré localement', 'success');
   });
 
-  // Bouton "Réinitialiser"
   document.getElementById('resetFormBtn').addEventListener('click', function() {
     if (confirm('Voulez-vous vraiment réinitialiser tout le formulaire ?')) {
       document.getElementById('etatForm').reset();
@@ -1188,7 +1005,9 @@
     }
   });
 
-  // Chargement des données sauvegardées
+  // ==========================================================
+  // CHARGEMENT DES DONNÉES SAUVEGARDÉES
+  // ==========================================================
   (function() {
     const saved = localStorage.getItem('expressVeloEtat');
     if (saved) {
@@ -1216,7 +1035,9 @@
     }
   })();
 
-  // Initialisation
+  // ==========================================================
+  // INITIALISATION
+  // ==========================================================
   updateSignatureStatus();
   console.log('🚀 Application prête avec EmailJS !');
 
