@@ -626,19 +626,20 @@
   // ==========================================================
   // CONFIGURATION EMAILJS - À MODIFIER AVEC VOS PROPRES CLÉS
   // ==========================================================
-  const EMAILJS_CONFIG = {
-    publicKey: 'zz4KdlO2Xyw0Y5Gej',  // Remplacez par votre clé publique EmailJS
-    serviceID: 'service_g1ip1lt',           // Remplacez par votre Service ID
-    templateID: 'template_sozwa7c'          // Remplacez par votre Template ID
+   const EMAILJS_CONFIG = {
+    publicKey: 'zz4KdlO2Xyw0Y5Gej',
+    serviceID: 'service_g1ip1lt',
+    templateID: 'template_sozwa7c'
   };
 
   // Initialisation EmailJS
   (function() {
-    if (EMAILJS_CONFIG.publicKey !== 'VOTRE_PUBLIC_KEY_EMAILJS') {
+    try {
       emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
-      console.log('✅ EmailJS initialisé');
-    } else {
-      console.warn('⚠️ EmailJS non configuré - Veuillez ajouter vos clés API');
+      console.log('✅ EmailJS initialisé avec succès');
+    } catch (error) {
+      console.error('❌ Erreur initialisation EmailJS:', error);
+      showToast('Erreur de configuration EmailJS', 'error');
     }
   })();
 
@@ -974,11 +975,6 @@
   // ENVOI PAR EMAIL AVEC EMAILJS
   // ==========================================================
   async function sendWithEmailJS(data, pdfDataUrl) {
-    // Vérifier si EmailJS est configuré
-    if (EMAILJS_CONFIG.publicKey === 'VOTRE_PUBLIC_KEY_EMAILJS') {
-      throw new Error('EmailJS non configuré. Veuillez configurer vos clés API.');
-    }
-    
     try {
       showToast('📤 Préparation de l\'envoi...', 'info');
       
@@ -1002,30 +998,24 @@
         }
       });
       
-      // Construire la liste des accessoires
-      const accessories = data.extras || [];
-      const accessoryList = accessories.length > 0 ? accessories.join(', ') : 'Aucun';
-      
-      // Préparer les paramètres pour EmailJS
       const templateParams = {
         to_email: data.ownerEmail,
-        to_name: data.ownerName,
         cc_email: data.renterEmail,
-        proprietaire: data.ownerName,
-        proprietaire_email: data.ownerEmail,
-        locataire: data.renterName,
-        locataire_email: data.renterEmail,
-        velo: data.bikeModel,
+        proprietaire: data.ownerName || 'Non spécifié',
+        proprietaire_email: data.ownerEmail || '',
+        locataire: data.renterName || 'Non spécifié',
+        locataire_email: data.renterEmail || '',
+        velo: data.bikeModel || 'Non spécifié',
         numero_serie: data.serialNumber || 'Non spécifié',
-        debut: data.startDate,
-        fin: data.endDate,
+        debut: data.startDate || '',
+        fin: data.endDate || '',
         observations: data.generalNotes || 'Aucune observation',
-        accessoires: accessoryList,
-        controle_velo: bikeReport,
+        accessoires: (data.extras && data.extras.length > 0) ? data.extras.join(', ') : 'Aucun',
+        controle_velo: bikeReport || 'Aucun contrôle effectué',
         date_signature: new Date().toLocaleDateString('fr-FR', {
           day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
         }),
-        pdf_base64: pdfDataUrl  // Envoyer le PDF en base64
+        message: 'État des lieux vélo ci-joint'
       };
       
       showToast('📧 Envoi des emails en cours...', 'info');
@@ -1045,19 +1035,7 @@
       
     } catch (error) {
       console.error('❌ Erreur EmailJS:', error);
-      let errorMessage = 'Erreur lors de l\'envoi de l\'email';
-      
-      if (error.message.includes('non configuré')) {
-        errorMessage = error.message;
-      } else if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
-        errorMessage = 'Erreur réseau. Vérifiez votre connexion internet.';
-      } else if (error.message.includes('401') || error.message.includes('403')) {
-        errorMessage = 'Erreur d\'authentification EmailJS. Vérifiez votre clé publique.';
-      } else if (error.message.includes('412')) {
-        errorMessage = 'Erreur EmailJS. Vérifiez votre Service ID et Template ID.';
-      }
-      
-      throw new Error(errorMessage);
+      throw new Error('Erreur lors de l\'envoi: ' + error.message);
     }
   }
 
