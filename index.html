@@ -6,6 +6,7 @@
   <title>État des lieux vélo</title>
 
   <style>
+<style>
     :root {
       --primary: #0f2b4a;
       --primary-light: #1a4068;
@@ -36,7 +37,7 @@
 
     .document-wrapper {
       width: 100%;
-      max-width: 800px;
+      max-width: 900px; /* Légèrement plus large */
     }
 
     /* HEADER */
@@ -66,47 +67,48 @@
       box-shadow: var(--shadow);
     }
 
-    .section { margin-bottom: 20px; }
+    .section { margin-bottom: 24px; } /* Plus d'espace entre les sections */
     .section:last-child { margin-bottom: 0; }
 
     .section-title {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 14px;
+      font-size: 15px; /* Légèrement plus grand */
       font-weight: 700;
       color: var(--primary);
-      padding-bottom: 6px;
+      padding-bottom: 8px;
       border-bottom: 2px solid var(--gray-200);
-      margin-bottom: 12px;
+      margin-bottom: 16px; /* Plus d'espace */
     }
     .section-title .step {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 24px;
-      height: 24px;
+      width: 26px; /* Plus grand */
+      height: 26px;
       background: var(--primary);
       color: white;
       border-radius: 50%;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
       flex-shrink: 0;
     }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px 16px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; } /* Plus d'espace */
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px 20px; }
     .full { grid-column: 1 / -1; }
 
     .field {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 4px; /* Plus d'espace */
     }
     .field label {
-      font-size: 12px;
+      font-size: 13px; /* Plus grand */
       font-weight: 600;
       color: var(--gray-600);
+      margin-bottom: 2px;
     }
     .field label .required { color: var(--error); margin-left: 2px; }
 
@@ -114,14 +116,15 @@
     .field select,
     .field textarea {
       width: 100%;
-      padding: 7px 10px;
+      padding: 10px 12px; /* Plus de padding pour mieux voir le texte */
       border: 1.5px solid var(--gray-200);
       border-radius: 6px;
-      font-size: 13px;
+      font-size: 14px; /* Police plus grande */
       font-family: inherit;
       color: var(--gray-700);
       background: white;
       transition: 0.2s;
+      line-height: 1.5; /* Meilleure hauteur de ligne */
     }
     .field input:focus,
     .field select:focus,
@@ -130,112 +133,129 @@
       border-color: var(--primary-light);
       box-shadow: 0 0 0 3px rgba(26, 64, 104, 0.10);
     }
-    .field textarea { min-height: 50px; resize: vertical; }
+    .field textarea { 
+      min-height: 70px; /* Plus haut */
+      resize: vertical; 
+    }
 
-    /* Bike grid and items remain the same */
+    /* Style pour les placeholders */
+    .field input::placeholder,
+    .field textarea::placeholder {
+      color: #999;
+      font-size: 13px;
+    }
+
+    /* CONTRÔLE VÉLO - AGRANDI */
     .bike-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 10px; /* Plus d'espace */
     }
     .bike-item {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
+      gap: 8px;
+      padding: 10px 14px; /* Plus de padding */
       background: var(--gray-100);
-      border-radius: 6px;
+      border-radius: 8px;
       border: 1px solid var(--gray-200);
       flex-wrap: wrap;
     }
-    .bike-item .icon { font-size: 14px; font-weight: 600; color: var(--primary); min-width: 50px; }
+    .bike-item .icon { 
+      font-size: 15px; 
+      font-weight: 600; 
+      color: var(--primary); 
+      min-width: 60px; /* Plus large */
+    }
     .bike-item select,
     .bike-item input {
-      padding: 4px 6px;
+      padding: 7px 10px; /* Plus de padding */
       border: 1px solid var(--gray-200);
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 13px; /* Plus grand */
       background: white;
       flex: 1;
-      min-width: 60px;
+      min-width: 80px; /* Plus large */
+      height: 36px; /* Hauteur fixe pour mieux voir */
     }
     .bike-item select:focus,
     .bike-item input:focus {
       outline: none;
       border-color: var(--primary-light);
     }
-    .bike-item input { flex: 1.5; min-width: 70px; }
+    .bike-item input { flex: 1.5; min-width: 100px; }
 
-    /* Accessories */
+    /* ACCESSOIRES - AGRANDI */
     .accessory-item {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
+      gap: 10px;
+      padding: 10px 14px; /* Plus de padding */
       background: var(--gray-100);
-      border-radius: 6px;
+      border-radius: 8px;
       border: 1px solid var(--gray-200);
       flex-wrap: wrap;
     }
     .accessory-item .checkbox {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 14px; /* Plus grand */
       font-weight: 500;
-      min-width: 70px;
+      min-width: 80px; /* Plus large */
     }
     .accessory-item .checkbox input[type="checkbox"] {
-      width: 15px;
-      height: 15px;
+      width: 18px; /* Plus grand */
+      height: 18px;
       accent-color: var(--primary);
       cursor: pointer;
       margin: 0;
     }
     .accessory-item select,
     .accessory-item input {
-      padding: 4px 6px;
+      padding: 7px 10px; /* Plus de padding */
       border: 1px solid var(--gray-200);
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 13px;
       background: white;
       flex: 1;
-      min-width: 60px;
+      min-width: 80px;
+      height: 36px; /* Hauteur fixe */
     }
     .accessory-item select:focus,
     .accessory-item input:focus {
       outline: none;
       border-color: var(--primary-light);
     }
-    .accessory-item input { flex: 1.5; min-width: 70px; }
+    .accessory-item input { flex: 1.5; min-width: 100px; }
 
-    /* Photos */
+    /* PHOTOS */
     .photo-upload {
       border: 2px dashed var(--gray-300);
       border-radius: var(--radius);
-      padding: 16px;
+      padding: 20px; /* Plus d'espace */
       text-align: center;
       cursor: pointer;
       transition: 0.2s;
       background: var(--gray-100);
     }
     .photo-upload:hover { border-color: var(--primary-light); background: white; }
-    .photo-upload .icon { font-size: 28px; display: block; }
-    .photo-upload p { font-size: 13px; color: var(--gray-500); }
-    .photo-upload .sub { font-size: 11px; color: var(--gray-400); }
+    .photo-upload .icon { font-size: 32px; display: block; } /* Plus grand */
+    .photo-upload p { font-size: 14px; color: var(--gray-500); } /* Plus grand */
+    .photo-upload .sub { font-size: 12px; color: var(--gray-400); }
     .photo-upload input[type="file"] { display: none; }
 
     .photos-preview {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       flex-wrap: wrap;
-      margin-top: 8px;
+      margin-top: 10px;
     }
     .photos-preview .photo-item {
       position: relative;
-      width: 70px;
-      height: 55px;
+      width: 80px; /* Plus grand */
+      height: 65px;
       border-radius: 4px;
       overflow: hidden;
       border: 2px solid var(--gray-200);
@@ -245,47 +265,56 @@
       position: absolute;
       top: 2px;
       right: 2px;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       background: rgba(0,0,0,0.6);
       color: white;
       border: none;
       border-radius: 50%;
       cursor: pointer;
-      font-size: 10px;
+      font-size: 11px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .photos-preview .photo-item .remove:hover { background: rgba(177, 48, 48, 0.9); }
 
-    /* Signatures */
-    .sign-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    /* SIGNATURES */
+    .sign-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; } /* Plus d'espace */
     .sign-box {
       background: var(--gray-100);
       border-radius: var(--radius);
-      padding: 12px 14px 14px;
+      padding: 16px 18px 18px; /* Plus de padding */
       border: 1px solid var(--gray-200);
     }
     .sign-box .sign-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
-    .sign-box .sign-header .name { font-weight: 700; font-size: 13px; color: var(--primary); }
+    .sign-box .sign-header .name { 
+      font-weight: 700; 
+      font-size: 14px; /* Plus grand */
+      color: var(--primary); 
+    }
     .sign-box .sign-header .badge {
-      font-size: 10px;
-      padding: 1px 10px;
+      font-size: 11px;
+      padding: 2px 12px;
       border-radius: 20px;
       font-weight: 600;
     }
     .sign-box .sign-header .badge-owner { background: #dbeafe; color: #1a4068; }
     .sign-box .sign-header .badge-renter { background: #d1fae5; color: #0d7a3e; }
-    .sign-box .mention { font-size: 11px; color: var(--gray-500); font-style: italic; margin-bottom: 4px; }
+    .sign-box .mention { 
+      font-size: 12px; 
+      color: var(--gray-500); 
+      font-style: italic; 
+      margin-bottom: 6px; 
+    }
     .sign-box .signature-canvas {
       width: 100%;
-      height: 70px;
+      height: 90px; /* Plus haut */
       background: white;
       border-radius: 6px;
       border: 1.5px solid var(--gray-200);
@@ -296,51 +325,55 @@
     .sign-box .signature-canvas:hover { border-color: var(--gray-300); }
     .sign-box .sign-actions {
       display: flex;
-      gap: 6px;
-      margin-top: 4px;
+      gap: 8px;
+      margin-top: 6px;
       align-items: center;
     }
     .sign-box .sign-actions .btn-ghost {
       background: transparent;
       border: 1px solid var(--gray-200);
-      padding: 2px 10px;
+      padding: 4px 12px; /* Plus grand */
       border-radius: 20px;
-      font-size: 11px;
+      font-size: 12px;
       color: var(--gray-500);
       cursor: pointer;
+      transition: 0.2s;
     }
-    .sign-box .sign-actions .btn-ghost:hover { background: var(--gray-200); }
+    .sign-box .sign-actions .btn-ghost:hover { 
+      background: var(--gray-200); 
+      color: var(--gray-700);
+    }
     .sign-box .sign-status {
-      font-size: 12px;
+      font-size: 13px; /* Plus grand */
       color: var(--gray-400);
       margin-left: auto;
     }
     .sign-box .sign-status.signed { color: var(--success); font-weight: 600; }
 
-    /* Buttons */
+    /* BOUTONS */
     .actions {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
-      margin-top: 18px;
-      padding-top: 18px;
+      margin-top: 24px; /* Plus d'espace */
+      padding-top: 20px;
       border-top: 2px solid var(--gray-200);
     }
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      padding: 9px 20px;
+      gap: 8px;
+      padding: 12px 24px; /* Plus grand */
       border: none;
       border-radius: 8px;
-      font-size: 13px;
+      font-size: 14px; /* Plus grand */
       font-weight: 600;
       font-family: inherit;
       cursor: pointer;
       transition: 0.2s;
       flex: 1 1 auto;
-      min-width: 120px;
+      min-width: 130px;
     }
     .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
     .btn:hover:not(:disabled) { transform: translateY(-2px); }
@@ -356,8 +389,8 @@
 
     .spinner {
       display: inline-block;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border: 2.5px solid rgba(255,255,255,0.3);
       border-radius: 50%;
       border-top-color: #fff;
@@ -378,10 +411,10 @@
     .toast {
       background: var(--primary);
       color: white;
-      padding: 10px 18px;
+      padding: 12px 20px; /* Plus grand */
       border-radius: 8px;
       font-weight: 500;
-      font-size: 13px;
+      font-size: 14px; /* Plus grand */
       box-shadow: 0 8px 32px rgba(0,0,0,0.15);
       opacity: 0;
       transform: translateY(20px) scale(0.95);
@@ -394,6 +427,23 @@
     .toast.success { background: var(--success); }
     .toast.error { background: var(--error); }
 
+    /* Style pour les champs email */
+    input[type="email"] {
+      font-size: 14px !important;
+      padding: 10px 12px !important;
+    }
+
+    /* Amélioration de la visibilité des select */
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5f74' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 16px;
+      padding-right: 32px !important;
+    }
+
     @media (max-width: 768px) {
       .grid-2 { grid-template-columns: 1fr; }
       .grid-3 { grid-template-columns: 1fr 1fr; }
@@ -402,18 +452,25 @@
       .header { padding: 18px 20px; }
       .header h1 { font-size: 19px; }
       .form-body { padding: 18px 20px 20px; }
+      .field input,
+      .field select,
+      .field textarea {
+        font-size: 16px; /* Plus grand sur mobile pour éviter le zoom */
+        padding: 12px 14px;
+      }
     }
 
     @media (max-width: 520px) {
       .grid-3 { grid-template-columns: 1fr; }
       .actions { flex-direction: column; }
-      .btn { width: 100%; justify-content: center; min-width: unset; }
+      .btn { width: 100%; justify-content: center; min-width: unset; padding: 14px 20px; }
       .bike-item { flex-direction: column; align-items: stretch; }
       .bike-item .icon { min-width: unset; }
       .accessory-item { flex-direction: column; align-items: stretch; }
       .accessory-item .checkbox { min-width: unset; }
       .header h1 { font-size: 17px; }
     }
+  </style>
   </style>
 </head>
 <body>
