@@ -1186,42 +1186,103 @@
 
     drawSeparator();
 
-     <!-- SECTION 4 : ACCESSOIRES -->
-      <div class="section">
-        <div class="section-title"><span class="step">4</span>Accessoires</div>
-        <div class="bike-grid">
-          <div class="accessory-item">
-            <label class="checkbox"><input type="checkbox" name="extras" value="helmet"><span>Casque</span></label>
-            <select name="state_helmet"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
-            <input type="text" name="note_helmet" placeholder="Note">
-          </div>
-          <div class="accessory-item">
-            <label class="checkbox"><input type="checkbox" name="extras" value="lock"><span>Antivol</span></label>
-            <select name="state_lock"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
-            <input type="text" name="note_lock" placeholder="Note">
-          </div>
-          <div class="accessory-item">
-            <label class="checkbox"><input type="checkbox" name="extras" value="lights"><span>Éclairage</span></label>
-            <select name="state_lights"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
-            <input type="text" name="note_lights" placeholder="Note">
-          </div>
-          <div class="accessory-item">
-            <label class="checkbox"><input type="checkbox" name="extras" value="basket"><span>Panier</span></label>
-            <select name="state_basket"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
-            <input type="text" name="note_basket" placeholder="Note">
-          </div>
-          <div class="accessory-item">
-            <label class="checkbox"><input type="checkbox" name="extras" value="repairkit"><span>Kit réparation</span></label>
-            <select name="state_repairkit"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
-            <input type="text" name="note_repairkit" placeholder="Note">
-          </div>
-          <div class="accessory-item">
-            <label class="checkbox"><input type="checkbox" name="extras" value="other"><span>Autre</span></label>
-            <select name="state_other"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
-            <input type="text" name="note_other" placeholder="Détail">
-          </div>
-        </div>
-      </div>
+    <!-- SECTION 4 : ACCESSOIRES -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-number">4</span>
+    <span class="section-title">Accessoires fournis</span>
+  </div>
+  
+  <div class="accessories-row">
+    <!-- Casque -->
+    <div class="accessory-card">
+      <label class="checkbox-label">
+        <input type="checkbox" name="extras" value="helmet">
+        <span>Casque</span>
+      </label>
+      <select name="state_helmet">
+        <option value="">État</option>
+        <option value="Bon">Bon</option>
+        <option value="Usé">Usé</option>
+        <option value="Endommagé">Endommagé</option>
+      </select>
+      <input type="text" name="note_helmet" placeholder="Note">
+    </div>
+
+    <!-- Antivol -->
+    <div class="accessory-card">
+      <label class="checkbox-label">
+        <input type="checkbox" name="extras" value="lock">
+        <span>Antivol</span>
+      </label>
+      <select name="state_lock">
+        <option value="">État</option>
+        <option value="Bon">Bon</option>
+        <option value="Usé">Usé</option>
+        <option value="Défaillant">Défaillant</option>
+      </select>
+      <input type="text" name="note_lock" placeholder="Note">
+    </div>
+
+    <!-- Éclairage -->
+    <div class="accessory-card">
+      <label class="checkbox-label">
+        <input type="checkbox" name="extras" value="lights">
+        <span>Éclairage</span>
+      </label>
+      <select name="state_lights">
+        <option value="">État</option>
+        <option value="Bon">Bon</option>
+        <option value="Usé">Usé</option>
+        <option value="Défaillant">Défaillant</option>
+      </select>
+      <input type="text" name="note_lights" placeholder="Note">
+    </div>
+
+    <!-- Panier -->
+    <div class="accessory-card">
+      <label class="checkbox-label">
+        <input type="checkbox" name="extras" value="basket">
+        <span>Panier</span>
+      </label>
+      <select name="state_basket">
+        <option value="">État</option>
+        <option value="Bon">Bon</option>
+        <option value="Usé">Usé</option>
+        <option value="Cassé">Cassé</option>
+      </select>
+      <input type="text" name="note_basket" placeholder="Note">
+    </div>
+
+    <!-- Kit réparation -->
+    <div class="accessory-card">
+      <label class="checkbox-label">
+        <input type="checkbox" name="extras" value="repairkit">
+        <span>Kit réparation</span>
+      </label>
+      <select name="state_repairkit">
+        <option value="">État</option>
+        <option value="Bon">Bon</option>
+        <option value="Incomplet">Incomplet</option>
+      </select>
+      <input type="text" name="note_repairkit" placeholder="Note">
+    </div>
+
+    <!-- Autre -->
+    <div class="accessory-card">
+      <label class="checkbox-label">
+        <input type="checkbox" name="extras" value="other">
+        <span>Autre</span>
+      </label>
+      <select name="state_other">
+        <option value="">État</option>
+        <option value="Bon">Bon</option>
+        <option value="Usé">Usé</option>
+      </select>
+      <input type="text" name="note_other" placeholder="Détail">
+    </div>
+  </div>
+</div>
     }
 
     // ---- 6. SIGNATURES ----
