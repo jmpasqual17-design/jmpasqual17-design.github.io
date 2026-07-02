@@ -1186,7 +1186,7 @@
 
     drawSeparator();
 
-  // ---- 4. ACCESSOIRES ----
+// ---- 4. ACCESSOIRES ----
 if (y > pageH - 40) { doc.addPage(); y = margin; }
 sectionTitle('4', 'ACCESSOIRES FOURNIS');
 
@@ -1201,15 +1201,14 @@ const accessories = [
 
 let hasAccessories = false;
 
-// En-tête du tableau des accessoires
+// Tableau compact
 doc.setFillColor(240, 240, 240);
 doc.rect(margin, y, contentW, 6, 'F');
 doc.setFont('helvetica', 'bold');
 doc.setFontSize(8);
 doc.setTextColor(26, 26, 46);
-doc.text('Accessoire', margin + 2, y + 4.5);
-doc.text('État', margin + 55, y + 4.5);
-doc.text('Observation', margin + 100, y + 4.5);
+doc.text('Accessoire', margin + 3, y + 4.5);
+doc.text('État / Observation', margin + 55, y + 4.5);
 y += 7;
 
 doc.setFont('helvetica', 'normal');
@@ -1221,24 +1220,29 @@ accessories.forEach((acc, index) => {
     hasAccessories = true;
     if (y > pageH - 20) { doc.addPage(); y = margin; }
     
-    // Alternance de couleurs
     if (index % 2 === 0) {
       doc.setFillColor(248, 248, 248);
       doc.rect(margin, y, contentW, 5.5, 'F');
     }
     
     const state = data['state_' + acc.key] || '-';
-    const note = data['note_' + acc.key] || '-';
+    const note = data['note_' + acc.key] || '';
     
-    // Limiter la longueur des notes pour éviter de dépasser
-    const maxNoteLength = 50;
-    const truncatedNote = note.length > maxNoteLength ? note.substring(0, maxNoteLength) + '...' : note;
+    // Combiner état et observation sur une seule ligne
+    let detail = state;
+    if (note.trim() !== '') {
+      detail += ' - ' + note;
+    }
+    
+    // Tronquer si trop long
+    if (detail.length > 55) {
+      detail = detail.substring(0, 55) + '...';
+    }
     
     doc.setFont('helvetica', 'bold');
-    doc.text(acc.label, margin + 2, y + 4);
+    doc.text(acc.label, margin + 3, y + 4);
     doc.setFont('helvetica', 'normal');
-    doc.text(state, margin + 55, y + 4);
-    doc.text(truncatedNote, margin + 100, y + 4);
+    doc.text(detail, margin + 55, y + 4);
     y += 5.5;
   }
 });
@@ -1246,31 +1250,13 @@ accessories.forEach((acc, index) => {
 if (!hasAccessories) {
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
-  doc.text('Aucun accessoire fourni', margin, y);
+  doc.setTextColor(100, 100, 100);
+  doc.text('Aucun accessoire fourni', margin + 3, y + 4);
   y += 5;
-} else {
-  // Ajouter les accessoires non cochés mais avec des notes
-  let anyUncheckedWithNotes = false;
-  accessories.forEach((acc, index) => {
-    if (!data.extras || !data.extras.includes(acc.key)) {
-      const note = data['note_' + acc.key] || '';
-      if (note.trim() !== '') {
-        anyUncheckedWithNotes = true;
-        if (y > pageH - 20) { doc.addPage(); y = margin; }
-        
-        doc.setFont('helvetica', 'italic');
-        doc.setFontSize(7);
-        doc.setTextColor(150, 150, 150);
-        doc.text(acc.label + ' (non fourni) - Note : ' + note.substring(0, 60), margin + 2, y + 4);
-        y += 5;
-      }
-    }
-  });
 }
 
 y += 5;
 drawSeparator();
-
     // ---- 5. PHOTOS ----
     if (data.photos && data.photos.length > 0) {
       if (y > pageH - 50) { doc.addPage(); y = margin; }
