@@ -1186,45 +1186,90 @@
 
     drawSeparator();
 
-    // ---- 4. ACCESSOIRES ----
-    if (y > pageH - 40) { doc.addPage(); y = margin; }
-    sectionTitle('4', 'ACCESSOIRES FOURNIS');
+  // ---- 4. ACCESSOIRES ----
+if (y > pageH - 40) { doc.addPage(); y = margin; }
+sectionTitle('4', 'ACCESSOIRES FOURNIS');
 
-    const accessories = [
-      { key: 'helmet', label: 'Casque' },
-      { key: 'lock', label: 'Antivol' },
-      { key: 'lights', label: 'Éclairage' },
-      { key: 'basket', label: 'Panier' },
-      { key: 'repairkit', label: 'Kit réparation' },
-      { key: 'other', label: 'Autre' }
-    ];
+const accessories = [
+  { key: 'helmet', label: 'Casque' },
+  { key: 'lock', label: 'Antivol' },
+  { key: 'lights', label: 'Éclairage' },
+  { key: 'basket', label: 'Panier' },
+  { key: 'repairkit', label: 'Kit réparation' },
+  { key: 'other', label: 'Autre' }
+];
 
-    let hasAccessories = false;
-    accessories.forEach(acc => {
-      if (data.extras && data.extras.includes(acc.key)) {
-        hasAccessories = true;
+let hasAccessories = false;
+
+// En-tête du tableau des accessoires
+doc.setFillColor(240, 240, 240);
+doc.rect(margin, y, contentW, 6, 'F');
+doc.setFont('helvetica', 'bold');
+doc.setFontSize(8);
+doc.setTextColor(26, 26, 46);
+doc.text('Accessoire', margin + 2, y + 4.5);
+doc.text('État', margin + 55, y + 4.5);
+doc.text('Observation', margin + 100, y + 4.5);
+y += 7;
+
+doc.setFont('helvetica', 'normal');
+doc.setFontSize(8);
+doc.setTextColor(50, 50, 50);
+
+accessories.forEach((acc, index) => {
+  if (data.extras && data.extras.includes(acc.key)) {
+    hasAccessories = true;
+    if (y > pageH - 20) { doc.addPage(); y = margin; }
+    
+    // Alternance de couleurs
+    if (index % 2 === 0) {
+      doc.setFillColor(248, 248, 248);
+      doc.rect(margin, y, contentW, 5.5, 'F');
+    }
+    
+    const state = data['state_' + acc.key] || '-';
+    const note = data['note_' + acc.key] || '-';
+    
+    // Limiter la longueur des notes pour éviter de dépasser
+    const maxNoteLength = 50;
+    const truncatedNote = note.length > maxNoteLength ? note.substring(0, maxNoteLength) + '...' : note;
+    
+    doc.setFont('helvetica', 'bold');
+    doc.text(acc.label, margin + 2, y + 4);
+    doc.setFont('helvetica', 'normal');
+    doc.text(state, margin + 55, y + 4);
+    doc.text(truncatedNote, margin + 100, y + 4);
+    y += 5.5;
+  }
+});
+
+if (!hasAccessories) {
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.text('Aucun accessoire fourni', margin, y);
+  y += 5;
+} else {
+  // Ajouter les accessoires non cochés mais avec des notes
+  let anyUncheckedWithNotes = false;
+  accessories.forEach((acc, index) => {
+    if (!data.extras || !data.extras.includes(acc.key)) {
+      const note = data['note_' + acc.key] || '';
+      if (note.trim() !== '') {
+        anyUncheckedWithNotes = true;
         if (y > pageH - 20) { doc.addPage(); y = margin; }
-        const state = data['state_' + acc.key] || '-';
-        const note = data['note_' + acc.key] || '-';
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(9);
-        doc.text(acc.label + ' :', margin, y);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8);
-        doc.text('État : ' + state + '  |  Note : ' + note, margin + 30, y);
+        
+        doc.setFont('helvetica', 'italic');
+        doc.setFontSize(7);
+        doc.setTextColor(150, 150, 150);
+        doc.text(acc.label + ' (non fourni) - Note : ' + note.substring(0, 60), margin + 2, y + 4);
         y += 5;
       }
-    });
-
-    if (!hasAccessories) {
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(9);
-      doc.text('Aucun accessoire fourni', margin, y);
-      y += 5;
     }
+  });
+}
 
-    y += 5;
-    drawSeparator();
+y += 5;
+drawSeparator();
 
     // ---- 5. PHOTOS ----
     if (data.photos && data.photos.length > 0) {
