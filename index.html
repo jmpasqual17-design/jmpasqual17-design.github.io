@@ -1291,6 +1291,9 @@
 <script>
   'use strict';
 
+<script>
+  'use strict';
+
   // ==========================================================
   // CONFIGURATION EMAILJS
   // ==========================================================
@@ -1304,9 +1307,9 @@
   (function() {
     try {
       emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
-      console.log('EmailJS initialisé');
+      console.log('✅ EmailJS initialisé avec succès');
     } catch (error) {
-      console.error('Erreur EmailJS:', error);
+      console.error('❌ Erreur initialisation EmailJS:', error);
     }
   })();
 
@@ -1318,7 +1321,7 @@
   });
 
   // ==========================================================
-  // TOAST
+  // TOAST NOTIFICATIONS
   // ==========================================================
   function showToast(message, type = 'info') {
     const container = document.getElementById('toastContainer');
@@ -1334,7 +1337,7 @@
   }
 
   // ==========================================================
-  // PHOTOS
+  // GESTION DES PHOTOS
   // ==========================================================
   const photosInput = document.getElementById('photosInput');
   const photosPreview = document.getElementById('photosPreview');
@@ -1375,11 +1378,11 @@
       div.className = 'photo-item';
       div.innerHTML = `
         <img src="${dataUrl}" alt="Photo ${index + 1}">
-        <button class="remove-photo" data-index="${index}">×</button>
+        <button class="remove" data-index="${index}">✕</button>
       `;
       photosPreview.appendChild(div);
     });
-    document.querySelectorAll('.photo-item .remove-photo').forEach(btn => {
+    document.querySelectorAll('.photo-item .remove').forEach(btn => {
       btn.addEventListener('click', function(e) {
         e.stopPropagation();
         removePhoto(parseInt(this.dataset.index));
@@ -1390,7 +1393,7 @@
   photosInput.addEventListener('change', async (e) => {
     const files = Array.from(e.target.files);
     if (photosDataUrls.length + files.length > 6) {
-      showToast('Maximum 6 photos autorisées', 'error');
+      showToast('⚠️ Maximum 6 photos autorisées', 'error');
       return;
     }
     for (const file of files) {
@@ -1409,20 +1412,20 @@
   dropZone.addEventListener('click', () => photosInput.click());
   dropZone.addEventListener('dragover', (e) => {
     e.preventDefault();
-    dropZone.style.borderColor = '#0f3460';
-    dropZone.style.background = '#f8f9fa';
+    dropZone.style.borderColor = 'var(--primary-light)';
+    dropZone.style.background = 'white';
   });
   dropZone.addEventListener('dragleave', () => {
-    dropZone.style.borderColor = '#dee2e6';
-    dropZone.style.background = '#f8f9fa';
+    dropZone.style.borderColor = 'var(--gray-300)';
+    dropZone.style.background = 'var(--gray-100)';
   });
   dropZone.addEventListener('drop', async (e) => {
     e.preventDefault();
-    dropZone.style.borderColor = '#dee2e6';
-    dropZone.style.background = '#f8f9fa';
+    dropZone.style.borderColor = 'var(--gray-300)';
+    dropZone.style.background = 'var(--gray-100)';
     const files = Array.from(e.dataTransfer.files);
     if (photosDataUrls.length + files.length > 6) {
-      showToast('Maximum 6 photos autorisées', 'error');
+      showToast('⚠️ Maximum 6 photos autorisées', 'error');
       return;
     }
     for (const file of files) {
@@ -1437,7 +1440,7 @@
   });
 
   // ==========================================================
-  // SIGNATURES
+  // GESTION DES SIGNATURES
   // ==========================================================
   const canvasOwner = document.getElementById('signature-owner');
   const canvasRenter = document.getElementById('signature-renter');
@@ -1448,8 +1451,8 @@
     const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     canvas.width = rect.width * dpr;
-    canvas.height = 90 * dpr;
-    canvas.style.height = '90px';
+    canvas.height = 70 * dpr;
+    canvas.style.height = '70px';
     canvas.style.width = '100%';
     const ctx = canvas.getContext('2d');
     ctx.scale(dpr, dpr);
@@ -1460,14 +1463,14 @@
 
   const sigPadOwner = new SignaturePad(canvasOwner, { 
     backgroundColor: 'white', 
-    penColor: '#1a1a2e', 
+    penColor: '#0f2b4a', 
     minWidth: 1.5, 
     maxWidth: 3 
   });
   
   const sigPadRenter = new SignaturePad(canvasRenter, { 
     backgroundColor: 'white', 
-    penColor: '#1a1a2e', 
+    penColor: '#0f2b4a', 
     minWidth: 1.5, 
     maxWidth: 3 
   });
@@ -1476,10 +1479,10 @@
     const ownerSigned = !sigPadOwner.isEmpty();
     const renterSigned = !sigPadRenter.isEmpty();
     
-    ownerStatus.textContent = ownerSigned ? 'Signé' : 'En attente de signature';
+    ownerStatus.textContent = ownerSigned ? '✅ Signé' : 'Non signé';
     ownerStatus.className = 'sign-status' + (ownerSigned ? ' signed' : '');
     
-    renterStatus.textContent = renterSigned ? 'Signé' : 'En attente de signature';
+    renterStatus.textContent = renterSigned ? '✅ Signé' : 'Non signé';
     renterStatus.className = 'sign-status' + (renterSigned ? ' signed' : '');
     
     document.getElementById('signatureOwner').value = ownerSigned ? sigPadOwner.toDataURL() : '';
@@ -1502,8 +1505,10 @@
   window.addEventListener('resize', () => {
     const ownerData = sigPadOwner.toData();
     const renterData = sigPadRenter.toData();
+    
     resizeCanvas(canvasOwner);
     resizeCanvas(canvasRenter);
+    
     sigPadOwner.fromData(ownerData);
     sigPadRenter.fromData(renterData);
   });
@@ -1542,33 +1547,33 @@
     const endDate = document.getElementById('endDate').value;
     
     if (!ownerName || !ownerEmail) {
-      showToast('Veuillez remplir les informations du propriétaire', 'error');
+      showToast('❌ Veuillez remplir les informations du propriétaire', 'error');
       return false;
     }
     if (!renterName || !renterEmail) {
-      showToast('Veuillez remplir les informations du locataire', 'error');
+      showToast('❌ Veuillez remplir les informations du locataire', 'error');
       return false;
     }
     if (!bikeModel || !startDate || !endDate) {
-      showToast('Veuillez remplir tous les champs de location', 'error');
+      showToast('❌ Veuillez remplir tous les champs de location', 'error');
       return false;
     }
     if (sigPadOwner.isEmpty()) {
-      showToast('Le propriétaire doit signer le document', 'error');
+      showToast('❌ Le propriétaire doit signer', 'error');
       return false;
     }
     if (sigPadRenter.isEmpty()) {
-      showToast('Le locataire doit signer le document', 'error');
+      showToast('❌ Le locataire doit signer', 'error');
       return false;
     }
     
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(ownerEmail)) {
-      showToast('Adresse email du propriétaire invalide', 'error');
+      showToast('❌ Email du propriétaire invalide', 'error');
       return false;
     }
     if (!emailRegex.test(renterEmail)) {
-      showToast('Adresse email du locataire invalide', 'error');
+      showToast('❌ Email du locataire invalide', 'error');
       return false;
     }
     
@@ -1576,14 +1581,15 @@
   }
 
   // ==========================================================
-  // GÉNÉRATION PDF OPTIMISÉ
+  // GÉNÉRATION DU PDF OPTIMISÉ (TAILLE RÉDUITE)
   // ==========================================================
   async function generateOptimizedPDF(containerEl) {
     try {
       const { jsPDF } = window.jspdf;
       
+      // Capturer avec une résolution plus basse
       const canvas = await html2canvas(containerEl, { 
-        scale: 1.5,
+        scale: 1.5,  // Réduit de 2 à 1.5
         useCORS: true, 
         backgroundColor: '#ffffff', 
         logging: false,
@@ -1591,13 +1597,14 @@
         allowTaint: true
       });
       
-      const imgData = canvas.toDataURL('image/jpeg', 0.5);
+      // Compresser davantage
+      const imgData = canvas.toDataURL('image/jpeg', 0.5);  // Qualité réduite à 50%
       
       const doc = new jsPDF({ 
         unit: 'pt', 
         format: 'a4',
         orientation: 'portrait',
-        compress: true
+        compress: true  // Compression activée
       });
       
       const pageWidth = doc.internal.pageSize.getWidth();
@@ -1609,7 +1616,14 @@
       
       doc.addImage(imgData, 'JPEG', margin, margin, usableWidth, Math.min(imgHeight, pageHeight - margin * 2));
       
-      return doc.output('datauristring');
+      // Ne pas inclure les photos dans le PDF pour réduire la taille
+      // Les photos seront disponibles dans l'interface web
+      
+      // Retourner en base64
+      const pdfBase64 = doc.output('datauristring');
+      console.log('📄 Taille PDF optimisé:', (pdfBase64.length / 1024).toFixed(2), 'KB');
+      
+      return pdfBase64;
     } catch (error) {
       console.error('Erreur génération PDF:', error);
       throw new Error('Erreur lors de la génération du PDF');
@@ -1617,10 +1631,13 @@
   }
 
   // ==========================================================
-  // ENVOI EMAILJS
+  // UPLOAD SUR UN SERVICE GRATUIT (PAS DE LIMITE DE TAILLE)
   // ==========================================================
-  async function uploadPDFAndGetLink(pdfBase64, fileName) {
+  async function uploadPDF(pdfBase64, fileName) {
     try {
+      showToast('📤 Mise en ligne du PDF...', 'info');
+      
+      // Convertir base64 en blob
       const base64Data = pdfBase64.split(',')[1] || pdfBase64;
       const byteCharacters = atob(base64Data);
       const byteArrays = [];
@@ -1635,6 +1652,8 @@
       }
       
       const blob = new Blob(byteArrays, { type: 'application/pdf' });
+      
+      // Utiliser tmpfiles.org (gratuit, pas d'inscription, fichiers gardés 1 heure)
       const formData = new FormData();
       formData.append('file', blob, fileName);
       
@@ -1645,33 +1664,44 @@
       
       if (response.ok) {
         const result = await response.json();
-        return result.data.url.replace('https://tmpfiles.org/', 'https://tmpfiles.org/dl/');
+        // Modifier l'URL pour le téléchargement direct
+        const downloadUrl = result.data.url.replace('https://tmpfiles.org/', 'https://tmpfiles.org/dl/');
+        console.log('📎 Lien de téléchargement:', downloadUrl);
+        return downloadUrl;
+      } else {
+        throw new Error('Erreur upload');
       }
-      throw new Error('Upload failed');
     } catch (error) {
-      console.error('Erreur upload:', error);
-      return pdfBase64;
+      console.error('❌ Erreur upload:', error);
+      // Fallback : créer un lien data URL temporaire
+      showToast('⚠️ Utilisation du mode dégradé...', 'info');
+      return pdfBase64;  // Retourner le base64 directement
     }
   }
 
+  // ==========================================================
+  // ENVOI AVEC EMAILJS + LIEN DE TÉLÉCHARGEMENT
+  // ==========================================================
   async function sendWithEmailJS(data, pdfBase64) {
     try {
-      showToast('Préparation des documents...', 'info');
+      showToast('📤 Préparation des emails...', 'info');
       
+      // Générer un nom de fichier unique
       const renterName = (data.renterName || 'location').replace(/[^a-z0-9]/gi, '_').toLowerCase();
       const dateStr = new Date().toISOString().split('T')[0];
-      const fileName = `etat_des_lieux_depart_${renterName}_${dateStr}.pdf`;
+      const fileName = `etat_des_lieux_velo_${renterName}_${dateStr}.pdf`;
       
-      showToast('Mise en ligne du PDF...', 'info');
-      const pdfLink = await uploadPDFAndGetLink(pdfBase64, fileName);
+      // Uploader le PDF et obtenir un lien
+      const pdfLink = await uploadPDF(pdfBase64, fileName);
       
+      // Construire le rapport des contrôles
       const bikeParts = ['frame', 'handlebar', 'seat', 'fork', 'wheel_front', 'wheel_rear', 
                          'tire_front', 'tire_rear', 'brakes', 'transmission', 'chain', 'pedals'];
       
       const partNames = {
         'frame': 'Cadre', 'handlebar': 'Guidon', 'seat': 'Selle', 'fork': 'Fourche',
-        'wheel_front': 'Roue avant', 'wheel_rear': 'Roue arrière',
-        'tire_front': 'Pneu avant', 'tire_rear': 'Pneu arrière',
+        'wheel_front': 'Roue Avant', 'wheel_rear': 'Roue Arrière',
+        'tire_front': 'Pneu Avant', 'tire_rear': 'Pneu Arrière',
         'brakes': 'Freins', 'transmission': 'Transmission', 'chain': 'Chaîne', 'pedals': 'Pédales'
       };
       
@@ -1680,7 +1710,7 @@
         const state = data[`state_${part}`] || '';
         const note = data[`note_${part}`] || '';
         if (state || note) {
-          bikeReport += `• ${partNames[part]}: ${state || 'Non spécifié'}${note ? ' (' + note + ')' : ''}\n`;
+          bikeReport += `• ${partNames[part] || part}: ${state || 'Non spécifié'}${note ? ' (' + note + ')' : ''}\n`;
         }
       });
       
@@ -1688,6 +1718,7 @@
         day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
       });
       
+      // Paramètres communs
       const commonParams = {
         proprietaire: data.ownerName,
         proprietaire_email: data.ownerEmail,
@@ -1697,32 +1728,45 @@
         numero_serie: data.serialNumber || 'Non spécifié',
         debut: data.startDate,
         fin: data.endDate,
-        observations: data.generalNotes || 'Aucune',
+        observations: data.generalNotes || 'Aucune observation',
         accessoires: (data.extras && data.extras.length > 0) ? data.extras.join(', ') : 'Aucun',
         controle_velo: bikeReport || 'Aucun contrôle effectué',
         date_signature: dateSignature,
         pdf_link: pdfLink
       };
       
-      showToast('Envoi au propriétaire...', 'info');
-      await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, {
-        ...commonParams,
-        to_email: data.ownerEmail,
-        to_name: data.ownerName,
-        message: `Bonjour ${data.ownerName},\n\nVeuillez trouver ci-joint l'état des lieux de départ pour votre vélo ${data.bikeModel}.\n\nDocument PDF : ${pdfLink}`
-      });
+      // Envoyer au propriétaire
+      showToast('📧 Envoi au propriétaire...', 'info');
       
-      showToast('Envoi au locataire...', 'info');
-      await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, {
-        ...commonParams,
-        to_email: data.renterEmail,
-        to_name: data.renterName,
-        message: `Bonjour ${data.renterName},\n\nVeuillez trouver ci-joint l'état des lieux de départ pour le vélo ${data.bikeModel}.\n\nDocument PDF : ${pdfLink}`
-      });
+      await emailjs.send(
+        EMAILJS_CONFIG.serviceID,
+        EMAILJS_CONFIG.templateID,
+        {
+          ...commonParams,
+          to_email: data.ownerEmail,
+          to_name: data.ownerName,
+          message: `Bonjour ${data.ownerName},\n\nVoici l'état des lieux pour votre vélo ${data.bikeModel}.\n\n📎 Téléchargez le PDF signé : ${pdfLink}`
+        }
+      );
       
-      showToast('Document envoyé aux deux parties', 'success');
+      // Envoyer au locataire
+      showToast('📧 Envoi au locataire...', 'info');
       
-      if (confirm('Le document a été envoyé. Voulez-vous télécharger une copie du PDF ?')) {
+      await emailjs.send(
+        EMAILJS_CONFIG.serviceID,
+        EMAILJS_CONFIG.templateID,
+        {
+          ...commonParams,
+          to_email: data.renterEmail,
+          to_name: data.renterName,
+          message: `Bonjour ${data.renterName},\n\nVoici l'état des lieux pour le vélo ${data.bikeModel} que vous louez.\n\n📎 Téléchargez le PDF signé : ${pdfLink}`
+        }
+      );
+      
+      showToast('✅ État des lieux envoyé avec succès aux deux parties !', 'success');
+      
+      // Proposer le téléchargement direct
+      if (confirm('✅ Emails envoyés ! Voulez-vous télécharger le PDF maintenant ?')) {
         const link = document.createElement('a');
         link.href = pdfBase64;
         link.download = fileName;
@@ -1732,16 +1776,19 @@
       }
       
       return true;
+      
     } catch (error) {
-      console.error('Erreur EmailJS:', error);
+      console.error('❌ Erreur EmailJS:', error);
       throw new Error('Erreur lors de l\'envoi: ' + error.message);
     }
   }
 
   // ==========================================================
-  // BOUTON ENVOYER
+  // BOUTON PRINCIPAL : SIGNER ET ENVOYER
   // ==========================================================
   document.getElementById('generateSendBtn').addEventListener('click', async function() {
+    console.log('🖱️ Clic sur "Signer et envoyer"');
+    
     if (!validateForm()) return;
     
     this.disabled = true;
@@ -1750,11 +1797,18 @@
     
     try {
       const data = getFormData();
+      
+      // Générer le PDF optimisé
+      showToast('📄 Génération du PDF...', 'info');
       const container = document.getElementById('contractContainer');
       const pdfBase64 = await generateOptimizedPDF(container);
+      
+      // Envoyer par email avec lien de téléchargement
       await sendWithEmailJS(data, pdfBase64);
+      
     } catch (error) {
-      showToast(error.message, 'error');
+      console.error('❌ Erreur:', error);
+      showToast('❌ ' + error.message, 'error');
     } finally {
       this.disabled = false;
       this.innerHTML = originalHTML;
@@ -1762,21 +1816,33 @@
   });
 
   // ==========================================================
-  // BOUTON TÉLÉCHARGER
+  // BOUTON TÉLÉCHARGER PDF (VERSION COMPLÈTE AVEC PHOTOS)
   // ==========================================================
   document.getElementById('downloadEtatBtn').addEventListener('click', async function() {
     try {
       this.disabled = true;
       const originalText = this.textContent;
-      this.textContent = 'Génération...';
+      this.textContent = '⏳ Génération...';
       
       const data = getFormData();
       const container = document.getElementById('contractContainer');
       
+      // Version complète avec photos pour le téléchargement
       const { jsPDF } = window.jspdf;
-      const canvas = await html2canvas(container, { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false });
+      
+      const canvas = await html2canvas(container, { 
+        scale: 2, 
+        useCORS: true, 
+        backgroundColor: '#ffffff', 
+        logging: false 
+      });
+      
       const imgData = canvas.toDataURL('image/jpeg', 0.8);
-      const doc = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'portrait' });
+      const doc = new jsPDF({ 
+        unit: 'pt', 
+        format: 'a4',
+        orientation: 'portrait'
+      });
       
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
@@ -1787,34 +1853,43 @@
       
       doc.addImage(imgData, 'JPEG', margin, margin, usableWidth, Math.min(imgHeight, pageHeight - margin * 2));
       
+      // Ajouter les photos
       if (data.photos && data.photos.length > 0) {
         for (let i = 0; i < data.photos.length; i++) {
           doc.addPage();
           doc.setFontSize(12);
+          doc.setTextColor(15, 43, 74);
           doc.text(`Photo ${i + 1}`, margin, margin);
+          
           const pImgProps = doc.getImageProperties(data.photos[i]);
           const pHeight = usableWidth / (pImgProps.width / pImgProps.height);
-          doc.addImage(data.photos[i], 'JPEG', margin, margin + 20, usableWidth, Math.min(pHeight, pageHeight - margin - 40));
+          const photoY = margin + 20;
+          
+          doc.addImage(data.photos[i], 'JPEG', margin, photoY, usableWidth, Math.min(pHeight, pageHeight - photoY - margin));
         }
       }
       
       const pdfBase64 = doc.output('datauristring');
+      
+      // Télécharger
       const link = document.createElement('a');
       link.href = pdfBase64;
+      
       const renterName = (data.renterName || 'location').replace(/[^a-z0-9]/gi, '_').toLowerCase();
       const dateStr = new Date().toISOString().split('T')[0];
-      link.download = `etat_des_lieux_depart_${renterName}_${dateStr}.pdf`;
+      link.download = `etat_des_lieux_velo_complet_${renterName}_${dateStr}.pdf`;
       
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       
-      showToast('PDF téléchargé avec succès', 'success');
+      showToast('✅ PDF téléchargé avec succès !', 'success');
     } catch (error) {
-      showToast('Erreur lors du téléchargement', 'error');
+      console.error('❌ Erreur téléchargement:', error);
+      showToast('❌ Erreur lors du téléchargement du PDF', 'error');
     } finally {
       this.disabled = false;
-      this.textContent = 'Télécharger le PDF';
+      this.textContent = '⬇️ Télécharger PDF';
     }
   });
 
@@ -1825,9 +1900,10 @@
     try {
       const data = getFormData();
       localStorage.setItem('expressVeloEtat', JSON.stringify(data));
-      showToast('Brouillon enregistré localement', 'success');
+      showToast('✅ État des lieux enregistré localement', 'success');
     } catch (error) {
-      showToast('Erreur lors de la sauvegarde', 'error');
+      console.error('❌ Erreur sauvegarde:', error);
+      showToast('❌ Erreur lors de la sauvegarde', 'error');
     }
   });
 
@@ -1835,21 +1911,21 @@
   // BOUTON RÉINITIALISER
   // ==========================================================
   document.getElementById('resetFormBtn').addEventListener('click', function() {
-    if (confirm('Voulez-vous vraiment réinitialiser le formulaire ?')) {
+    if (confirm('⚠️ Voulez-vous vraiment réinitialiser tout le formulaire ?')) {
       document.getElementById('etatForm').reset();
       sigPadOwner.clear();
       sigPadRenter.clear();
       photosDataUrls = [];
       renderPhotos();
       updateSignatureStatus();
-      showToast('Formulaire réinitialisé', 'info');
+      showToast('🔄 Formulaire réinitialisé', 'info');
     }
   });
 
   // ==========================================================
-  // CHARGEMENT DONNÉES SAUVEGARDÉES
+  // CHARGEMENT DES DONNÉES SAUVEGARDÉES
   // ==========================================================
-  (function() {
+  (function loadSavedData() {
     try {
       const saved = localStorage.getItem('expressVeloEtat');
       if (!saved) return;
@@ -1858,10 +1934,14 @@
       
       Object.keys(data).forEach(key => {
         if (['extras', 'photos', 'signatureOwner', 'signatureRenter'].includes(key)) return;
+        
         const el = document.querySelector(`[name="${key}"]`);
         if (el) {
-          if (el.type === 'checkbox') el.checked = data[key];
-          else el.value = data[key] || '';
+          if (el.type === 'checkbox') {
+            el.checked = data[key];
+          } else {
+            el.value = data[key] || '';
+          }
         }
       });
       
@@ -1876,13 +1956,20 @@
         photosDataUrls = data.photos;
         renderPhotos();
       }
+      
+      console.log('📂 Données sauvegardées chargées avec succès');
     } catch (e) {
+      console.error('Erreur lors du chargement des données:', e);
       localStorage.removeItem('expressVeloEtat');
     }
   })();
 
+  // ==========================================================
+  // INITIALISATION
+  // ==========================================================
   updateSignatureStatus();
-  console.log('Application prête');
+  console.log('🚀 Application prête !');
+  
 </script>
 
 </body>
