@@ -182,7 +182,6 @@
     }
     .field textarea { min-height: 80px; resize: vertical; }
 
-    /* Contrôle du vélo */
     .bike-part-item {
       display: flex;
       flex-direction: column;
@@ -584,7 +583,6 @@
 
   <div class="form-body" id="contractContainer">
     <form id="etatForm" novalidate>
-      <!-- SECTION 1 : PARTIES -->
       <div class="section">
         <div class="section-title"><span class="step">1</span>Parties prenantes</div>
         <div class="grid-2">
@@ -601,7 +599,6 @@
         </div>
       </div>
 
-      <!-- SECTION 2 : LOCATION -->
       <div class="section">
         <div class="section-title"><span class="step">2</span>Informations de location</div>
         <div class="grid-3">
@@ -615,203 +612,96 @@
         </div>
       </div>
 
-      <!-- SECTION 3 : CONTRÔLE DU VÉLO -->
       <div class="section">
         <div class="section-title"><span class="step">3</span>Contrôle du vélo</div>
         <div class="grid-3" id="bikePartsContainer">
-          <!-- Cadre -->
           <div class="bike-part-item">
             <div class="part-header"><span class="icon">🚲</span> Cadre</div>
             <div class="part-controls">
-              <select name="state_frame" class="part-select">
-                <option value="">État</option>
-                <option value="bon">Bon</option>
-                <option value="rayé">Rayé</option>
-                <option value="choc">Choc</option>
-                <option value="rouille">Rouille</option>
-                <option value="fissure">Fissure</option>
-                <option value="cassé">Cassé</option>
-              </select>
+              <select name="state_frame" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="rouille">Rouille</option><option value="fissure">Fissure</option><option value="cassé">Cassé</option></select>
               <input type="text" name="note_frame" class="part-note" placeholder="Remarque">
             </div>
           </div>
-          <!-- Guidon -->
           <div class="bike-part-item">
             <div class="part-header"><span class="icon">🔄</span> Guidon</div>
             <div class="part-controls">
-              <select name="state_handlebar" class="part-select">
-                <option value="">État</option>
-                <option value="bon">Bon</option>
-                <option value="rayé">Rayé</option>
-                <option value="choc">Choc</option>
-                <option value="rouille">Rouille</option>
-                <option value="torsadé">Torsadé</option>
-                <option value="cassé">Cassé</option>
-              </select>
+              <select name="state_handlebar" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="rouille">Rouille</option><option value="torsadé">Torsadé</option><option value="cassé">Cassé</option></select>
               <input type="text" name="note_handlebar" class="part-note" placeholder="Remarque">
             </div>
           </div>
-          <!-- Selle -->
           <div class="bike-part-item">
             <div class="part-header"><span class="icon">🪑</span> Selle</div>
             <div class="part-controls">
-              <select name="state_seat" class="part-select">
-                <option value="">État</option>
-                <option value="bon">Bon</option>
-                <option value="rayé">Rayé</option>
-                <option value="déchiré">Déchiré</option>
-                <option value="usé">Usé</option>
-                <option value="cassé">Cassé</option>
-                <option value="manquant">Manquant</option>
-              </select>
+              <select name="state_seat" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="déchiré">Déchiré</option><option value="usé">Usé</option><option value="cassé">Cassé</option><option value="manquant">Manquant</option></select>
               <input type="text" name="note_seat" class="part-note" placeholder="Remarque">
             </div>
           </div>
-          <!-- Fourche -->
           <div class="bike-part-item">
             <div class="part-header"><span class="icon">🔧</span> Fourche</div>
             <div class="part-controls">
-              <select name="state_fork" class="part-select">
-                <option value="">État</option>
-                <option value="bon">Bon</option>
-                <option value="rayé">Rayé</option>
-                <option value="choc">Choc</option>
-                <option value="rouille">Rouille</option>
-                <option value="fissure">Fissure</option>
-                <option value="cassé">Cassé</option>
-              </select>
+              <select name="state_fork" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="rouille">Rouille</option><option value="fissure">Fissure</option><option value="cassé">Cassé</option></select>
               <input type="text" name="note_fork" class="part-note" placeholder="Remarque">
             </div>
           </div>
-          <!-- Roue Avant -->
           <div class="bike-part-item">
             <div class="part-header"><span class="icon">⚫</span> Roue Avant</div>
             <div class="part-controls">
-              <select name="state_wheel_front" class="part-select">
-                <option value="">État</option>
-                <option value="bon">Bon</option>
-                <option value="rayé">Rayé</option>
-                <option value="choc">Choc</option>
-                <option value="voilé">Voilé</option>
-                <option value="cassé">Cassé</option>
-                <option value="manquant">Manquant</option>
-              </select>
+              <select name="state_wheel_front" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="voilé">Voilé</option><option value="cassé">Cassé</option><option value="manquant">Manquant</option></select>
               <input type="text" name="note_wheel_front" class="part-note" placeholder="Remarque">
             </div>
           </div>
-          <!-- Roue Arrière -->
           <div class="bike-part-item">
             <div class="part-header"><span class="icon">⚫</span> Roue Arrière</div>
             <div class="part-controls">
-              <select name="state_wheel_rear" class="part-select">
-                <option value="">État</option>
-                <option value="bon">Bon</option>
-                <option value="rayé">Rayé</option>
-                <option value="choc">Choc</option>
-                <option value="voilé">Voilé</option>
-                <option value="cassé">Cassé</option>
-                <option value="manquant">Manquant</option>
-              </select>
+              <select name="state_wheel_rear" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="voilé">Voilé</option><option value="cassé">Cassé</option><option value="manquant">Manquant</option></select>
               <input type="text" name="note_wheel_rear" class="part-note" placeholder="Remarque">
             </div>
           </div>
-          <!-- Pneu Avant -->
           <div class="bike-part-item">
             <div class="part-header"><span class="icon">⭕</span> Pneu Avant</div>
             <div class="part-controls">
-              <select name="state_tire_front" class="part-select">
-                <option value="">État</option>
-                <option value="bon">Bon</option>
-                <option value="usé">Usé</option>
-                <option value="crevé">Crevé</option>
-                <option value="fissuré">Fissuré</option>
-                <option value="manquant">Manquant</option>
-              </select>
+              <select name="state_tire_front" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="crevé">Crevé</option><option value="fissuré">Fissuré</option><option value="manquant">Manquant</option></select>
               <input type="text" name="note_tire_front" class="part-note" placeholder="Remarque">
             </div>
           </div>
-          <!-- Pneu Arrière -->
           <div class="bike-part-item">
             <div class="part-header"><span class="icon">⭕</span> Pneu Arrière</div>
             <div class="part-controls">
-              <select name="state_tire_rear" class="part-select">
-                <option value="">État</option>
-                <option value="bon">Bon</option>
-                <option value="usé">Usé</option>
-                <option value="crevé">Crevé</option>
-                <option value="fissuré">Fissuré</option>
-                <option value="manquant">Manquant</option>
-              </select>
+              <select name="state_tire_rear" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="crevé">Crevé</option><option value="fissuré">Fissuré</option><option value="manquant">Manquant</option></select>
               <input type="text" name="note_tire_rear" class="part-note" placeholder="Remarque">
             </div>
           </div>
-          <!-- Freins -->
           <div class="bike-part-item">
             <div class="part-header"><span class="icon">⛔</span> Freins</div>
             <div class="part-controls">
-              <select name="state_brakes" class="part-select">
-                <option value="">État</option>
-                <option value="bon">Bon</option>
-                <option value="usé">Usé</option>
-                <option value="à_serrer">À serrer</option>
-                <option value="à_changer">À changer</option>
-                <option value="cassé">Cassé</option>
-                <option value="manquant">Manquant</option>
-              </select>
+              <select name="state_brakes" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="à_serrer">À serrer</option><option value="à_changer">À changer</option><option value="cassé">Cassé</option><option value="manquant">Manquant</option></select>
               <input type="text" name="note_brakes" class="part-note" placeholder="Remarque">
             </div>
           </div>
-          <!-- Transmission -->
           <div class="bike-part-item">
             <div class="part-header"><span class="icon">⚙️</span> Transmission</div>
             <div class="part-controls">
-              <select name="state_transmission" class="part-select">
-                <option value="">État</option>
-                <option value="bon">Bon</option>
-                <option value="usé">Usé</option>
-                <option value="bruyant">Bruyant</option>
-                <option value="à_régler">À régler</option>
-                <option value="cassé">Cassé</option>
-                <option value="manquant">Manquant</option>
-              </select>
+              <select name="state_transmission" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="bruyant">Bruyant</option><option value="à_régler">À régler</option><option value="cassé">Cassé</option><option value="manquant">Manquant</option></select>
               <input type="text" name="note_transmission" class="part-note" placeholder="Remarque">
             </div>
           </div>
-          <!-- Chaîne -->
           <div class="bike-part-item">
             <div class="part-header"><span class="icon">🔗</span> Chaîne</div>
             <div class="part-controls">
-              <select name="state_chain" class="part-select">
-                <option value="">État</option>
-                <option value="bon">Bon</option>
-                <option value="rouillé">Rouillé</option>
-                <option value="détendue">Détendue</option>
-                <option value="à_changer">À changer</option>
-                <option value="cassée">Cassée</option>
-                <option value="manquante">Manquante</option>
-              </select>
+              <select name="state_chain" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="rouillé">Rouillé</option><option value="détendue">Détendue</option><option value="à_changer">À changer</option><option value="cassée">Cassée</option><option value="manquante">Manquante</option></select>
               <input type="text" name="note_chain" class="part-note" placeholder="Remarque">
             </div>
           </div>
-          <!-- Pédales -->
           <div class="bike-part-item">
             <div class="part-header"><span class="icon">🦶</span> Pédales</div>
             <div class="part-controls">
-              <select name="state_pedals" class="part-select">
-                <option value="">État</option>
-                <option value="bon">Bon</option>
-                <option value="usé">Usé</option>
-                <option value="rayé">Rayé</option>
-                <option value="cassé">Cassé</option>
-                <option value="manquant">Manquant</option>
-              </select>
+              <select name="state_pedals" class="part-select"><option value="">État</option><option value="bon">Bon</option><option value="usé">Usé</option><option value="rayé">Rayé</option><option value="cassé">Cassé</option><option value="manquant">Manquant</option></select>
               <input type="text" name="note_pedals" class="part-note" placeholder="Remarque">
             </div>
           </div>
         </div>
       </div>
 
-      <!-- SECTION 4 : ACCESSOIRES -->
       <div class="section">
         <div class="section-title"><span class="step">4</span>Accessoires et état</div>
         <div class="accessories-grid">
@@ -852,7 +742,6 @@
         </div>
       </div>
 
-      <!-- SECTION 5 : PHOTOS -->
       <div class="section">
         <div class="section-title"><span class="step">5</span>Photos (optionnel)</div>
         <div class="photo-upload-area" id="photoDropZone">
@@ -864,7 +753,6 @@
         <div id="photosPreview" class="photos-preview"></div>
       </div>
 
-      <!-- SECTION 6 : SIGNATURES -->
       <div class="section">
         <div class="section-title">
           <span class="step">6</span>Signatures électroniques
@@ -894,7 +782,6 @@
         </div>
       </div>
 
-      <!-- BOUTONS -->
       <div class="actions">
         <button type="button" class="btn btn-success" id="generateSendBtn">✉️ Signer et envoyer aux 2 parties</button>
         <button type="button" class="btn btn-secondary" id="downloadEtatBtn">⬇️ Télécharger PDF</button>
@@ -905,12 +792,8 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- ============================================================ -->
-<!-- BIBLIOTHÈQUES                                                -->
-<!-- ============================================================ -->
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -919,9 +802,6 @@
 <script>
   'use strict';
 
-  // ==========================================================
-  // CONFIGURATION EMAILJS
-  // ==========================================================
   const EMAILJS_CONFIG = {
     publicKey: 'zz4KdlO2Xyw0Y5Gej',
     serviceID: 'service_g1ip1lt',
@@ -930,16 +810,12 @@
 
   emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
 
-  // ==========================================================
-  // 1. DATE ACTUELLE
-  // ==========================================================
+  // Date actuelle
   document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR', {
     day: 'numeric', month: 'long', year: 'numeric'
   });
 
-  // ==========================================================
-  // 2. TOAST
-  // ==========================================================
+  // Toast
   function showToast(message, type = 'info') {
     const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
@@ -953,9 +829,7 @@
     }, 4500);
   }
 
-  // ==========================================================
-  // 3. PHOTOS
-  // ==========================================================
+  // Photos
   const photosInput = document.getElementById('photosInput');
   const photosPreview = document.getElementById('photosPreview');
   let photosDataUrls = [];
@@ -1051,9 +925,7 @@
     renderPhotos();
   });
 
-  // ==========================================================
-  // 4. SIGNATURES
-  // ==========================================================
+  // Signatures
   const canvasOwner = document.getElementById('signature-owner');
   const canvasRenter = document.getElementById('signature-renter');
   const ownerStatus = document.getElementById('ownerStatus');
@@ -1103,9 +975,7 @@
     resizeCanvas(canvasRenter);
   });
 
-  // ==========================================================
-  // 5. RÉCUPÉRATION DES DONNÉES
-  // ==========================================================
+  // Récupération des données
   function getFormData() {
     const form = document.getElementById('etatForm');
     const data = Object.fromEntries(new FormData(form).entries());
@@ -1128,9 +998,7 @@
     return true;
   }
 
-  // ==========================================================
-  // 6. GÉNÉRATION DU PDF
-  // ==========================================================
+  // Génération du PDF
   async function generatePdf(containerEl, photos = []) {
     try {
       const { jsPDF } = window.jspdf;
@@ -1160,41 +1028,35 @@
       throw error;
     }
   }
-  // ==========================================================
-  // TÉLÉCHARGEMENT AUTOMATIQUE DU PDF
-  // ==========================================================
-  (async function autoDownloadPdf() {
-    const savedPdf = localStorage.getItem('dernierPDF');
-    if (savedPdf) {
-      try {
-        // Attendre que la page soit chargée
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        const link = document.createElement('a');
-        link.href = savedPdf;
-        link.download = `etat-lieux-${new Date().toLocaleDateString('fr-FR')}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        console.log('✅ Téléchargement automatique du PDF déclenché !');
-      } catch (error) {
-        console.warn('⚠️ Téléchargement automatique impossible :', error);
-        showToast('ℹ️ Cliquez sur le bouton "Télécharger PDF" pour récupérer votre document.', 'info');
-      }
-    }
-  })();
-  // ==========================================================
-  // 7. ENVOI VIA EMAILJS (sans upload externe - version stable)
-  // ==========================================================
+
+  // Envoi via EmailJS avec upload GoFile.io
   async function sendWithEmailJS(data, pdfDataUrl) {
     try {
-      console.log('📧 Données reçues :', data);
-      console.log('📧 Email propriétaire :', data.ownerEmail);
-      console.log('📧 Email locataire :', data.renterEmail);
+      showToast('📤 Upload du PDF...', 'info');
 
-      showToast('📧 Préparation de l\'email...', 'info');
+      // Convertir le dataURL en Blob
+      const pdfResponse = await fetch(pdfDataUrl);
+      const pdfBlob = await pdfResponse.blob();
 
-      // 1. Construire le rapport des contrôles vélo
+      // Upload sur GoFile.io
+      const formData = new FormData();
+      formData.append('file', pdfBlob);
+
+      const uploadResponse = await fetch('https://store1.gofile.io/uploadFile', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error('Erreur upload PDF');
+      }
+
+      const uploadResult = await uploadResponse.json();
+      const downloadUrl = uploadResult.data.downloadPage;
+
+      console.log('📎 Lien de téléchargement direct :', downloadUrl);
+
+      // Construire le rapport des contrôles vélo
       const bikeParts = ['frame', 'handlebar', 'seat', 'fork', 'wheel_front', 'wheel_rear', 
                          'tire_front', 'tire_rear', 'brakes', 'transmission', 'chain', 'pedals'];
       const partNames = {
@@ -1212,19 +1074,10 @@
         }
       });
 
-      // 2. Sauvegarder le PDF dans localStorage pour le récupérer plus tard
-      try {
-        localStorage.setItem('dernierPDF', pdfDataUrl);
-        console.log('💾 PDF sauvegardé localement');
-      } catch (e) {
-        console.warn('Impossible de sauvegarder le PDF (trop volumineux)');
-      }
-
-      // 3. Préparer les données du template
+      // Préparer les données du template
       const templateParams = {
         to_email: data.ownerEmail || '',
         cc_email: data.renterEmail || '',
-        
         proprietaire: data.ownerName || '',
         proprietaire_email: data.ownerEmail || '',
         locataire: data.renterName || '',
@@ -1236,13 +1089,10 @@
         accessoires: (data.extras || []).join(', ') || 'Aucun',
         date_signature: new Date().toLocaleDateString('fr-FR'),
         controle_velo: bikeReport || 'Aucun contrôle effectué',
-        
-        lien_application: 'https://jmpasqual17-design.github.io/'
+        lien_direct: downloadUrl
       };
 
-      console.log('📧 Template params :', templateParams);
-
-      // 4. Envoyer l'email avec EmailJS
+      // Envoyer l'email avec EmailJS
       showToast('📧 Envoi de l\'email...', 'info');
       const response = await emailjs.send(
         EMAILJS_CONFIG.serviceID,
@@ -1264,31 +1114,7 @@
     }
   }
 
-  // ==========================================================
-  // 8. TÉLÉCHARGEMENT AUTOMATIQUE DU PDF
-  // ==========================================================
-  (async function autoDownloadPdf() {
-    const savedPdf = localStorage.getItem('dernierPDF');
-    if (savedPdf) {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        const link = document.createElement('a');
-        link.href = savedPdf;
-        link.download = `etat-lieux-${new Date().toLocaleDateString('fr-FR')}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        console.log('✅ Téléchargement automatique du PDF déclenché !');
-      } catch (error) {
-        console.warn('⚠️ Téléchargement automatique impossible :', error);
-        showToast('ℹ️ Cliquez sur le bouton "Télécharger PDF" pour récupérer votre document.', 'info');
-      }
-    }
-  })();
-
-  // ==========================================================
-  // 9. BOUTON "SIGNER ET ENVOYER"
-  // ==========================================================
+  // Bouton "Signer et envoyer"
   document.getElementById('generateSendBtn').addEventListener('click', async function() {
     console.log('🖱️ Clic sur "Signer et envoyer"');
     if (!checkSignatures()) return;
@@ -1318,9 +1144,7 @@
     }
   });
 
-  // ==========================================================
-  // 10. BOUTON "TÉLÉCHARGER PDF"
-  // ==========================================================
+  // Bouton "Télécharger PDF"
   document.getElementById('downloadEtatBtn').addEventListener('click', async function() {
     try {
       this.disabled = true;
@@ -1344,18 +1168,14 @@
     }
   });
 
-  // ==========================================================
-  // 11. BOUTON "ENREGISTRER LOCALEMENT"
-  // ==========================================================
+  // Bouton "Enregistrer localement"
   document.getElementById('saveEtatBtn').addEventListener('click', function() {
     const data = getFormData();
     localStorage.setItem('expressVeloEtat', JSON.stringify(data));
     showToast('✅ État des lieux enregistré localement', 'success');
   });
 
-  // ==========================================================
-  // 12. BOUTON "RÉINITIALISER"
-  // ==========================================================
+  // Bouton "Réinitialiser"
   document.getElementById('resetFormBtn').addEventListener('click', function() {
     if (confirm('Voulez-vous vraiment réinitialiser tout le formulaire ?')) {
       document.getElementById('etatForm').reset();
@@ -1368,9 +1188,7 @@
     }
   });
 
-  // ==========================================================
-  // 13. CHARGEMENT DES DONNÉES SAUVEGARDÉES
-  // ==========================================================
+  // Chargement des données sauvegardées
   (function() {
     const saved = localStorage.getItem('expressVeloEtat');
     if (saved) {
@@ -1398,9 +1216,7 @@
     }
   })();
 
-  // ==========================================================
-  // 14. INITIALISATION
-  // ==========================================================
+  // Initialisation
   updateSignatureStatus();
   console.log('🚀 Application prête avec EmailJS !');
 
