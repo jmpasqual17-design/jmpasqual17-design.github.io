@@ -1186,108 +1186,42 @@
 
     drawSeparator();
 
-// ---- 4. ACCESSOIRES ----
-if (y > pageH - 40) { doc.addPage(); y = margin; }
-sectionTitle('4', 'ACCESSOIRES FOURNIS');
-
-const accessories = [
-  { key: 'helmet', label: 'Casque' },
-  { key: 'lock', label: 'Antivol' },
-  { key: 'lights', label: 'Éclairage' },
-  { key: 'basket', label: 'Panier' },
-  { key: 'repairkit', label: 'Kit réparation' },
-  { key: 'other', label: 'Autre' }
-];
-
-let hasAccessories = false;
-
-// Tableau compact
-doc.setFillColor(240, 240, 240);
-doc.rect(margin, y, contentW, 6, 'F');
-doc.setFont('helvetica', 'bold');
-doc.setFontSize(8);
-doc.setTextColor(26, 26, 46);
-doc.text('Accessoire', margin + 3, y + 4.5);
-doc.text('État / Observation', margin + 55, y + 4.5);
-y += 7;
-
-doc.setFont('helvetica', 'normal');
-doc.setFontSize(8);
-doc.setTextColor(50, 50, 50);
-
-accessories.forEach((acc, index) => {
-  if (data.extras && data.extras.includes(acc.key)) {
-    hasAccessories = true;
-    if (y > pageH - 20) { doc.addPage(); y = margin; }
-    
-    if (index % 2 === 0) {
-      doc.setFillColor(248, 248, 248);
-      doc.rect(margin, y, contentW, 5.5, 'F');
-    }
-    
-    const state = data['state_' + acc.key] || '-';
-    const note = data['note_' + acc.key] || '';
-    
-    // Combiner état et observation sur une seule ligne
-    let detail = state;
-    if (note.trim() !== '') {
-      detail += ' - ' + note;
-    }
-    
-    // Tronquer si trop long
-    if (detail.length > 55) {
-      detail = detail.substring(0, 55) + '...';
-    }
-    
-    doc.setFont('helvetica', 'bold');
-    doc.text(acc.label, margin + 3, y + 4);
-    doc.setFont('helvetica', 'normal');
-    doc.text(detail, margin + 55, y + 4);
-    y += 5.5;
-  }
-});
-
-if (!hasAccessories) {
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.setTextColor(100, 100, 100);
-  doc.text('Aucun accessoire fourni', margin + 3, y + 4);
-  y += 5;
-}
-
-y += 5;
-drawSeparator();
-    // ---- 5. PHOTOS ----
-    if (data.photos && data.photos.length > 0) {
-      if (y > pageH - 50) { doc.addPage(); y = margin; }
-      sectionTitle('5', 'PHOTOS DU VÉLO');
-
-      for (let i = 0; i < Math.min(data.photos.length, 6); i++) {
-        if (y > pageH - 50) { doc.addPage(); y = margin; }
-
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8);
-        doc.text('Photo ' + (i + 1), margin, y);
-        y += 4;
-
-        try {
-          const imgProps = doc.getImageProperties(data.photos[i]);
-          const maxW = 70;
-          const maxH = 45;
-          let imgW = imgProps.width;
-          let imgH = imgProps.height;
-
-          if (imgW > maxW) { imgH = (imgH * maxW) / imgW; imgW = maxW; }
-          if (imgH > maxH) { imgW = (imgW * maxH) / imgH; imgH = maxH; }
-
-          doc.addImage(data.photos[i], 'JPEG', margin, y, imgW, imgH);
-          y += imgH + 6;
-        } catch (e) {
-          doc.text('(Image non disponible)', margin, y);
-          y += 4;
-        }
-      }
-      drawSeparator();
+     <!-- SECTION 4 : ACCESSOIRES -->
+      <div class="section">
+        <div class="section-title"><span class="step">4</span>Accessoires</div>
+        <div class="bike-grid">
+          <div class="accessory-item">
+            <label class="checkbox"><input type="checkbox" name="extras" value="helmet"><span>Casque</span></label>
+            <select name="state_helmet"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <input type="text" name="note_helmet" placeholder="Note">
+          </div>
+          <div class="accessory-item">
+            <label class="checkbox"><input type="checkbox" name="extras" value="lock"><span>Antivol</span></label>
+            <select name="state_lock"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <input type="text" name="note_lock" placeholder="Note">
+          </div>
+          <div class="accessory-item">
+            <label class="checkbox"><input type="checkbox" name="extras" value="lights"><span>Éclairage</span></label>
+            <select name="state_lights"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <input type="text" name="note_lights" placeholder="Note">
+          </div>
+          <div class="accessory-item">
+            <label class="checkbox"><input type="checkbox" name="extras" value="basket"><span>Panier</span></label>
+            <select name="state_basket"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <input type="text" name="note_basket" placeholder="Note">
+          </div>
+          <div class="accessory-item">
+            <label class="checkbox"><input type="checkbox" name="extras" value="repairkit"><span>Kit réparation</span></label>
+            <select name="state_repairkit"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <input type="text" name="note_repairkit" placeholder="Note">
+          </div>
+          <div class="accessory-item">
+            <label class="checkbox"><input type="checkbox" name="extras" value="other"><span>Autre</span></label>
+            <select name="state_other"><option value="">État</option><option value="bon">Bon</option><option value="rayé">Rayé</option><option value="choc">Choc</option><option value="manquant">Manquant</option></select>
+            <input type="text" name="note_other" placeholder="Détail">
+          </div>
+        </div>
+      </div>
     }
 
     // ---- 6. SIGNATURES ----
