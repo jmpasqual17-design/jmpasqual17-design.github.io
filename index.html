@@ -132,7 +132,7 @@
     }
     .field textarea { min-height: 50px; resize: vertical; }
 
-    /* CONTRÔLE VÉLO - COMPACT */
+    /* Bike grid and items remain the same */
     .bike-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -166,7 +166,7 @@
     }
     .bike-item input { flex: 1.5; min-width: 70px; }
 
-    /* ACCESSOIRES */
+    /* Accessories */
     .accessory-item {
       display: flex;
       align-items: center;
@@ -210,7 +210,7 @@
     }
     .accessory-item input { flex: 1.5; min-width: 70px; }
 
-    /* PHOTOS */
+    /* Photos */
     .photo-upload {
       border: 2px dashed var(--gray-300);
       border-radius: var(--radius);
@@ -259,7 +259,7 @@
     }
     .photos-preview .photo-item .remove:hover { background: rgba(177, 48, 48, 0.9); }
 
-    /* SIGNATURES */
+    /* Signatures */
     .sign-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .sign-box {
       background: var(--gray-100);
@@ -317,7 +317,7 @@
     }
     .sign-box .sign-status.signed { color: var(--success); font-weight: 600; }
 
-    /* BOUTONS */
+    /* Buttons */
     .actions {
       display: flex;
       gap: 8px;
@@ -349,10 +349,10 @@
     .btn-success:hover:not(:disabled) { background: #0b6b35; }
 
     .btn-secondary { background: white; color: var(--gray-700); border: 1.5px solid var(--gray-200); }
-    .btn-secondary:hover:not(:disabled) { background: var(--gray-50); }
+    .btn-secondary:hover:not(:disabled) { background: #f9fafb; }
 
     .btn-outline { background: transparent; color: var(--gray-600); border: 1.5px solid var(--gray-300); }
-    .btn-outline:hover:not(:disabled) { background: var(--gray-50); }
+    .btn-outline:hover:not(:disabled) { background: #f9fafb; }
 
     .spinner {
       display: inline-block;
@@ -439,12 +439,12 @@
           <div class="field">
             <label>Propriétaire <span class="required">*</span></label>
             <input type="text" id="ownerName" name="ownerName" placeholder="Nom complet" required>
-            <input type="email" id="ownerEmail" name="ownerEmail" placeholder="Email" required style="margin-top:6px;">
+            <input type="email" id="ownerEmail" name="ownerEmail" placeholder="Email du propriétaire" required style="margin-top:6px;">
           </div>
           <div class="field">
             <label>Locataire <span class="required">*</span></label>
             <input type="text" id="renterName" name="renterName" placeholder="Nom complet" required>
-            <input type="email" id="renterEmail" name="renterEmail" placeholder="Email" required style="margin-top:6px;">
+            <input type="email" id="renterEmail" name="renterEmail" placeholder="Email du locataire" required style="margin-top:6px;">
           </div>
         </div>
       </div>
@@ -453,9 +453,9 @@
       <div class="section">
         <div class="section-title"><span class="step">2</span>Location</div>
         <div class="grid-3">
-          <div class="field"><label>Début</label><input type="date" id="startDate" name="startDate"></div>
-          <div class="field"><label>Fin</label><input type="date" id="endDate" name="endDate"></div>
-          <div class="field"><label>Modèle</label><input type="text" id="bikeModel" name="bikeModel" placeholder="Marque / modèle"></div>
+          <div class="field"><label>Date de début</label><input type="date" id="startDate" name="startDate" required></div>
+          <div class="field"><label>Date de fin</label><input type="date" id="endDate" name="endDate" required></div>
+          <div class="field"><label>Modèle du vélo</label><input type="text" id="bikeModel" name="bikeModel" placeholder="Marque / modèle" required></div>
         </div>
         <div class="field full" style="margin-top:8px;">
           <label>Numéro de série</label>
@@ -624,15 +624,23 @@
   'use strict';
 
   // ==========================================================
-  // CONFIGURATION EMAILJS
+  // CONFIGURATION EMAILJS - À MODIFIER AVEC VOS PROPRES CLÉS
   // ==========================================================
   const EMAILJS_CONFIG = {
-    publicKey: 'zz4KdlO2Xyw0Y5Gej',
-    serviceID: 'service_g1ip1lt',
-    templateID: 'template_sozwa7c'
+    publicKey: 'VOTRE_PUBLIC_KEY_EMAILJS',  // Remplacez par votre clé publique EmailJS
+    serviceID: 'VOTRE_SERVICE_ID',           // Remplacez par votre Service ID
+    templateID: 'VOTRE_TEMPLATE_ID'          // Remplacez par votre Template ID
   };
 
-  emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+  // Initialisation EmailJS
+  (function() {
+    if (EMAILJS_CONFIG.publicKey !== 'VOTRE_PUBLIC_KEY_EMAILJS') {
+      emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+      console.log('✅ EmailJS initialisé');
+    } else {
+      console.warn('⚠️ EmailJS non configuré - Veuillez ajouter vos clés API');
+    }
+  })();
 
   // ==========================================================
   // DATE ACTUELLE
@@ -642,7 +650,7 @@
   });
 
   // ==========================================================
-  // TOAST
+  // TOAST NOTIFICATIONS
   // ==========================================================
   function showToast(message, type = 'info') {
     const container = document.getElementById('toastContainer');
@@ -658,13 +666,13 @@
   }
 
   // ==========================================================
-  // PHOTOS
+  // GESTION DES PHOTOS
   // ==========================================================
   const photosInput = document.getElementById('photosInput');
   const photosPreview = document.getElementById('photosPreview');
   let photosDataUrls = [];
 
-  function compressImage(file, maxWidth = 600, maxHeight = 450, quality = 0.7) {
+  function compressImage(file, maxWidth = 800, maxHeight = 600, quality = 0.7) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -704,7 +712,8 @@
       photosPreview.appendChild(div);
     });
     document.querySelectorAll('.photo-item .remove').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
         removePhoto(parseInt(this.dataset.index));
       });
     });
@@ -713,14 +722,16 @@
   photosInput.addEventListener('change', async (e) => {
     const files = Array.from(e.target.files);
     if (photosDataUrls.length + files.length > 6) {
-      showToast('⚠️ Maximum 6 photos', 'error');
+      showToast('⚠️ Maximum 6 photos autorisées', 'error');
       return;
     }
     for (const file of files) {
       if (!file.type.startsWith('image/')) continue;
       try {
         photosDataUrls.push(await compressImage(file));
-      } catch (err) { console.error(err); }
+      } catch (err) {
+        console.error('Erreur compression:', err);
+      }
     }
     renderPhotos();
     photosInput.value = '';
@@ -743,20 +754,22 @@
     dropZone.style.background = 'var(--gray-100)';
     const files = Array.from(e.dataTransfer.files);
     if (photosDataUrls.length + files.length > 6) {
-      showToast('⚠️ Maximum 6 photos', 'error');
+      showToast('⚠️ Maximum 6 photos autorisées', 'error');
       return;
     }
     for (const file of files) {
       if (!file.type.startsWith('image/')) continue;
       try {
         photosDataUrls.push(await compressImage(file));
-      } catch (err) { console.error(err); }
+      } catch (err) {
+        console.error('Erreur compression:', err);
+      }
     }
     renderPhotos();
   });
 
   // ==========================================================
-  // SIGNATURES
+  // GESTION DES SIGNATURES
   // ==========================================================
   const canvasOwner = document.getElementById('signature-owner');
   const canvasRenter = document.getElementById('signature-renter');
@@ -770,49 +783,133 @@
     canvas.height = 70 * dpr;
     canvas.style.height = '70px';
     canvas.style.width = '100%';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
   }
+
   resizeCanvas(canvasOwner);
   resizeCanvas(canvasRenter);
 
-  const sigPadOwner = new SignaturePad(canvasOwner, { backgroundColor: 'white', penColor: '#0f2b4a', minWidth: 1.5, maxWidth: 3 });
-  const sigPadRenter = new SignaturePad(canvasRenter, { backgroundColor: 'white', penColor: '#0f2b4a', minWidth: 1.5, maxWidth: 3 });
+  const sigPadOwner = new SignaturePad(canvasOwner, { 
+    backgroundColor: 'white', 
+    penColor: '#0f2b4a', 
+    minWidth: 1.5, 
+    maxWidth: 3 
+  });
+  
+  const sigPadRenter = new SignaturePad(canvasRenter, { 
+    backgroundColor: 'white', 
+    penColor: '#0f2b4a', 
+    minWidth: 1.5, 
+    maxWidth: 3 
+  });
 
   function updateSignatureStatus() {
-    ownerStatus.textContent = sigPadOwner.isEmpty() ? 'Non signé' : '✅ Signé';
-    ownerStatus.className = 'sign-status' + (sigPadOwner.isEmpty() ? '' : ' signed');
-    renterStatus.textContent = sigPadRenter.isEmpty() ? 'Non signé' : '✅ Signé';
-    renterStatus.className = 'sign-status' + (sigPadRenter.isEmpty() ? '' : ' signed');
+    const ownerSigned = !sigPadOwner.isEmpty();
+    const renterSigned = !sigPadRenter.isEmpty();
+    
+    ownerStatus.textContent = ownerSigned ? '✅ Signé' : 'Non signé';
+    ownerStatus.className = 'sign-status' + (ownerSigned ? ' signed' : '');
+    
+    renterStatus.textContent = renterSigned ? '✅ Signé' : 'Non signé';
+    renterStatus.className = 'sign-status' + (renterSigned ? ' signed' : '');
+    
+    // Mettre à jour les champs cachés
+    document.getElementById('signatureOwner').value = ownerSigned ? sigPadOwner.toDataURL() : '';
+    document.getElementById('signatureRenter').value = renterSigned ? sigPadRenter.toDataURL() : '';
   }
 
-  sigPadOwner.onEnd = updateSignatureStatus;
-  sigPadRenter.onEnd = updateSignatureStatus;
+  sigPadOwner.addEventListener('endStroke', updateSignatureStatus);
+  sigPadRenter.addEventListener('endStroke', updateSignatureStatus);
 
   window.clearSignature = function(type) {
-    if (type === 'owner') { sigPadOwner.clear(); updateSignatureStatus(); }
-    if (type === 'renter') { sigPadRenter.clear(); updateSignatureStatus(); }
+    if (type === 'owner') { 
+      sigPadOwner.clear(); 
+    }
+    if (type === 'renter') { 
+      sigPadRenter.clear(); 
+    }
+    updateSignatureStatus();
   };
 
   window.addEventListener('resize', () => {
+    const ownerData = sigPadOwner.toData();
+    const renterData = sigPadRenter.toData();
+    
     resizeCanvas(canvasOwner);
     resizeCanvas(canvasRenter);
+    
+    sigPadOwner.fromData(ownerData);
+    sigPadRenter.fromData(renterData);
   });
 
   // ==========================================================
-  // RÉCUPÉRATION DES DONNÉES
+  // RÉCUPÉRATION DES DONNÉES DU FORMULAIRE
   // ==========================================================
   function getFormData() {
     const form = document.getElementById('etatForm');
-    const data = Object.fromEntries(new FormData(form).entries());
-    data.extras = Array.from(form.querySelectorAll('input[name="extras"]:checked')).map(cb => cb.value);
+    const formData = new FormData(form);
+    const data = {};
+    
+    // Convertir FormData en objet
+    for (const [key, value] of formData.entries()) {
+      if (key === 'extras') {
+        if (!data.extras) data.extras = [];
+        data.extras.push(value);
+      } else {
+        data[key] = value;
+      }
+    }
+    
+    // Ajouter les données qui ne sont pas dans le formulaire
     data.photos = photosDataUrls;
-    data.signatureOwner = sigPadOwner.toDataURL();
-    data.signatureRenter = sigPadRenter.toDataURL();
+    data.signatureOwner = sigPadOwner.isEmpty() ? '' : sigPadOwner.toDataURL();
+    data.signatureRenter = sigPadRenter.isEmpty() ? '' : sigPadRenter.toDataURL();
+    
     return data;
   }
 
-  function checkSignatures() {
-    if (sigPadOwner.isEmpty()) { showToast('❌ Le propriétaire doit signer', 'error'); return false; }
-    if (sigPadRenter.isEmpty()) { showToast('❌ Le locataire doit signer', 'error'); return false; }
+  function validateForm() {
+    const ownerName = document.getElementById('ownerName').value.trim();
+    const ownerEmail = document.getElementById('ownerEmail').value.trim();
+    const renterName = document.getElementById('renterName').value.trim();
+    const renterEmail = document.getElementById('renterEmail').value.trim();
+    const bikeModel = document.getElementById('bikeModel').value.trim();
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    
+    if (!ownerName || !ownerEmail) {
+      showToast('❌ Veuillez remplir les informations du propriétaire', 'error');
+      return false;
+    }
+    if (!renterName || !renterEmail) {
+      showToast('❌ Veuillez remplir les informations du locataire', 'error');
+      return false;
+    }
+    if (!bikeModel || !startDate || !endDate) {
+      showToast('❌ Veuillez remplir tous les champs de location', 'error');
+      return false;
+    }
+    if (sigPadOwner.isEmpty()) {
+      showToast('❌ Le propriétaire doit signer', 'error');
+      return false;
+    }
+    if (sigPadRenter.isEmpty()) {
+      showToast('❌ Le locataire doit signer', 'error');
+      return false;
+    }
+    
+    // Validation des emails
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(ownerEmail)) {
+      showToast('❌ Email du propriétaire invalide', 'error');
+      return false;
+    }
+    if (!emailRegex.test(renterEmail)) {
+      showToast('❌ Email du locataire invalide', 'error');
+      return false;
+    }
+    
     return true;
   }
 
@@ -822,179 +919,238 @@
   async function generatePdf(containerEl, photos = []) {
     try {
       const { jsPDF } = window.jspdf;
+      
+      // Capturer le conteneur avec html2canvas
       const canvas = await html2canvas(containerEl, { 
         scale: 2, 
         useCORS: true, 
         backgroundColor: '#ffffff', 
         logging: false 
       });
+      
       const imgData = canvas.toDataURL('image/jpeg', 0.95);
-      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+      const doc = new jsPDF({ 
+        unit: 'pt', 
+        format: 'a4',
+        orientation: 'portrait'
+      });
+      
       const pageWidth = doc.internal.pageSize.getWidth();
-      const margin = 20;
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 30;
       const usableWidth = pageWidth - margin * 2;
       const imgProps = doc.getImageProperties(imgData);
       const imgHeight = usableWidth / (imgProps.width / imgProps.height);
-      doc.addImage(imgData, 'JPEG', margin, margin, usableWidth, imgHeight);
-      for (const dataUrl of photos.slice(0, 6)) {
-        doc.addPage();
-        const pImgProps = doc.getImageProperties(dataUrl);
-        const pHeight = usableWidth / (pImgProps.width / pImgProps.height);
-        doc.addImage(dataUrl, 'JPEG', margin, margin, usableWidth, pHeight);
+      
+      // Ajouter la première page (formulaire)
+      doc.addImage(imgData, 'JPEG', margin, margin, usableWidth, Math.min(imgHeight, pageHeight - margin * 2));
+      
+      // Ajouter les photos sur des pages séparées
+      if (photos && photos.length > 0) {
+        for (let i = 0; i < Math.min(photos.length, 6); i++) {
+          doc.addPage();
+          
+          // Ajouter un titre pour la photo
+          doc.setFontSize(12);
+          doc.setTextColor(15, 43, 74);
+          doc.text(`Photo ${i + 1}`, margin, margin);
+          
+          const pImgProps = doc.getImageProperties(photos[i]);
+          const pHeight = usableWidth / (pImgProps.width / pImgProps.height);
+          const photoY = margin + 20;
+          
+          doc.addImage(photos[i], 'JPEG', margin, photoY, usableWidth, Math.min(pHeight, pageHeight - photoY - margin));
+        }
       }
+      
       return doc.output('datauristring');
     } catch (error) {
       console.error('Erreur génération PDF:', error);
-      throw error;
+      throw new Error('Erreur lors de la génération du PDF');
     }
   }
 
   // ==========================================================
-  // ENVOI VIA EMAILJS AVEC UPLOAD GOFILE.IO
+  // ENVOI PAR EMAIL AVEC EMAILJS
   // ==========================================================
   async function sendWithEmailJS(data, pdfDataUrl) {
+    // Vérifier si EmailJS est configuré
+    if (EMAILJS_CONFIG.publicKey === 'VOTRE_PUBLIC_KEY_EMAILJS') {
+      throw new Error('EmailJS non configuré. Veuillez configurer vos clés API.');
+    }
+    
     try {
-      showToast('📤 Upload du PDF...', 'info');
-
-      const pdfResponse = await fetch(pdfDataUrl);
-      const pdfBlob = await pdfResponse.blob();
-
-      const formData = new FormData();
-      formData.append('file', pdfBlob);
-
-      const uploadResponse = await fetch('https://store1.gofile.io/uploadFile', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!uploadResponse.ok) {
-        throw new Error('Erreur upload PDF');
-      }
-
-      const uploadResult = await uploadResponse.json();
-      const downloadUrl = uploadResult.data.downloadPage;
-
-      console.log('📎 Lien de téléchargement :', downloadUrl);
-
-      // Construire le rapport des contrôles vélo
+      showToast('📤 Préparation de l\'envoi...', 'info');
+      
+      // Construire le rapport des contrôles
       const bikeParts = ['frame', 'handlebar', 'seat', 'fork', 'wheel_front', 'wheel_rear', 
                          'tire_front', 'tire_rear', 'brakes', 'transmission', 'chain', 'pedals'];
+      
       const partNames = {
         'frame': 'Cadre', 'handlebar': 'Guidon', 'seat': 'Selle', 'fork': 'Fourche',
         'wheel_front': 'Roue Avant', 'wheel_rear': 'Roue Arrière',
         'tire_front': 'Pneu Avant', 'tire_rear': 'Pneu Arrière',
         'brakes': 'Freins', 'transmission': 'Transmission', 'chain': 'Chaîne', 'pedals': 'Pédales'
       };
-      let bikeReport = '';
+      
+      let bikeReport = 'État du vélo :\n\n';
       bikeParts.forEach(part => {
         const state = data[`state_${part}`] || '';
         const note = data[`note_${part}`] || '';
         if (state || note) {
-          bikeReport += `${partNames[part] || part}: ${state || 'Non spécifié'}${note ? ' ('+note+')' : ''}\n`;
+          bikeReport += `• ${partNames[part] || part}: ${state || 'Non spécifié'}${note ? ' (' + note + ')' : ''}\n`;
         }
       });
-
+      
+      // Construire la liste des accessoires
+      const accessories = data.extras || [];
+      const accessoryList = accessories.length > 0 ? accessories.join(', ') : 'Aucun';
+      
+      // Préparer les paramètres pour EmailJS
       const templateParams = {
-        to_email: data.ownerEmail || '',
-        cc_email: data.renterEmail || '',
-        proprietaire: data.ownerName || '',
-        proprietaire_email: data.ownerEmail || '',
-        locataire: data.renterName || '',
-        locataire_email: data.renterEmail || '',
-        velo: data.bikeModel || '',
-        debut: data.startDate || '',
-        fin: data.endDate || '',
-        observations: data.generalNotes || 'Aucune',
-        accessoires: (data.extras || []).join(', ') || 'Aucun',
-        date_signature: new Date().toLocaleDateString('fr-FR'),
-        controle_velo: bikeReport || 'Aucun contrôle effectué',
-        lien_direct: downloadUrl
+        to_email: data.ownerEmail,
+        to_name: data.ownerName,
+        cc_email: data.renterEmail,
+        proprietaire: data.ownerName,
+        proprietaire_email: data.ownerEmail,
+        locataire: data.renterName,
+        locataire_email: data.renterEmail,
+        velo: data.bikeModel,
+        numero_serie: data.serialNumber || 'Non spécifié',
+        debut: data.startDate,
+        fin: data.endDate,
+        observations: data.generalNotes || 'Aucune observation',
+        accessoires: accessoryList,
+        controle_velo: bikeReport,
+        date_signature: new Date().toLocaleDateString('fr-FR', {
+          day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        }),
+        pdf_base64: pdfDataUrl  // Envoyer le PDF en base64
       };
-
-      showToast('📧 Envoi de l\'email...', 'info');
+      
+      showToast('📧 Envoi des emails en cours...', 'info');
+      
       const response = await emailjs.send(
         EMAILJS_CONFIG.serviceID,
         EMAILJS_CONFIG.templateID,
         templateParams
       );
-
+      
       if (response.status === 200) {
-        showToast('✅ Contrat envoyé aux deux parties !', 'success');
+        showToast('✅ État des lieux envoyé avec succès aux deux parties !', 'success');
         return true;
       } else {
-        throw new Error(`Erreur ${response.status}`);
+        throw new Error(`Erreur d'envoi: statut ${response.status}`);
       }
-
+      
     } catch (error) {
-      console.error('❌ Erreur:', error);
-      showToast('❌ Erreur: ' + error.message, 'error');
-      return false;
+      console.error('❌ Erreur EmailJS:', error);
+      let errorMessage = 'Erreur lors de l\'envoi de l\'email';
+      
+      if (error.message.includes('non configuré')) {
+        errorMessage = error.message;
+      } else if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
+        errorMessage = 'Erreur réseau. Vérifiez votre connexion internet.';
+      } else if (error.message.includes('401') || error.message.includes('403')) {
+        errorMessage = 'Erreur d\'authentification EmailJS. Vérifiez votre clé publique.';
+      } else if (error.message.includes('412')) {
+        errorMessage = 'Erreur EmailJS. Vérifiez votre Service ID et Template ID.';
+      }
+      
+      throw new Error(errorMessage);
     }
   }
 
   // ==========================================================
-  // BOUTONS
+  // BOUTON PRINCIPAL : SIGNER ET ENVOYER
   // ==========================================================
   document.getElementById('generateSendBtn').addEventListener('click', async function() {
     console.log('🖱️ Clic sur "Signer et envoyer"');
-    if (!checkSignatures()) return;
+    
+    // Valider le formulaire
+    if (!validateForm()) return;
+    
+    // Désactiver le bouton pendant le traitement
     this.disabled = true;
-    const originalText = this.innerHTML;
-    this.innerHTML = '<span class="spinner"></span> Envoi en cours...';
-
+    const originalHTML = this.innerHTML;
+    this.innerHTML = '<span class="spinner"></span> Traitement en cours...';
+    
     try {
       const data = getFormData();
-      if (!data.ownerEmail || !data.renterEmail) {
-        showToast('❌ Les emails sont obligatoires', 'error');
-        this.disabled = false;
-        this.innerHTML = originalText;
-        return;
-      }
-
+      
+      // Générer le PDF
       showToast('📄 Génération du PDF...', 'info');
       const container = document.getElementById('contractContainer');
       const pdfDataUrl = await generatePdf(container, data.photos || []);
+      
+      // Envoyer par email
       await sendWithEmailJS(data, pdfDataUrl);
+      
     } catch (error) {
       console.error('❌ Erreur:', error);
       showToast('❌ ' + error.message, 'error');
     } finally {
+      // Réactiver le bouton
       this.disabled = false;
-      this.innerHTML = originalText;
+      this.innerHTML = originalHTML;
     }
   });
 
+  // ==========================================================
+  // BOUTON TÉLÉCHARGER PDF
+  // ==========================================================
   document.getElementById('downloadEtatBtn').addEventListener('click', async function() {
     try {
       this.disabled = true;
+      const originalText = this.textContent;
       this.textContent = '⏳ Génération...';
+      
       const data = getFormData();
       const container = document.getElementById('contractContainer');
       const pdfDataUrl = await generatePdf(container, data.photos || []);
+      
+      // Créer un lien de téléchargement
       const link = document.createElement('a');
       link.href = pdfDataUrl;
-      link.download = `etat-lieux-${data.renterName || 'location'}.pdf`;
+      
+      // Nom du fichier
+      const renterName = (data.renterName || 'location').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const dateStr = new Date().toISOString().split('T')[0];
+      link.download = `etat_des_lieux_velo_${renterName}_${dateStr}.pdf`;
+      
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      showToast('✅ PDF téléchargé !', 'success');
+      
+      showToast('✅ PDF téléchargé avec succès !', 'success');
     } catch (error) {
-      console.error('❌ Erreur:', error);
-      showToast('❌ Erreur lors du téléchargement', 'error');
+      console.error('❌ Erreur téléchargement:', error);
+      showToast('❌ Erreur lors du téléchargement du PDF', 'error');
     } finally {
       this.disabled = false;
       this.textContent = '⬇️ Télécharger PDF';
     }
   });
 
+  // ==========================================================
+  // BOUTON ENREGISTRER
+  // ==========================================================
   document.getElementById('saveEtatBtn').addEventListener('click', function() {
-    const data = getFormData();
-    localStorage.setItem('expressVeloEtat', JSON.stringify(data));
-    showToast('✅ État des lieux enregistré localement', 'success');
+    try {
+      const data = getFormData();
+      localStorage.setItem('expressVeloEtat', JSON.stringify(data));
+      showToast('✅ État des lieux enregistré localement', 'success');
+    } catch (error) {
+      console.error('❌ Erreur sauvegarde:', error);
+      showToast('❌ Erreur lors de la sauvegarde', 'error');
+    }
   });
 
+  // ==========================================================
+  // BOUTON RÉINITIALISER
+  // ==========================================================
   document.getElementById('resetFormBtn').addEventListener('click', function() {
-    if (confirm('Voulez-vous vraiment réinitialiser tout le formulaire ?')) {
+    if (confirm('⚠️ Voulez-vous vraiment réinitialiser tout le formulaire ? Cette action est irréversible.')) {
       document.getElementById('etatForm').reset();
       sigPadOwner.clear();
       sigPadRenter.clear();
@@ -1008,30 +1164,45 @@
   // ==========================================================
   // CHARGEMENT DES DONNÉES SAUVEGARDÉES
   // ==========================================================
-  (function() {
-    const saved = localStorage.getItem('expressVeloEtat');
-    if (saved) {
-      try {
-        const data = JSON.parse(saved);
-        Object.keys(data).forEach(key => {
-          if (['extras', 'photos', 'signatureOwner', 'signatureRenter'].includes(key)) return;
-          const el = document.querySelector(`[name="${key}"]`);
-          if (el) el.value = data[key];
+  (function loadSavedData() {
+    try {
+      const saved = localStorage.getItem('expressVeloEtat');
+      if (!saved) return;
+      
+      const data = JSON.parse(saved);
+      
+      // Restaurer les champs du formulaire
+      Object.keys(data).forEach(key => {
+        if (['extras', 'photos', 'signatureOwner', 'signatureRenter'].includes(key)) return;
+        
+        const el = document.querySelector(`[name="${key}"]`);
+        if (el) {
+          if (el.type === 'checkbox') {
+            el.checked = data[key];
+          } else {
+            el.value = data[key] || '';
+          }
+        }
+      });
+      
+      // Restaurer les accessoires cochés
+      if (data.extras && Array.isArray(data.extras)) {
+        data.extras.forEach(val => {
+          const cb = document.querySelector(`input[name="extras"][value="${val}"]`);
+          if (cb) cb.checked = true;
         });
-        if (data.extras) {
-          data.extras.forEach(val => {
-            const cb = document.querySelector(`input[name="extras"][value="${val}"]`);
-            if (cb) cb.checked = true;
-          });
-        }
-        if (data.photos && data.photos.length > 0) {
-          photosDataUrls = data.photos;
-          renderPhotos();
-        }
-        console.log('📂 Données sauvegardées chargées');
-      } catch (e) {
-        console.error('Erreur chargement sauvegarde:', e);
       }
+      
+      // Restaurer les photos
+      if (data.photos && Array.isArray(data.photos) && data.photos.length > 0) {
+        photosDataUrls = data.photos;
+        renderPhotos();
+      }
+      
+      console.log('📂 Données sauvegardées chargées avec succès');
+    } catch (e) {
+      console.error('Erreur lors du chargement des données:', e);
+      localStorage.removeItem('expressVeloEtat');
     }
   })();
 
@@ -1039,8 +1210,9 @@
   // INITIALISATION
   // ==========================================================
   updateSignatureStatus();
-  console.log('🚀 Application prête avec EmailJS !');
-
+  console.log('🚀 Application prête !');
+  console.log('📋 Configuration EmailJS:', EMAILJS_CONFIG.publicKey !== 'VOTRE_PUBLIC_KEY_EMAILJS' ? '✅ Configuré' : '⚠️ Non configuré');
+  
 </script>
 </body>
 </html>
