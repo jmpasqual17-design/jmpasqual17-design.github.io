@@ -1186,103 +1186,77 @@
 
     drawSeparator();
 
-    <!-- SECTION 4 : ACCESSOIRES -->
-<div class="section">
-  <div class="section-header">
-    <span class="section-number">4</span>
-    <span class="section-title">Accessoires fournis</span>
-  </div>
-  
-  <div class="accessories-row">
-    <!-- Casque -->
-    <div class="accessory-card">
-      <label class="checkbox-label">
-        <input type="checkbox" name="extras" value="helmet">
-        <span>Casque</span>
-      </label>
-      <select name="state_helmet">
-        <option value="">État</option>
-        <option value="Bon">Bon</option>
-        <option value="Usé">Usé</option>
-        <option value="Endommagé">Endommagé</option>
-      </select>
-      <input type="text" name="note_helmet" placeholder="Note">
-    </div>
+    // ---- 4. ACCESSOIRES ----
+    if (y > pageH - 40) { doc.addPage(); y = margin; }
+    sectionTitle('4', 'ACCESSOIRES FOURNIS');
 
-    <!-- Antivol -->
-    <div class="accessory-card">
-      <label class="checkbox-label">
-        <input type="checkbox" name="extras" value="lock">
-        <span>Antivol</span>
-      </label>
-      <select name="state_lock">
-        <option value="">État</option>
-        <option value="Bon">Bon</option>
-        <option value="Usé">Usé</option>
-        <option value="Défaillant">Défaillant</option>
-      </select>
-      <input type="text" name="note_lock" placeholder="Note">
-    </div>
+    const accessories = [
+      { key: 'helmet', label: 'Casque' },
+      { key: 'lock', label: 'Antivol' },
+      { key: 'lights', label: 'Éclairage' },
+      { key: 'basket', label: 'Panier' },
+      { key: 'repairkit', label: 'Kit réparation' },
+      { key: 'other', label: 'Autre' }
+    ];
 
-    <!-- Éclairage -->
-    <div class="accessory-card">
-      <label class="checkbox-label">
-        <input type="checkbox" name="extras" value="lights">
-        <span>Éclairage</span>
-      </label>
-      <select name="state_lights">
-        <option value="">État</option>
-        <option value="Bon">Bon</option>
-        <option value="Usé">Usé</option>
-        <option value="Défaillant">Défaillant</option>
-      </select>
-      <input type="text" name="note_lights" placeholder="Note">
-    </div>
+    let hasAccessories = false;
+    accessories.forEach(acc => {
+      if (data.extras && data.extras.includes(acc.key)) {
+        hasAccessories = true;
+        if (y > pageH - 20) { doc.addPage(); y = margin; }
+        const state = data['state_' + acc.key] || '-';
+        const note = data['note_' + acc.key] || '-';
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.text(acc.label + ' :', margin, y);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.text('État : ' + state + '  |  Note : ' + note, margin + 30, y);
+        y += 5;
+      }
+    });
 
-    <!-- Panier -->
-    <div class="accessory-card">
-      <label class="checkbox-label">
-        <input type="checkbox" name="extras" value="basket">
-        <span>Panier</span>
-      </label>
-      <select name="state_basket">
-        <option value="">État</option>
-        <option value="Bon">Bon</option>
-        <option value="Usé">Usé</option>
-        <option value="Cassé">Cassé</option>
-      </select>
-      <input type="text" name="note_basket" placeholder="Note">
-    </div>
+    if (!hasAccessories) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.text('Aucun accessoire fourni', margin, y);
+      y += 5;
+    }
 
-    <!-- Kit réparation -->
-    <div class="accessory-card">
-      <label class="checkbox-label">
-        <input type="checkbox" name="extras" value="repairkit">
-        <span>Kit réparation</span>
-      </label>
-      <select name="state_repairkit">
-        <option value="">État</option>
-        <option value="Bon">Bon</option>
-        <option value="Incomplet">Incomplet</option>
-      </select>
-      <input type="text" name="note_repairkit" placeholder="Note">
-    </div>
+    y += 5;
+    drawSeparator();
 
-    <!-- Autre -->
-    <div class="accessory-card">
-      <label class="checkbox-label">
-        <input type="checkbox" name="extras" value="other">
-        <span>Autre</span>
-      </label>
-      <select name="state_other">
-        <option value="">État</option>
-        <option value="Bon">Bon</option>
-        <option value="Usé">Usé</option>
-      </select>
-      <input type="text" name="note_other" placeholder="Détail">
-    </div>
-  </div>
-</div>
+    // ---- 5. PHOTOS ----
+    if (data.photos && data.photos.length > 0) {
+      if (y > pageH - 50) { doc.addPage(); y = margin; }
+      sectionTitle('5', 'PHOTOS DU VÉLO');
+
+      for (let i = 0; i < Math.min(data.photos.length, 6); i++) {
+        if (y > pageH - 50) { doc.addPage(); y = margin; }
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.text('Photo ' + (i + 1), margin, y);
+        y += 4;
+
+        try {
+          const imgProps = doc.getImageProperties(data.photos[i]);
+          const maxW = 70;
+          const maxH = 45;
+          let imgW = imgProps.width;
+          let imgH = imgProps.height;
+
+          if (imgW > maxW) { imgH = (imgH * maxW) / imgW; imgW = maxW; }
+          if (imgH > maxH) { imgW = (imgW * maxH) / imgH; imgH = maxH; }
+
+          doc.addImage(data.photos[i], 'JPEG', margin, y, imgW, imgH);
+          y += imgH + 6;
+        } catch (e) {
+          doc.text('(Image non disponible)', margin, y);
+          y += 4;
+        }
+      }
+      drawSeparator();
     }
 
     // ---- 6. SIGNATURES ----
