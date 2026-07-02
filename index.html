@@ -852,6 +852,7 @@
     setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 4000);
   }
 
+  // PHOTOS
   const photosInput = document.getElementById('photosInput');
   const photosPreview = document.getElementById('photosPreview');
   let photosDataUrls = [];
@@ -919,6 +920,7 @@
     renderPhotos();
   });
 
+  // SIGNATURES
   const canvasOwner = document.getElementById('signature-owner');
   const canvasRenter = document.getElementById('signature-renter');
   const ownerStatus = document.getElementById('ownerStatus');
@@ -944,8 +946,6 @@
     ownerStatus.className = 'sign-status' + (sigPadOwner.isEmpty() ? '' : ' signed');
     renterStatus.textContent = sigPadRenter.isEmpty() ? 'En attente' : 'Signé';
     renterStatus.className = 'sign-status' + (sigPadRenter.isEmpty() ? '' : ' signed');
-    document.getElementById('signatureOwner').value = sigPadOwner.isEmpty() ? '' : sigPadOwner.toDataURL();
-    document.getElementById('signatureRenter').value = sigPadRenter.isEmpty() ? '' : sigPadRenter.toDataURL();
   }
 
   sigPadOwner.addEventListener('endStroke', updateSignatureStatus);
@@ -985,9 +985,9 @@
     const bM = document.getElementById('bikeModel').value.trim();
     const sD = document.getElementById('startDate').value;
     const eD = document.getElementById('endDate').value;
-    if (!oN || !oE) { showToast('Veuillez remplir les informations du propriétaire', 'error'); return false; }
-    if (!rN || !rE) { showToast('Veuillez remplir les informations du locataire', 'error'); return false; }
-    if (!bM || !sD || !eD) { showToast('Veuillez remplir tous les champs de location', 'error'); return false; }
+    if (!oN || !oE) { showToast('Informations du propriétaire requises', 'error'); return false; }
+    if (!rN || !rE) { showToast('Informations du locataire requises', 'error'); return false; }
+    if (!bM || !sD || !eD) { showToast('Tous les champs de location sont requis', 'error'); return false; }
     if (sigPadOwner.isEmpty()) { showToast('Le propriétaire doit signer', 'error'); return false; }
     if (sigPadRenter.isEmpty()) { showToast('Le locataire doit signer', 'error'); return false; }
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -996,19 +996,336 @@
     return true;
   }
 
-  async function generateOptimizedPDF(containerEl) {
+  // ============================================================
+  // GÉNÉRATION DU PDF NATIF (PROPRE ET LISIBLE)
+  // ============================================================
+  async function generateNativePDF(data) {
     const { jsPDF } = window.jspdf;
-    const canvas = await html2canvas(containerEl, { scale: 1.5, useCORS: true, backgroundColor: '#ffffff', logging: false });
-    const imgData = canvas.toDataURL('image/jpeg', 0.5);
-    const doc = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'portrait', compress: true });
-    const pw = doc.internal.pageSize.getWidth(), ph = doc.internal.pageSize.getHeight(), m = 30;
-    const uw = pw - m * 2;
-    const ip = doc.getImageProperties(imgData);
-    const ih = uw / (ip.width / ip.height);
-    doc.addImage(imgData, 'JPEG', m, m, uw, Math.min(ih, ph - m * 2));
+    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+    const margin = 15;
+    const contentW = pageW - margin * 2;
+    let y = margin;
+    
+    // Police et couleurs
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(26, 26, 46);
+    
+    // ======= TITRE PRINCIPAL =======
+    doc.setFontSize(22);
+    doc.text('ÉTAT DES LIEUX DE DÉPART', pageW / 2, y + 10, { align: 'center' });
+    y += 18;
+    
+    // Ligne décorative sous le titre
+    doc.setDrawColor(201, 168, 76);
+    doc.setLineWidth(0.8);
+    doc.line(margin, y, pageW - margin, y);
+    y += 8;
+    
+    // Sous-titre
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Contrat de location de vélo entre particuliers', pageW / 2, y, { align: 'center' });
+    doc.text('Date : ' + new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }), pageW / 2, y + 5, { align: 'center' });
+    y += 14;
+    
+    // ======= LIGNE DE SÉPARATION =======
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.3);
+    doc.line(margin, y, pageW - margin, y);
+    y += 8;
+    
+    // ======= SECTION 1 : PARTIES =======
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(26, 26, 46);
+    doc.text('1. PARTIES', margin, y);
+    y += 8;
+    
+    doc.setDrawColor(26, 26, 46);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y, margin + 40, y);
+    y += 6;
+    
+    // Informations propriétaire
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('Propriétaire / Bailleur', margin, y);
+    y += 6;
+    doc.setFont('helvetica', 'normal');
+    doc.text('Nom : ' + (data.ownerName || 'Non renseigné'), margin + 5, y);
+    y += 5;
+    doc.text('Email : ' + (data.ownerEmail || 'Non renseigné'), margin + 5, y);
+    y += 8;
+    
+    // Informations locataire
+    doc.setFont('helvetica', 'bold');
+    doc.text('Locataire / Preneur', margin, y);
+    y += 6;
+    doc.setFont('helvetica', 'normal');
+    doc.text('Nom : ' + (data.renterName || 'Non renseigné'), margin + 5, y);
+    y += 5;
+    doc.text('Email : ' + (data.renterEmail || 'Non renseigné'), margin + 5, y);
+    y += 10;
+    
+    // ======= SECTION 2 : LOCATION =======
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text('2. LOCATION', margin, y);
+    y += 8;
+    doc.setDrawColor(26, 26, 46);
+    doc.line(margin, y, margin + 40, y);
+    y += 6;
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('Vélo :', margin, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(data.bikeModel || 'Non renseigné', margin + 20, y);
+    y += 5;
+    
+    doc.setFont('helvetica', 'bold');
+    doc.text('N° de série :', margin, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(data.serialNumber || 'Non renseigné', margin + 20, y);
+    y += 5;
+    
+    doc.setFont('helvetica', 'bold');
+    doc.text('Période :', margin, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Du ' + (data.startDate || 'N/C') + ' au ' + (data.endDate || 'N/C'), margin + 20, y);
+    y += 12;
+    
+    // ======= SECTION 3 : CONTRÔLE DU VÉLO =======
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text('3. INSPECTION DU VÉLO', margin, y);
+    y += 8;
+    doc.line(margin, y, margin + 50, y);
+    y += 8;
+    
+    const bikeParts = [
+      { key: 'frame', label: 'Cadre' },
+      { key: 'handlebar', label: 'Guidon' },
+      { key: 'seat', label: 'Selle' },
+      { key: 'fork', label: 'Fourche' },
+      { key: 'wheel_front', label: 'Roue avant' },
+      { key: 'wheel_rear', label: 'Roue arrière' },
+      { key: 'tire_front', label: 'Pneu avant' },
+      { key: 'tire_rear', label: 'Pneu arrière' },
+      { key: 'brakes', label: 'Freins' },
+      { key: 'transmission', label: 'Transmission' },
+      { key: 'chain', label: 'Chaîne' },
+      { key: 'pedals', label: 'Pédales' }
+    ];
+    
+    // En-tête du tableau
+    doc.setFillColor(245, 245, 245);
+    doc.rect(margin, y, contentW, 7, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.text('Pièce', margin + 3, y + 5);
+    doc.text('État', margin + 55, y + 5);
+    doc.text('Observation', margin + 110, y + 5);
+    y += 8;
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    
+    bikeParts.forEach((part, index) => {
+      // Alterner les couleurs de fond
+      if (index % 2 === 0) {
+        doc.setFillColor(250, 250, 250);
+        doc.rect(margin, y, contentW, 6, 'F');
+      }
+      
+      const state = data['state_' + part.key] || '-';
+      const note = data['note_' + part.key] || '-';
+      
+      doc.text(part.label, margin + 3, y + 4.5);
+      doc.text(state, margin + 55, y + 4.5);
+      doc.text(note.length > 40 ? note.substring(0, 40) + '...' : note, margin + 110, y + 4.5);
+      y += 6;
+      
+      // Nouvelle page si nécessaire
+      if (y > pageH - 30) {
+        doc.addPage();
+        y = margin;
+      }
+    });
+    
+    y += 6;
+    
+    // Observations générales
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('Observations générales :', margin, y);
+    y += 6;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    const observations = data.generalNotes || 'Aucune';
+    const lines = doc.splitTextToSize(observations, contentW - 10);
+    doc.text(lines, margin + 5, y);
+    y += lines.length * 5 + 8;
+    
+    // ======= SECTION 4 : ACCESSOIRES =======
+    if (y > pageH - 40) { doc.addPage(); y = margin; }
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text('4. ACCESSOIRES', margin, y);
+    y += 8;
+    doc.line(margin, y, margin + 40, y);
+    y += 8;
+    
+    const accessories = [
+      { key: 'helmet', label: 'Casque', checked: data.extras && data.extras.includes('helmet') },
+      { key: 'lock', label: 'Antivol', checked: data.extras && data.extras.includes('lock') },
+      { key: 'lights', label: 'Éclairage', checked: data.extras && data.extras.includes('lights') },
+      { key: 'basket', label: 'Panier', checked: data.extras && data.extras.includes('basket') },
+      { key: 'repairkit', label: 'Kit réparation', checked: data.extras && data.extras.includes('repairkit') },
+      { key: 'other', label: 'Autre', checked: data.extras && data.extras.includes('other') }
+    ];
+    
+    accessories.forEach(acc => {
+      if (acc.checked) {
+        const state = data['state_' + acc.key] || '-';
+        const note = data['note_' + acc.key] || '-';
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.text(acc.label + ' :', margin, y);
+        doc.setFont('helvetica', 'normal');
+        doc.text('État : ' + state + ' | Note : ' + note, margin + 30, y);
+        y += 5;
+      }
+    });
+    
+    if (!data.extras || data.extras.length === 0) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.text('Aucun accessoire fourni', margin, y);
+      y += 5;
+    }
+    
+    y += 10;
+    
+    // ======= SECTION 5 : PHOTOS =======
+    if (data.photos && data.photos.length > 0) {
+      if (y > pageH - 50) { doc.addPage(); y = margin; }
+      
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.text('5. PHOTOS', margin, y);
+      y += 8;
+      doc.line(margin, y, margin + 30, y);
+      y += 8;
+      
+      for (let i = 0; i < Math.min(data.photos.length, 6); i++) {
+        if (y > pageH - 60) { doc.addPage(); y = margin; }
+        
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.text('Photo ' + (i + 1), margin, y);
+        y += 5;
+        
+        try {
+          const imgProps = doc.getImageProperties(data.photos[i]);
+          const maxW = 80;
+          const maxH = 50;
+          let imgW = imgProps.width;
+          let imgH = imgProps.height;
+          
+          if (imgW > maxW) { imgH = (imgH * maxW) / imgW; imgW = maxW; }
+          if (imgH > maxH) { imgW = (imgW * maxH) / imgH; imgH = maxH; }
+          
+          doc.addImage(data.photos[i], 'JPEG', margin, y, imgW, imgH);
+          y += imgH + 8;
+        } catch(e) {
+          doc.text('(Image non disponible)', margin, y);
+          y += 5;
+        }
+      }
+    }
+    
+    // ======= SECTION 6 : SIGNATURES =======
+    if (y > pageH - 70) { doc.addPage(); y = margin; }
+    
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.3);
+    doc.line(margin, y, pageW - margin, y);
+    y += 8;
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text('6. SIGNATURES', margin, y);
+    y += 8;
+    doc.line(margin, y, margin + 40, y);
+    y += 10;
+    
+    // Signature propriétaire
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('Propriétaire / Bailleur', margin, y);
+    y += 5;
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.text('« Lu et approuvé — Bon pour accord »', margin, y);
+    y += 5;
+    
+    if (data.signatureOwner) {
+      try {
+        doc.addImage(data.signatureOwner, 'PNG', margin, y, 60, 20);
+        y += 22;
+      } catch(e) {
+        doc.setFont('helvetica', 'normal');
+        doc.text('(Signature numérique capturée)', margin, y);
+        y += 6;
+      }
+    }
+    
+    y += 10;
+    
+    // Signature locataire
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('Locataire / Preneur', margin, y);
+    y += 5;
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.text('« Lu et approuvé — Bon pour accord »', margin, y);
+    y += 5;
+    
+    if (data.signatureRenter) {
+      try {
+        doc.addImage(data.signatureRenter, 'PNG', margin, y, 60, 20);
+        y += 22;
+      } catch(e) {
+        doc.setFont('helvetica', 'normal');
+        doc.text('(Signature numérique capturée)', margin, y);
+        y += 6;
+      }
+    }
+    
+    y += 15;
+    
+    // Pied de page
+    doc.setDrawColor(200, 200, 200);
+    doc.line(margin, y, pageW - margin, y);
+    y += 6;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(150, 150, 150);
+    doc.text('Document signé électroniquement — Conforme au règlement eIDAS — ' + new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }), pageW / 2, y, { align: 'center' });
+    
     return doc.output('datauristring');
   }
 
+  // ============================================================
+  // UPLOAD ET ENVOI
+  // ============================================================
   async function uploadPDF(pdfBase64, fileName) {
     try {
       const base64Data = pdfBase64.split(',')[1] || pdfBase64;
@@ -1037,14 +1354,14 @@
   async function sendWithEmailJS(data, pdfBase64) {
     const rn = (data.renterName || 'location').replace(/[^a-z0-9]/gi, '_').toLowerCase();
     const ds = new Date().toISOString().split('T')[0];
-    const fn = 'etat_des_lieux_depart_' + rn + '_' + ds + '.pdf';
+    const fn = 'ETAT_DES_LIEUX_DEPART_' + rn + '_' + ds + '.pdf';
     showToast('Mise en ligne du PDF...', 'info');
     const pdfLink = await uploadPDF(pdfBase64, fn);
 
     const bp = ['frame','handlebar','seat','fork','wheel_front','wheel_rear','tire_front','tire_rear','brakes','transmission','chain','pedals'];
     const pn = { frame:'Cadre',handlebar:'Guidon',seat:'Selle',fork:'Fourche',wheel_front:'Roue avant',wheel_rear:'Roue arrière',tire_front:'Pneu avant',tire_rear:'Pneu arrière',brakes:'Freins',transmission:'Transmission',chain:'Chaîne',pedals:'Pédales' };
     let br = '';
-    bp.forEach(p => { const s = data['state_'+p]||'', n = data['note_'+p]||''; if(s||n) br += '• ' + (pn[p]||p) + ': ' + (s||'Non spécifié') + (n?' ('+n+')':'') + '\n'; });
+    bp.forEach(p => { const s = data['state_'+p]||'', n = data['note_'+p]||''; if(s||n) br += (pn[p]||p) + ': ' + (s||'N/S') + (n?' ('+n+')':'') + '\n'; });
 
     const dsig = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
     const cp = {
@@ -1069,6 +1386,9 @@
     return true;
   }
 
+  // ============================================================
+  // BOUTONS
+  // ============================================================
   document.getElementById('generateSendBtn').addEventListener('click', async function() {
     if (!validateForm()) return;
     this.disabled = true;
@@ -1076,7 +1396,8 @@
     this.innerHTML = '<span class="spinner"></span> Traitement...';
     try {
       const data = getFormData();
-      const pdfBase64 = await generateOptimizedPDF(document.getElementById('contractContainer'));
+      showToast('Génération du PDF...', 'info');
+      const pdfBase64 = await generateNativePDF(data);
       await sendWithEmailJS(data, pdfBase64);
     } catch(e) { showToast('Erreur: ' + e.message, 'error'); }
     this.disabled = false;
@@ -1087,22 +1408,12 @@
     this.disabled = true;
     try {
       const data = getFormData();
-      const { jsPDF } = window.jspdf;
-      const canvas = await html2canvas(document.getElementById('contractContainer'), { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false });
-      const imgData = canvas.toDataURL('image/jpeg', 0.8);
-      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
-      const pw = doc.internal.pageSize.getWidth(), ph = doc.internal.pageSize.getHeight(), m = 30, uw = pw - m * 2;
-      const ip = doc.getImageProperties(imgData), ih = uw / (ip.width / ip.height);
-      doc.addImage(imgData, 'JPEG', m, m, uw, Math.min(ih, ph - m * 2));
-      if (data.photos) data.photos.forEach((p, i) => {
-        doc.addPage();
-        const pip = doc.getImageProperties(p), pih = uw / (pip.width / pip.height);
-        doc.addImage(p, 'JPEG', m, m + 20, uw, Math.min(pih, ph - m - 40));
-      });
+      showToast('Génération du PDF...', 'info');
+      const pdfBase64 = await generateNativePDF(data);
       const rn = (data.renterName || 'location').replace(/[^a-z0-9]/gi, '_').toLowerCase();
       const a = document.createElement('a');
-      a.href = doc.output('datauristring');
-      a.download = 'etat_des_lieux_depart_' + rn + '_' + new Date().toISOString().split('T')[0] + '.pdf';
+      a.href = pdfBase64;
+      a.download = 'ETAT_DES_LIEUX_DEPART_' + rn + '_' + new Date().toISOString().split('T')[0] + '.pdf';
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       showToast('PDF téléchargé', 'success');
     } catch(e) { showToast('Erreur téléchargement', 'error'); }
@@ -1141,5 +1452,3 @@
 
   updateSignatureStatus();
 </script>
-</body>
-</html>
