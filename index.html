@@ -840,6 +840,68 @@
 
   document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
+
+  // Récupérer les données du contrat si elles existent
+  (function() {
+    try {
+      const contratData = localStorage.getItem('contratVeloData');
+      if (contratData) {
+        const data = JSON.parse(contratData);
+        
+        console.log('📂 Données contrat trouvées, pré-remplissage des champs...');
+        
+        // Pré-remplir les champs de l'état des lieux
+        if (data.ownerName && document.getElementById('ownerName')) {
+          document.getElementById('ownerName').value = data.ownerName;
+        }
+        if (data.ownerEmail && document.getElementById('ownerEmail')) {
+          document.getElementById('ownerEmail').value = data.ownerEmail;
+        }
+        if (data.renterName && document.getElementById('renterName')) {
+          document.getElementById('renterName').value = data.renterName;
+        }
+        if (data.renterEmail && document.getElementById('renterEmail')) {
+          document.getElementById('renterEmail').value = data.renterEmail;
+        }
+        if (data.bikeModel && document.getElementById('bikeModel')) {
+          document.getElementById('bikeModel').value = data.bikeModel;
+        }
+        if (data.serialNumber && document.getElementById('serialNumber')) {
+          document.getElementById('serialNumber').value = data.serialNumber;
+        }
+        if (data.startDate && document.getElementById('startDate')) {
+          document.getElementById('startDate').value = data.startDate;
+        }
+        if (data.endDate && document.getElementById('endDate')) {
+          document.getElementById('endDate').value = data.endDate;
+        }
+        
+        console.log('✅ Données du contrat importées avec succès');
+        
+        // Afficher un message de confirmation discret
+        setTimeout(() => {
+          const container = document.getElementById('toastContainer');
+          if (container) {
+            const toast = document.createElement('div');
+            toast.className = 'toast success show';
+            toast.textContent = '📋 Données du contrat importées automatiquement';
+            container.appendChild(toast);
+            setTimeout(() => { 
+              toast.classList.remove('show'); 
+              setTimeout(() => toast.remove(), 400); 
+            }, 4000);
+          }
+        }, 500);
+        
+        // Nettoyer le localStorage après utilisation
+        // localStorage.removeItem('contratVeloData');
+      }
+    } catch(e) {
+      console.error('❌ Erreur import données contrat:', e);
+    }
+  })();
+  
+  
   // ==========================================================
   // TOAST
   // ==========================================================
