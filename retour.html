@@ -711,43 +711,75 @@
     templateID: 'template_sozwa7c'
   };
 
-  (function() { try { emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey }); console.log('EmailJS OK'); } catch(e) {} })();
-
-  document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-
-  // Importation des données de l'état des lieux de départ
-  (function() {
+// Importation des données de l'état des lieux de départ
+(function() {
+  // 1. Essayer de récupérer depuis le localStorage (données complètes)
+  const saved = localStorage.getItem('expressVeloEtatDepart');
+  if (saved) {
     try {
-      const etatDepartData = localStorage.getItem('expressVeloEtat');
-      if (etatDepartData) {
-        const data = JSON.parse(etatDepartData);
-        console.log('📂 Données état des lieux départ trouvées');
-        
-        if (data.ownerName) document.getElementById('ownerName').value = data.ownerName;
-        if (data.ownerEmail) document.getElementById('ownerEmail').value = data.ownerEmail;
-        if (data.renterName) document.getElementById('renterName').value = data.renterName;
-        if (data.renterEmail) document.getElementById('renterEmail').value = data.renterEmail;
-        if (data.bikeModel) document.getElementById('bikeModel').value = data.bikeModel;
-        if (data.serialNumber) document.getElementById('serialNumber').value = data.serialNumber;
-        if (data.startDate) document.getElementById('startDate').value = data.startDate;
-        
-        // Pré-remplir les états de départ pour comparaison
-        const bikeParts = ['frame','handlebar','seat','fork','wheel_front','wheel_rear','tire_front','tire_rear','brakes','transmission','chain','pedals'];
-        bikeParts.forEach(part => {
-          const stateEl = document.querySelector('[name="state_' + part + '"]');
-          const noteEl = document.querySelector('[name="note_' + part + '"]');
-          if (stateEl && data['state_' + part]) {
-            // Ajouter une option pour voir l'état de départ
+      const data = JSON.parse(saved);
+      // Remplir les champs d'identification
+      if (data.ownerName) document.getElementById('ownerName').value = data.ownerName;
+      if (data.ownerEmail) document.getElementById('ownerEmail').value = data.ownerEmail;
+      if (data.renterName) document.getElementById('renterName').value = data.renterName;
+      if (data.renterEmail) document.getElementById('renterEmail').value = data.renterEmail;
+      if (data.bikeModel) document.getElementById('bikeModel').value = data.bikeModel;
+      if (data.serialNumber) document.getElementById('serialNumber').value = data.serialNumber;
+      if (data.startDate) document.getElementById('startDate').value = data.startDate;
+      if (data.endDate) document.getElementById('endDate').value = data.endDate;
+
+      // Préremplir les notes avec l'état de départ
+      const bikeParts = ['frame','handlebar','seat','fork','wheel_front','wheel_rear',
+                         'tire_front','tire_rear','brakes','transmission','chain','pedals'];
+      bikeParts.forEach(part => {
+        const noteEl = document.querySelector(`[name="note_${part}"]`);
+        if (noteEl) {
+          let placeholder = '';
+          if (data['state_'+part]) placeholder += `Départ: ${data['state_'+part]}`;
+          if (data['note_'+part]) placeholder += ` - ${data['note_'+part]}`;
+          noteEl.placeholder = placeholder;
+        }
+      });
+
+      // Accessoires : cocher et indiquer l'état de départ
+      if (data.extras) {
+        data.extras.forEach(extra => {
+          const cb = document.querySelector(`input[name="extras"][value="${extra}"]`);
+          if (cb) cb.checked = true;
+          const stateEl = document.querySelector(`[name="state_${extra}"]`);
+          if (stateEl && data['state_'+extra]) {
             const option = document.createElement('option');
-            option.value = data['state_' + part];
-            option.textContent = 'Départ: ' + data['state_' + part];
-            option.style.color = '#e67e00';
+            option.value = data['state_'+extra];
+            option.textContent = `Départ: ${data['state_'+extra]}`;
             stateEl.appendChild(option);
           }
-          if (noteEl && data['note_' + part]) {
-            noteEl.placeholder = 'Départ: ' + data['note_' + part];
+          const noteEl = document.querySelector(`[name="note_${extra}"]`);
+          if (noteEl && data['note_'+extra]) {
+            noteEl.placeholder = `Départ: ${data['note_'+extra]}`;
           }
         });
+      }
+
+      // Supprimer du localStorage pour éviter des données obsolètes
+      localStorage.removeItem('expressVeloEtatDepart');
+      showToast('📋 Données de l\'état des lieux de départ importées', 'success');
+    } catch(e) {
+      console.error('Erreur import:', e);
+    }
+  } else {
+    // 2. Fallback : récupération depuis l'URL (pour les emails)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('owner')) {
+      document.getElementById('ownerName').value = params.get('owner') || '';
+      document.getElementById('ownerEmail').value = params.get('ownerEmail') || '';
+      document.getElementById('renterName').value = params.get('renter') || '';
+      document.getElementById('renterEmail').value = params.get('renterEmail') || '';
+      document.getElementById('bikeModel').value = params.get('bike') || '';
+      document.getElementById('serialNumber').value = params.get('serial') || '';
+      document.getElementById('startDate').value = params.get('start') || '';
+    }
+  }
+})();
         
         showToast('📋 Données de l\'état des lieux de départ importées', 'success');
       }
