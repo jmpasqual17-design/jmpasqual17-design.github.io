@@ -1,0 +1,1163 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>État des lieux de retour - Location vélo</title>
+
+  <style>
+    :root {
+      --primary: #1a1a2e;
+      --primary-light: #16213e;
+      --accent: #0f3460;
+      --gold: #c9a84c;
+      --success: #2d6a4f;
+      --error: #c1121f;
+      --warning: #e67e00;
+      --gray-50: #f8f9fa;
+      --gray-100: #f1f3f5;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #6c757d;
+      --gray-700: #495057;
+      --gray-800: #343a40;
+      --gray-900: #212529;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow: 0 4px 20px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      color: var(--gray-800);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .document-wrapper {
+      width: 100%;
+      max-width: 900px;
+      background: white;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #e67e00 0%, #c06500 100%);
+      color: white;
+      padding: 32px 40px;
+      border-bottom: 3px solid var(--gold);
+    }
+    .header-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #ffe0b2;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+    .header h1 span {
+      color: var(--gold);
+      font-weight: 300;
+    }
+    .header .subtitle {
+      font-size: 14px;
+      opacity: 0.9;
+      font-weight: 400;
+      margin-bottom: 16px;
+    }
+    .header .meta {
+      display: flex;
+      gap: 20px;
+      font-size: 12px;
+      opacity: 0.85;
+      flex-wrap: wrap;
+    }
+    .header .meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .header .meta .dot {
+      width: 5px;
+      height: 5px;
+      background: #ffe0b2;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .form-body {
+      padding: 32px 40px 40px;
+    }
+
+    .section {
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .section:last-of-type {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .section-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: var(--warning);
+      color: white;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gray-900);
+      letter-spacing: -0.3px;
+    }
+    .section-subtitle {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-left: auto;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px 20px; }
+    .full { grid-column: 1 / -1; }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-700);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .field label .required { color: var(--error); margin-left: 3px; }
+    .field .hint {
+      font-size: 11px;
+      color: var(--gray-500);
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .field input, .field select, .field textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--gray-300);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--gray-900);
+      background: white;
+      transition: all 0.2s;
+      line-height: 1.5;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      outline: none;
+      border-color: var(--warning);
+      box-shadow: 0 0 0 3px rgba(230, 126, 0, 0.08);
+      background: var(--gray-50);
+    }
+    .field textarea { min-height: 80px; resize: vertical; }
+
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23495057' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 40px;
+    }
+
+    .info-box {
+      background: #fff3e0;
+      border-left: 4px solid var(--warning);
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: #e65100;
+      line-height: 1.6;
+    }
+
+    .bike-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .bike-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--gray-50);
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+    }
+    .bike-item .part-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+      min-width: 85px;
+    }
+    .bike-item select, .bike-item input {
+      padding: 7px 10px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 13px;
+      background: white;
+      flex: 1;
+      min-width: 85px;
+      height: 36px;
+      font-family: inherit;
+    }
+    .bike-item input { flex: 1.5; min-width: 100px; }
+
+    .accessory-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--gray-50);
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+    }
+    .accessory-item .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-700);
+      min-width: 90px;
+      user-select: none;
+    }
+    .accessory-item .checkbox-label input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--warning); cursor: pointer; }
+    .accessory-item select, .accessory-item input {
+      padding: 7px 10px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 13px;
+      background: white;
+      flex: 1;
+      min-width: 85px;
+      height: 36px;
+      font-family: inherit;
+    }
+    .accessory-item input { flex: 1.5; min-width: 100px; }
+
+    .photo-upload {
+      border: 2px dashed var(--gray-300);
+      border-radius: var(--radius);
+      padding: 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: var(--gray-50);
+    }
+    .photo-upload:hover { border-color: var(--warning); background: white; }
+    .photo-upload .upload-icon {
+      width: 48px; height: 48px;
+      margin: 0 auto 12px;
+      background: var(--gray-200);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--gray-600);
+    }
+    .photo-upload .upload-text { font-size: 14px; font-weight: 600; color: var(--gray-700); margin-bottom: 4px; }
+    .photo-upload .upload-hint { font-size: 12px; color: var(--gray-500); }
+    .photo-upload input[type="file"] { display: none; }
+
+    .photos-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .photos-preview .photo-item {
+      position: relative;
+      width: 85px; height: 65px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 2px solid var(--gray-200);
+    }
+    .photos-preview .photo-item img { width: 100%; height: 100%; object-fit: cover; }
+    .photos-preview .photo-item .remove-photo {
+      position: absolute; top: 3px; right: 3px;
+      width: 18px; height: 18px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sign-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .sign-box {
+      background: var(--gray-50);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px 24px;
+      border: 1.5px solid var(--gray-200);
+    }
+    .sign-box .sign-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .sign-box .sign-header .name { font-weight: 700; font-size: 15px; color: var(--gray-900); }
+    .sign-box .sign-header .badge {
+      font-size: 10px; padding: 3px 12px;
+      border-radius: 20px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .badge-owner { background: #e8f0fe; color: #1a56db; }
+    .badge-renter { background: #e6f4ea; color: #137333; }
+    .sign-box .mention {
+      font-size: 12px; color: var(--gray-500); font-style: italic;
+      margin-bottom: 10px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .sign-box .signature-canvas {
+      width: 100%; height: 90px;
+      background: white;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--gray-300);
+      cursor: crosshair;
+      display: block;
+      touch-action: none;
+    }
+    .sign-box .sign-actions { display: flex; gap: 8px; margin-top: 8px; align-items: center; }
+    .sign-box .sign-actions .btn-text {
+      background: transparent;
+      border: 1px solid var(--gray-300);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: var(--gray-600);
+      cursor: pointer;
+      font-weight: 500;
+      font-family: inherit;
+    }
+    .sign-box .sign-status {
+      font-size: 12px; margin-left: auto;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: var(--gray-100);
+      color: var(--gray-500);
+    }
+    .sign-box .sign-status.signed { background: #e6f4ea; color: #137333; font-weight: 600; }
+
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; padding-top: 20px; border-top: 2px solid var(--gray-200); }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 12px 24px;
+      border: none; border-radius: var(--radius);
+      font-size: 14px; font-weight: 600;
+      font-family: inherit; cursor: pointer;
+      transition: all 0.2s;
+      flex: 1 1 auto; min-width: 140px;
+    }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-warning { background: var(--warning); color: white; }
+    .btn-warning:hover:not(:disabled) { background: #c06500; }
+    .btn-outline { background: white; color: var(--gray-700); border: 1.5px solid var(--gray-300); }
+    .btn-outline:hover:not(:disabled) { background: var(--gray-50); }
+    .btn-ghost { background: transparent; color: var(--gray-600); }
+
+    .spinner {
+      display: inline-block; width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .toast-container {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999; width: 100%; max-width: 500px;
+      padding: 0 16px;
+    }
+    .toast {
+      background: var(--gray-900); color: white;
+      padding: 14px 24px; border-radius: var(--radius);
+      font-size: 13px; box-shadow: var(--shadow-lg);
+      opacity: 0; transform: translateY(20px);
+      transition: all 0.4s;
+      width: 100%; text-align: center;
+      margin-bottom: 8px;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: #1b4332; }
+    .toast.error { background: #5a1118; }
+
+    @media (max-width: 768px) {
+      body { padding: 12px; }
+      .header { padding: 24px; }
+      .header h1 { font-size: 22px; }
+      .form-body { padding: 24px; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .bike-grid { grid-template-columns: 1fr; }
+      .sign-grid { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; }
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="document-wrapper">
+  <header class="header">
+    <div class="header-label">Restitution du vélo</div>
+    <h1>ÉTAT DES LIEUX <span>DE RETOUR</span></h1>
+    <p class="subtitle">Document contractuel de restitution — À compléter lors du retour du vélo</p>
+    <div class="meta">
+      <span><span class="dot"></span> Date : <span id="currentDate"></span></span>
+      <span><span class="dot"></span> Document juridique</span>
+      <span><span class="dot"></span> Signature électronique</span>
+    </div>
+  </header>
+
+  <div class="form-body" id="contractContainer">
+    <form id="etatForm" novalidate>
+
+      <!-- SECTION 1 : PARTIES -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-number">1</span>
+          <span class="section-title">Identification des parties</span>
+          <span class="section-subtitle">Informations obligatoires</span>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Propriétaire / Bailleur <span class="required">*</span></label>
+            <input type="text" id="ownerName" name="ownerName" placeholder="Nom et prénom" required>
+            <input type="email" id="ownerEmail" name="ownerEmail" placeholder="Adresse email" required style="margin-top:8px;">
+          </div>
+          <div class="field">
+            <label>Locataire / Preneur <span class="required">*</span></label>
+            <input type="text" id="renterName" name="renterName" placeholder="Nom et prénom" required>
+            <input type="email" id="renterEmail" name="renterEmail" placeholder="Adresse email" required style="margin-top:8px;">
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2 : LOCATION -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-number">2</span>
+          <span class="section-title">Détails de la location</span>
+        </div>
+        <div class="grid-3">
+          <div class="field">
+            <label>Date de début</label>
+            <input type="date" id="startDate" name="startDate">
+          </div>
+          <div class="field">
+            <label>Date de retour <span class="required">*</span></label>
+            <input type="date" id="endDate" name="endDate" required>
+          </div>
+          <div class="field">
+            <label>Modèle du vélo <span class="required">*</span></label>
+            <input type="text" id="bikeModel" name="bikeModel" placeholder="Marque / modèle" required>
+          </div>
+        </div>
+        <div class="field full" style="margin-top:12px;">
+          <label>Numéro de série</label>
+          <input type="text" id="serialNumber" name="serialNumber" placeholder="Numéro d'identification du vélo">
+        </div>
+      </div>
+
+      <!-- SECTION 3 : CONTRÔLE DU VÉLO AU RETOUR -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-number">3</span>
+          <span class="section-title">Inspection du vélo au retour</span>
+        </div>
+        <div class="info-box">
+          Comparer l'état du vélo à sa restitution avec l'état des lieux de départ. Signaler toute différence ou dommage constaté.
+        </div>
+        <div class="bike-grid">
+          <div class="bike-item"><span class="part-name">Cadre</span>
+            <select name="state_frame"><option value="">État</option><option value="Bon">Bon</option><option value="Rayé">Rayé</option><option value="Choc">Choc</option><option value="Rouille">Rouille</option><option value="Fissure">Fissure</option><option value="Cassé">Cassé</option></select>
+            <input type="text" name="note_frame" placeholder="Différence constatée">
+          </div>
+          <div class="bike-item"><span class="part-name">Guidon</span>
+            <select name="state_handlebar"><option value="">État</option><option value="Bon">Bon</option><option value="Rayé">Rayé</option><option value="Choc">Choc</option><option value="Rouille">Rouille</option><option value="Torsadé">Torsadé</option></select>
+            <input type="text" name="note_handlebar" placeholder="Différence constatée">
+          </div>
+          <div class="bike-item"><span class="part-name">Selle</span>
+            <select name="state_seat"><option value="">État</option><option value="Bon">Bon</option><option value="Rayé">Rayé</option><option value="Déchiré">Déchiré</option><option value="Usé">Usé</option><option value="Cassé">Cassé</option></select>
+            <input type="text" name="note_seat" placeholder="Différence constatée">
+          </div>
+          <div class="bike-item"><span class="part-name">Fourche</span>
+            <select name="state_fork"><option value="">État</option><option value="Bon">Bon</option><option value="Rayé">Rayé</option><option value="Choc">Choc</option><option value="Rouille">Rouille</option><option value="Fissure">Fissure</option></select>
+            <input type="text" name="note_fork" placeholder="Différence constatée">
+          </div>
+          <div class="bike-item"><span class="part-name">Roue avant</span>
+            <select name="state_wheel_front"><option value="">État</option><option value="Bon">Bon</option><option value="Voilé">Voilé</option><option value="Choc">Choc</option><option value="Cassé">Cassé</option></select>
+            <input type="text" name="note_wheel_front" placeholder="Différence constatée">
+          </div>
+          <div class="bike-item"><span class="part-name">Roue arrière</span>
+            <select name="state_wheel_rear"><option value="">État</option><option value="Bon">Bon</option><option value="Voilé">Voilé</option><option value="Choc">Choc</option><option value="Cassé">Cassé</option></select>
+            <input type="text" name="note_wheel_rear" placeholder="Différence constatée">
+          </div>
+          <div class="bike-item"><span class="part-name">Pneu avant</span>
+            <select name="state_tire_front"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Crevé">Crevé</option><option value="Fissuré">Fissuré</option></select>
+            <input type="text" name="note_tire_front" placeholder="Différence constatée">
+          </div>
+          <div class="bike-item"><span class="part-name">Pneu arrière</span>
+            <select name="state_tire_rear"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Crevé">Crevé</option><option value="Fissuré">Fissuré</option></select>
+            <input type="text" name="note_tire_rear" placeholder="Différence constatée">
+          </div>
+          <div class="bike-item"><span class="part-name">Freins</span>
+            <select name="state_brakes"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="À régler">À régler</option><option value="Défaillant">Défaillant</option></select>
+            <input type="text" name="note_brakes" placeholder="Différence constatée">
+          </div>
+          <div class="bike-item"><span class="part-name">Transmission</span>
+            <select name="state_transmission"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Bruyant">Bruyant</option><option value="À régler">À régler</option></select>
+            <input type="text" name="note_transmission" placeholder="Différence constatée">
+          </div>
+          <div class="bike-item"><span class="part-name">Chaîne</span>
+            <select name="state_chain"><option value="">État</option><option value="Bon">Bon</option><option value="Rouillée">Rouillée</option><option value="Détendue">Détendue</option><option value="Usée">Usée</option></select>
+            <input type="text" name="note_chain" placeholder="Différence constatée">
+          </div>
+          <div class="bike-item"><span class="part-name">Pédales</span>
+            <select name="state_pedals"><option value="">État</option><option value="Bon">Bon</option><option value="Usées">Usées</option><option value="Cassées">Cassées</option></select>
+            <input type="text" name="note_pedals" placeholder="Différence constatée">
+          </div>
+        </div>
+        <div class="field full" style="margin-top:14px;">
+          <label>Différences constatées par rapport à l'état des lieux de départ</label>
+          <textarea id="generalNotes" name="generalNotes" placeholder="Décrire les dommages, anomalies, différences constatées..."></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION 4 : ACCESSOIRES -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-number">4</span>
+          <span class="section-title">Accessoires restitués</span>
+        </div>
+        <div class="bike-grid">
+          <div class="accessory-item">
+            <label class="checkbox-label"><input type="checkbox" name="extras" value="helmet">Casque</label>
+            <select name="state_helmet"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Endommagé">Endommagé</option><option value="Manquant">Manquant</option></select>
+            <input type="text" name="note_helmet" placeholder="Note">
+          </div>
+          <div class="accessory-item">
+            <label class="checkbox-label"><input type="checkbox" name="extras" value="lock">Antivol</label>
+            <select name="state_lock"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Défaillant">Défaillant</option><option value="Manquant">Manquant</option></select>
+            <input type="text" name="note_lock" placeholder="Note">
+          </div>
+          <div class="accessory-item">
+            <label class="checkbox-label"><input type="checkbox" name="extras" value="lights">Éclairage</label>
+            <select name="state_lights"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Défaillant">Défaillant</option><option value="Manquant">Manquant</option></select>
+            <input type="text" name="note_lights" placeholder="Note">
+          </div>
+          <div class="accessory-item">
+            <label class="checkbox-label"><input type="checkbox" name="extras" value="basket">Panier</label>
+            <select name="state_basket"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Cassé">Cassé</option><option value="Manquant">Manquant</option></select>
+            <input type="text" name="note_basket" placeholder="Note">
+          </div>
+          <div class="accessory-item">
+            <label class="checkbox-label"><input type="checkbox" name="extras" value="repairkit">Kit réparation</label>
+            <select name="state_repairkit"><option value="">État</option><option value="Bon">Bon</option><option value="Incomplet">Incomplet</option><option value="Manquant">Manquant</option></select>
+            <input type="text" name="note_repairkit" placeholder="Note">
+          </div>
+          <div class="accessory-item">
+            <label class="checkbox-label"><input type="checkbox" name="extras" value="other">Autre</label>
+            <select name="state_other"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option></select>
+            <input type="text" name="note_other" placeholder="Détail">
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 5 : PHOTOS -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-number">5</span>
+          <span class="section-title">Photos au retour</span>
+          <span class="section-subtitle">6 maximum</span>
+        </div>
+        <div class="photo-upload" id="photoDropZone">
+          <div class="upload-icon">+</div>
+          <p class="upload-text">Cliquez ou déposez vos photos ici</p>
+          <p class="upload-hint">JPG, PNG</p>
+          <input id="photosInput" type="file" accept="image/*" multiple>
+        </div>
+        <div id="photosPreview" class="photos-preview"></div>
+      </div>
+
+      <!-- SECTION 6 : FRAIS ÉVENTUELS -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-number">6</span>
+          <span class="section-title">Frais et retenues éventuels</span>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Montant des réparations (€)</label>
+            <input type="number" name="frais_reparations" min="0" step="0.01" placeholder="0.00">
+          </div>
+          <div class="field">
+            <label>Frais de nettoyage (€)</label>
+            <input type="number" name="frais_nettoyage" min="0" step="0.01" placeholder="0.00">
+          </div>
+          <div class="field">
+            <label>Retenue sur caution (€)</label>
+            <input type="number" name="retenue_caution" min="0" step="0.01" placeholder="0.00">
+          </div>
+          <div class="field">
+            <label>Caution restituée (€)</label>
+            <input type="number" name="caution_restituée" min="0" step="0.01" placeholder="0.00">
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 7 : SIGNATURES -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-number">7</span>
+          <span class="section-title">Signatures électroniques</span>
+          <span class="section-subtitle">Obligatoires</span>
+        </div>
+        <div class="sign-grid">
+          <div class="sign-box">
+            <div class="sign-header">
+              <span class="name">Propriétaire</span>
+              <span class="badge badge-owner">Bailleur</span>
+            </div>
+            <div class="mention">« Lu et approuvé — Bon pour restitution »</div>
+            <canvas class="signature-canvas" id="signature-owner"></canvas>
+            <div class="sign-actions">
+              <button type="button" class="btn-text" onclick="clearSignature('owner')">Effacer</button>
+              <span class="sign-status" id="ownerStatus">En attente</span>
+            </div>
+            <input type="hidden" name="signatureOwner" id="signatureOwner">
+          </div>
+          <div class="sign-box">
+            <div class="sign-header">
+              <span class="name">Locataire</span>
+              <span class="badge badge-renter">Preneur</span>
+            </div>
+            <div class="mention">« Lu et approuvé — Bon pour restitution »</div>
+            <canvas class="signature-canvas" id="signature-renter"></canvas>
+            <div class="sign-actions">
+              <button type="button" class="btn-text" onclick="clearSignature('renter')">Effacer</button>
+              <span class="sign-status" id="renterStatus">En attente</span>
+            </div>
+            <input type="hidden" name="signatureRenter" id="signatureRenter">
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="actions">
+        <button type="button" class="btn btn-warning" id="generateSendBtn">Signer et envoyer le document</button>
+        <button type="button" class="btn btn-outline" id="downloadEtatBtn">Télécharger le PDF</button>
+        <button type="button" class="btn btn-outline" id="saveEtatBtn">Enregistrer le brouillon</button>
+        <button type="button" class="btn btn-ghost" id="resetFormBtn">Réinitialiser</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script>
+  'use strict';
+
+  const EMAILJS_CONFIG = {
+    publicKey: 'zz4KdlO2Xyw0Y5Gej',
+    serviceID: 'service_g1ip1lt',
+    templateID: 'template_sozwa7c'
+  };
+
+  (function() { try { emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey }); console.log('EmailJS OK'); } catch(e) {} })();
+
+  document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  // Importation des données de l'état des lieux de départ
+  (function() {
+    try {
+      const etatDepartData = localStorage.getItem('expressVeloEtat');
+      if (etatDepartData) {
+        const data = JSON.parse(etatDepartData);
+        console.log('📂 Données état des lieux départ trouvées');
+        
+        if (data.ownerName) document.getElementById('ownerName').value = data.ownerName;
+        if (data.ownerEmail) document.getElementById('ownerEmail').value = data.ownerEmail;
+        if (data.renterName) document.getElementById('renterName').value = data.renterName;
+        if (data.renterEmail) document.getElementById('renterEmail').value = data.renterEmail;
+        if (data.bikeModel) document.getElementById('bikeModel').value = data.bikeModel;
+        if (data.serialNumber) document.getElementById('serialNumber').value = data.serialNumber;
+        if (data.startDate) document.getElementById('startDate').value = data.startDate;
+        
+        // Pré-remplir les états de départ pour comparaison
+        const bikeParts = ['frame','handlebar','seat','fork','wheel_front','wheel_rear','tire_front','tire_rear','brakes','transmission','chain','pedals'];
+        bikeParts.forEach(part => {
+          const stateEl = document.querySelector('[name="state_' + part + '"]');
+          const noteEl = document.querySelector('[name="note_' + part + '"]');
+          if (stateEl && data['state_' + part]) {
+            // Ajouter une option pour voir l'état de départ
+            const option = document.createElement('option');
+            option.value = data['state_' + part];
+            option.textContent = 'Départ: ' + data['state_' + part];
+            option.style.color = '#e67e00';
+            stateEl.appendChild(option);
+          }
+          if (noteEl && data['note_' + part]) {
+            noteEl.placeholder = 'Départ: ' + data['note_' + part];
+          }
+        });
+        
+        showToast('📋 Données de l\'état des lieux de départ importées', 'success');
+      }
+    } catch(e) { console.error('Erreur import:', e); }
+  })();
+
+  function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.textContent = message;
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 4000);
+  }
+
+  // PHOTOS
+  const photosInput = document.getElementById('photosInput');
+  const photosPreview = document.getElementById('photosPreview');
+  let photosDataUrls = [];
+
+  function compressImage(file, maxWidth = 400, maxHeight = 300, quality = 0.4) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let w = img.width, h = img.height;
+          if (w > maxWidth) { h = (h * maxWidth) / w; w = maxWidth; }
+          if (h > maxHeight) { w = (w * maxHeight) / h; h = maxHeight; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function removePhoto(index) { photosDataUrls.splice(index, 1); renderPhotos(); }
+
+  function renderPhotos() {
+    photosPreview.innerHTML = '';
+    photosDataUrls.forEach((dataUrl, index) => {
+      const div = document.createElement('div');
+      div.className = 'photo-item';
+      div.innerHTML = '<img src="' + dataUrl + '" alt="Photo ' + (index + 1) + '"><button class="remove-photo" data-index="' + index + '">&times;</button>';
+      photosPreview.appendChild(div);
+    });
+    document.querySelectorAll('.photo-item .remove-photo').forEach(btn => {
+      btn.addEventListener('click', function(e) { e.stopPropagation(); removePhoto(parseInt(this.dataset.index)); });
+    });
+  }
+
+  photosInput.addEventListener('change', async (e) => {
+    const files = Array.from(e.target.files);
+    if (photosDataUrls.length + files.length > 6) { showToast('Maximum 6 photos', 'error'); return; }
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) continue;
+      try { photosDataUrls.push(await compressImage(file)); } catch(err) {}
+    }
+    renderPhotos();
+    photosInput.value = '';
+  });
+
+  const dropZone = document.getElementById('photoDropZone');
+  dropZone.addEventListener('click', () => photosInput.click());
+  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = '#e67e00'; });
+  dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = '#dee2e6'; });
+  dropZone.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = '#dee2e6';
+    const files = Array.from(e.dataTransfer.files);
+    if (photosDataUrls.length + files.length > 6) { showToast('Maximum 6 photos', 'error'); return; }
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) continue;
+      try { photosDataUrls.push(await compressImage(file)); } catch(err) {}
+    }
+    renderPhotos();
+  });
+
+  // SIGNATURES
+  const canvasOwner = document.getElementById('signature-owner');
+  const canvasRenter = document.getElementById('signature-renter');
+  const ownerStatus = document.getElementById('ownerStatus');
+  const renterStatus = document.getElementById('renterStatus');
+
+  function resizeCanvas(canvas) {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = 90 * dpr;
+    canvas.style.height = '90px';
+    canvas.style.width = '100%';
+    canvas.getContext('2d').scale(dpr, dpr);
+  }
+  resizeCanvas(canvasOwner); resizeCanvas(canvasRenter);
+
+  const sigPadOwner = new SignaturePad(canvasOwner, { backgroundColor: 'white', penColor: '#1a1a2e', minWidth: 1.5, maxWidth: 3 });
+  const sigPadRenter = new SignaturePad(canvasRenter, { backgroundColor: 'white', penColor: '#1a1a2e', minWidth: 1.5, maxWidth: 3 });
+
+  function updateSignatureStatus() {
+    ownerStatus.textContent = sigPadOwner.isEmpty() ? 'En attente' : 'Signé';
+    ownerStatus.className = 'sign-status' + (sigPadOwner.isEmpty() ? '' : ' signed');
+    renterStatus.textContent = sigPadRenter.isEmpty() ? 'En attente' : 'Signé';
+    renterStatus.className = 'sign-status' + (sigPadRenter.isEmpty() ? '' : ' signed');
+  }
+
+  sigPadOwner.addEventListener('endStroke', updateSignatureStatus);
+  sigPadRenter.addEventListener('endStroke', updateSignatureStatus);
+
+  window.clearSignature = function(type) {
+    if (type === 'owner') sigPadOwner.clear();
+    else sigPadRenter.clear();
+    updateSignatureStatus();
+  };
+
+  window.addEventListener('resize', () => {
+    const oD = sigPadOwner.toData(), rD = sigPadRenter.toData();
+    resizeCanvas(canvasOwner); resizeCanvas(canvasRenter);
+    sigPadOwner.fromData(oD); sigPadRenter.fromData(rD);
+  });
+
+  function getFormData() {
+    const form = document.getElementById('etatForm');
+    const fd = new FormData(form);
+    const data = {};
+    for (const [k, v] of fd.entries()) {
+      if (k === 'extras') { if (!data.extras) data.extras = []; data.extras.push(v); }
+      else data[k] = v;
+    }
+    data.photos = photosDataUrls;
+    data.signatureOwner = sigPadOwner.isEmpty() ? '' : sigPadOwner.toDataURL();
+    data.signatureRenter = sigPadRenter.isEmpty() ? '' : sigPadRenter.toDataURL();
+    return data;
+  }
+
+  function validateForm() {
+    const oN = document.getElementById('ownerName').value.trim();
+    const oE = document.getElementById('ownerEmail').value.trim();
+    const rN = document.getElementById('renterName').value.trim();
+    const rE = document.getElementById('renterEmail').value.trim();
+    const bM = document.getElementById('bikeModel').value.trim();
+    const eD = document.getElementById('endDate').value;
+    if (!oN || !oE) { showToast('Informations du propriétaire requises', 'error'); return false; }
+    if (!rN || !rE) { showToast('Informations du locataire requises', 'error'); return false; }
+    if (!bM || !eD) { showToast('Modèle du vélo et date de retour requis', 'error'); return false; }
+    if (sigPadOwner.isEmpty()) { showToast('Le propriétaire doit signer', 'error'); return false; }
+    if (sigPadRenter.isEmpty()) { showToast('Le locataire doit signer', 'error'); return false; }
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!re.test(oE)) { showToast('Email du propriétaire invalide', 'error'); return false; }
+    if (!re.test(rE)) { showToast('Email du locataire invalide', 'error'); return false; }
+    return true;
+  }
+
+  function generateNativePDF(data) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+    const margin = 15;
+    const contentW = pageW - margin * 2;
+    let y = margin;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.setTextColor(230, 126, 0);
+    doc.text('ÉTAT DES LIEUX DE RETOUR', pageW / 2, y + 10, { align: 'center' });
+    y += 16;
+    doc.setDrawColor(201, 168, 76);
+    doc.setLineWidth(0.8);
+    doc.line(margin, y, pageW - margin, y);
+    y += 6;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Document de restitution — ' + new Date().toLocaleDateString('fr-FR'), pageW / 2, y, { align: 'center' });
+    y += 10;
+
+    function drawSeparator() { doc.setDrawColor(220,220,220); doc.setLineWidth(0.3); doc.line(margin, y, pageW - margin, y); y += 6; }
+    function sectionTitle(num, title) {
+      if (y > pageH - 25) { doc.addPage(); y = margin; }
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.setTextColor(26,26,46);
+      doc.text(num + '. ' + title, margin, y); y += 6;
+      doc.setDrawColor(230,126,0); doc.setLineWidth(0.5); doc.line(margin, y, margin + 50, y); y += 6;
+    }
+
+    sectionTitle('1', 'PARTIES');
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+    doc.text('Propriétaire : ' + (data.ownerName || '-') + ' | Email : ' + (data.ownerEmail || '-'), margin, y); y += 5;
+    doc.text('Locataire : ' + (data.renterName || '-') + ' | Email : ' + (data.renterEmail || '-'), margin, y); y += 8;
+    drawSeparator();
+
+    sectionTitle('2', 'LOCATION');
+    doc.text('Vélo : ' + (data.bikeModel || '-') + ' | N° série : ' + (data.serialNumber || '-') + ' | Retour le : ' + (data.endDate || '-'), margin, y); y += 8;
+    drawSeparator();
+
+    sectionTitle('3', 'INSPECTION AU RETOUR');
+    const bikeParts = [
+      { key: 'frame', label: 'Cadre' },{ key: 'handlebar', label: 'Guidon' },{ key: 'seat', label: 'Selle' },
+      { key: 'fork', label: 'Fourche' },{ key: 'wheel_front', label: 'Roue avant' },{ key: 'wheel_rear', label: 'Roue arrière' },
+      { key: 'tire_front', label: 'Pneu avant' },{ key: 'tire_rear', label: 'Pneu arrière' },{ key: 'brakes', label: 'Freins' },
+      { key: 'transmission', label: 'Transmission' },{ key: 'chain', label: 'Chaîne' },{ key: 'pedals', label: 'Pédales' }
+    ];
+    doc.setFillColor(230,126,0); doc.rect(margin, y, contentW, 6, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(255,255,255);
+    doc.text('Pièce', margin + 2, y + 4.5); doc.text('État retour', margin + 50, y + 4.5); doc.text('Différence', margin + 100, y + 4.5);
+    y += 7;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(50,50,50);
+    bikeParts.forEach((part, index) => {
+      if (y > pageH - 20) { doc.addPage(); y = margin; }
+      if (index % 2 === 0) { doc.setFillColor(255,248,240); doc.rect(margin, y, contentW, 5.5, 'F'); }
+      doc.text(part.label, margin + 2, y + 4);
+      doc.text(data['state_' + part.key] || '-', margin + 50, y + 4);
+      const note = data['note_' + part.key] || '-';
+      doc.text(note.length > 45 ? note.substring(0, 45) + '...' : note, margin + 100, y + 4);
+      y += 5.5;
+    });
+    y += 5;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.text('Différences constatées :', margin, y); y += 5;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+    const obs = data.generalNotes || 'Aucune';
+    doc.text(doc.splitTextToSize(obs, contentW - 5), margin + 3, y);
+    y += doc.splitTextToSize(obs, contentW - 5).length * 4 + 6;
+    drawSeparator();
+
+    sectionTitle('4', 'ACCESSOIRES RESTITUÉS');
+    const accessories = [{ key: 'helmet', label: 'Casque' },{ key: 'lock', label: 'Antivol' },{ key: 'lights', label: 'Éclairage' },{ key: 'basket', label: 'Panier' },{ key: 'repairkit', label: 'Kit réparation' },{ key: 'other', label: 'Autre' }];
+    let hasAcc = false;
+    accessories.forEach(acc => {
+      if (data.extras && data.extras.includes(acc.key)) {
+        hasAcc = true;
+        doc.text('• ' + acc.label + ' : ' + (data['state_' + acc.key] || 'Bon') + (data['note_' + acc.key] ? ' (' + data['note_' + acc.key] + ')' : ''), margin + 5, y); y += 5;
+      }
+    });
+    if (!hasAcc) { doc.text('Aucun accessoire', margin + 5, y); y += 5; }
+    y += 5;
+    drawSeparator();
+
+    if (data.photos && data.photos.length > 0) {
+      sectionTitle('5', 'PHOTOS AU RETOUR');
+      for (let i = 0; i < Math.min(data.photos.length, 6); i++) {
+        if (y > pageH - 50) { doc.addPage(); y = margin; }
+        try {
+          const imgProps = doc.getImageProperties(data.photos[i]);
+          const maxW = 70, maxH = 45;
+          let imgW = imgProps.width, imgH = imgProps.height;
+          if (imgW > maxW) { imgH = (imgH * maxW) / imgW; imgW = maxW; }
+          if (imgH > maxH) { imgW = (imgW * maxH) / imgH; imgH = maxH; }
+          doc.addImage(data.photos[i], 'JPEG', margin, y, imgW, imgH);
+          y += imgH + 6;
+        } catch(e) { y += 4; }
+      }
+      drawSeparator();
+    }
+
+    sectionTitle('6', 'FRAIS ET RETENUES');
+    doc.text('Réparations : ' + (data.frais_reparations || '-') + ' € | Nettoyage : ' + (data.frais_nettoyage || '-') + ' € | Retenue : ' + (data.retenue_caution || '-') + ' € | Caution restituée : ' + (data.caution_restituée || '-') + ' €', margin, y); y += 8;
+    drawSeparator();
+
+    if (y > pageH - 60) { doc.addPage(); y = margin; }
+    sectionTitle('7', 'SIGNATURES');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
+    doc.text('Propriétaire', margin, y); y += 5;
+    if (data.signatureOwner) { try { doc.addImage(data.signatureOwner, 'PNG', margin, y, 55, 18); y += 20; } catch(e) { y += 6; } }
+    y += 8;
+    doc.text('Locataire', margin, y); y += 5;
+    if (data.signatureRenter) { try { doc.addImage(data.signatureRenter, 'PNG', margin, y, 55, 18); y += 20; } catch(e) { y += 6; } }
+    y += 12;
+    doc.setDrawColor(200,200,200); doc.setLineWidth(0.5); doc.line(margin, y, pageW - margin, y); y += 5;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(150,150,150);
+    doc.text('Document signé électroniquement — Conforme au règlement eIDAS', pageW / 2, y, { align: 'center' });
+
+    return doc.output('datauristring');
+  }
+
+  async function uploadPDF(pdfBase64, fileName) {
+    try {
+      const base64Data = pdfBase64.split(',')[1] || pdfBase64;
+      const byteCharacters = atob(base64Data);
+      const byteArrays = [];
+      for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+        const slice = byteCharacters.slice(offset, offset + 512);
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) byteNumbers[i] = slice.charCodeAt(i);
+        byteArrays.push(new Uint8Array(byteNumbers));
+      }
+      const blob = new Blob(byteArrays, { type: 'application/pdf' });
+      const fd = new FormData();
+      fd.append('file', blob, fileName);
+      const response = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: fd });
+      if (response.ok) {
+        const result = await response.json();
+        return result.data.url.replace('https://tmpfiles.org/', 'https://tmpfiles.org/dl/');
+      }
+      throw new Error('Upload failed');
+    } catch(e) { return pdfBase64; }
+  }
+
+  async function sendWithEmailJS(data, pdfBase64) {
+    try {
+      const rn = (data.renterName || 'location').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const ds = new Date().toISOString().split('T')[0];
+      const fn = 'ETAT_DES_LIEUX_RETOUR_' + rn + '_' + ds + '.pdf';
+      showToast('Mise en ligne du PDF...', 'info');
+      const pdfLink = await uploadPDF(pdfBase64, fn);
+
+      const bp = ['frame','handlebar','seat','fork','wheel_front','wheel_rear','tire_front','tire_rear','brakes','transmission','chain','pedals'];
+      const pn = { frame:'Cadre',handlebar:'Guidon',seat:'Selle',fork:'Fourche',wheel_front:'Roue avant',wheel_rear:'Roue arrière',tire_front:'Pneu avant',tire_rear:'Pneu arrière',brakes:'Freins',transmission:'Transmission',chain:'Chaîne',pedals:'Pédales' };
+      let bikeReport = '';
+      bp.forEach(p => { const s = data['state_'+p]||'', n = data['note_'+p]||''; if(s||n) bikeReport += (pn[p]||p) + ': ' + (s||'N/S') + (n?' ('+n+')':'') + '\n'; });
+
+      const commonParams = {
+        proprietaire: data.ownerName, proprietaire_email: data.ownerEmail,
+        locataire: data.renterName, locataire_email: data.renterEmail,
+        velo: data.bikeModel, numero_serie: data.serialNumber || '-',
+        debut: data.startDate || '-', fin: data.endDate || '-',
+        observations: data.generalNotes || 'Aucune',
+        accessoires: (data.extras && data.extras.length > 0) ? data.extras.join(', ') : 'Aucun',
+        controle_velo: bikeReport || 'Aucun contrôle',
+        date_signature: new Date().toLocaleDateString('fr-FR'),
+        pdf_link: pdfLink
+      };
+
+      showToast('Envoi au propriétaire...', 'info');
+      await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, { ...commonParams, to_email: data.ownerEmail, to_name: data.ownerName });
+      showToast('Envoi au locataire...', 'info');
+      await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, { ...commonParams, to_email: data.renterEmail, to_name: data.renterName });
+      showToast('Document envoyé aux deux parties', 'success');
+
+      if (confirm('✅ État des lieux de retour envoyé ! Télécharger une copie ?')) {
+        const a = document.createElement('a'); a.href = pdfBase64; a.download = fn;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      }
+      return true;
+    } catch(e) {
+      showToast('Erreur: ' + (e.message || 'Inconnue'), 'error');
+      const btn = document.getElementById('generateSendBtn');
+      if (btn) { btn.disabled = false; btn.innerHTML = 'Signer et envoyer le document'; }
+      return false;
+    }
+  }
+
+  document.getElementById('generateSendBtn').addEventListener('click', async function() {
+    if (!validateForm()) return;
+    this.disabled = true;
+    const oh = this.innerHTML;
+    this.innerHTML = '<span class="spinner"></span> Traitement...';
+    try {
+      const data = getFormData();
+      const pdfBase64 = generateNativePDF(data);
+      await sendWithEmailJS(data, pdfBase64);
+    } catch(e) { showToast('Erreur: ' + e.message, 'error'); }
+    this.disabled = false;
+    this.innerHTML = oh;
+  });
+
+  document.getElementById('downloadEtatBtn').addEventListener('click', function() {
+    const data = getFormData();
+    this.disabled = true;
+    try {
+      const pdfBase64 = generateNativePDF(data);
+      const rn = (data.renterName || 'location').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const a = document.createElement('a');
+      a.href = pdfBase64;
+      a.download = 'ETAT_DES_LIEUX_RETOUR_' + rn + '_' + new Date().toISOString().split('T')[0] + '.pdf';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      showToast('PDF téléchargé', 'success');
+    } catch(e) { showToast('Erreur', 'error'); }
+    this.disabled = false;
+  });
+
+  document.getElementById('saveEtatBtn').addEventListener('click', function() {
+    localStorage.setItem('expressVeloRetour', JSON.stringify(getFormData()));
+    showToast('Brouillon enregistré', 'success');
+  });
+
+  document.getElementById('resetFormBtn').addEventListener('click', function() {
+    if (confirm('Réinitialiser le formulaire ?')) {
+      document.getElementById('etatForm').reset();
+      sigPadOwner.clear(); sigPadRenter.clear();
+      photosDataUrls = []; renderPhotos();
+      updateSignatureStatus();
+      showToast('Formulaire réinitialisé', 'info');
+    }
+  });
+
+  (function() {
+    const s = localStorage.getItem('expressVeloRetour');
+    if (!s) return;
+    try {
+      const d = JSON.parse(s);
+      Object.keys(d).forEach(k => {
+        if (['extras','photos','signatureOwner','signatureRenter'].includes(k)) return;
+        const el = document.querySelector('[name="'+k+'"]');
+        if (el) el.value = d[k] || '';
+      });
+      if (d.extras) d.extras.forEach(v => { const cb = document.querySelector('input[name="extras"][value="'+v+'"]'); if(cb) cb.checked = true; });
+      if (d.photos && d.photos.length) { photosDataUrls = d.photos; renderPhotos(); }
+    } catch(e) { localStorage.removeItem('expressVeloRetour'); }
+  })();
+
+  updateSignatureStatus();
+  console.log('🚀 État des lieux de retour prêt');
+</script>
+
+</body>
+</html>
