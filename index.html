@@ -1284,82 +1284,36 @@
 // ==========================================================
 async function sendWithEmailJS(data, pdfBase64) {
   try {
-    const renterName = (data.renterName || 'location').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    const dateStr = new Date().toISOString().split('T')[0];
-    const fileName = 'ETAT_DES_LIEUX_DEPART_' + renterName + '_' + dateStr + '.pdf';
+    const fileName = 'ETAT_DES_LIEUX_DEPART.pdf';
     const pdfLink = await uploadPDF(pdfBase64, fileName);
 
-    // Construire le rapport SANS sauts de ligne
-    const bp = ['frame','handlebar','seat','fork','wheel_front','wheel_rear','tire_front','tire_rear','brakes','transmission','chain','pedals'];
-    const pn = { frame:'Cadre',handlebar:'Guidon',seat:'Selle',fork:'Fourche',wheel_front:'Roue avant',wheel_rear:'Roue arrière',tire_front:'Pneu avant',tire_rear:'Pneu arrière',brakes:'Freins',transmission:'Transmission',chain:'Chaîne',pedals:'Pédales' };
-    let bikeReport = '';
-    bp.forEach(p => { 
-      const s = data['state_'+p] || ''; 
-      const n = data['note_'+p] || ''; 
-      if(s||n) bikeReport += (pn[p]||p) + ': ' + (s||'N/S') + (n ? ' (' + n + ')' : '') + ' | ';  // <- séparateur | au lieu de \n
-    });
+    // Lien de retour minimal
+    const lienRetour = 'https://jmpasqual17-design.github.io/retour.html?bike=' + 
+      encodeURIComponent((data.bikeModel || '').substring(0, 50));
 
-    // Nettoyer les observations : pas de saut de ligne
-    const cleanObs = (data.generalNotes || 'Aucune').replace(/[\n\r]+/g, ' ').substring(0, 200);
-    // Nettoyer les accessoires
-    const cleanAccessoires = (data.extras && data.extras.length > 0) 
-      ? data.extras.join(', ').substring(0, 200) 
-      : 'Aucun';
+    // Purger les variables de tout caractère problématique
+    const safe = (str, max = 50) => String(str || '').substring(0, max).replace(/[<>&"'\n\r]/g, ' ');
 
-    // Lien vers retour pré-rempli
-    const lienRetour = 'https://jmpasqual17-design.github.io/retour.html' +
-      '?owner=' + encodeURIComponent(data.ownerName || '') +
-      '&ownerEmail=' + encodeURIComponent(data.ownerEmail || '') +
-      '&renter=' + encodeURIComponent(data.renterName || '') +
-      '&renterEmail=' + encodeURIComponent(data.renterEmail || '') +
-      '&bike=' + encodeURIComponent(data.bikeModel || '') +
-      '&serial=' + encodeURIComponent(data.serialNumber || '') +
-      '&start=' + encodeURIComponent(data.startDate || '');
-
-    const commonParams = {
-      type_etat: 'départ',
-      velo: (data.bikeModel || 'Non spécifié').substring(0, 100),
-      proprietaire: (data.ownerName || '').substring(0, 100),
-      proprietaire_email: (data.ownerEmail || '').substring(0, 100),
-      locataire: (data.renterName || '').substring(0, 100),
-      locataire_email: (data.renterEmail || '').substring(0, 100),
-      numero_serie: (data.serialNumber || 'Non spécifié').substring(0, 50),
-      debut: data.startDate,
-      fin: data.endDate,
-      observations: cleanObs,
-      accessoires: cleanAccessoires,
-      controle_velo: bikeReport || 'Aucun contrôle',
-      date_signature: new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' }),
+    const params = {
+      to_name: safe(data.ownerName),
+      velo: safe(data.bikeModel),
       pdf_link: pdfLink,
-      lien_retour: lienRetour
+      lien_retour: lienRetour,
+      date_signature: safe(new Date().toLocaleDateString('fr-FR'))
     };
 
-    // Envoi au propriétaire
-    showToast('Envoi au propriétaire...', 'info');
+    // Envoyer uniquement au propriétaire pour tester
+    showToast('Test envoi au propriétaire...', 'info');
     await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, {
-      ...commonParams,
-      to_email: data.ownerEmail,
-      to_name: data.ownerName
+      ...params,
+      to_email: data.ownerEmail
     });
 
-    // Envoi au locataire
-    showToast('Envoi au locataire...', 'info');
-    await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, {
-      ...commonParams,
-      to_email: data.renterEmail,
-      to_name: data.renterName
-    });
-
-    showToast('État des lieux envoyé aux deux parties', 'success');
-
-    if (confirm('✅ Document envoyé. Télécharger une copie du PDF ?')) {
-      const a = document.createElement('a'); a.href = pdfBase64; a.download = fileName;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    }
+    showToast('Email de test envoyé', 'success');
     return true;
   } catch (error) {
     console.error('Erreur:', error);
-    showToast('Erreur lors de l\'envoi: ' + (error.message || 'Erreur inconnue'), 'error');
+    showToast('Erreur: ' + error.message, 'error');
     return false;
   }
 }
