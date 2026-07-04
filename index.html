@@ -1289,29 +1289,38 @@ async function sendWithEmailJS(data, pdfBase64) {
     const fileName = 'ETAT_DES_LIEUX_DEPART_' + renterName + '_' + dateStr + '.pdf';
     const pdfLink = await uploadPDF(pdfBase64, fileName);
 
+    // Construire un rapport (pour information)
     const bp = ['frame','handlebar','seat','fork','wheel_front','wheel_rear','tire_front','tire_rear','brakes','transmission','chain','pedals'];
     const pn = { frame:'Cadre',handlebar:'Guidon',seat:'Selle',fork:'Fourche',wheel_front:'Roue avant',wheel_rear:'Roue arrière',tire_front:'Pneu avant',tire_rear:'Pneu arrière',brakes:'Freins',transmission:'Transmission',chain:'Chaîne',pedals:'Pédales' };
     let bikeReport = '';
     bp.forEach(p => { const s = data['state_'+p]||'', n = data['note_'+p]||''; if(s||n) bikeReport += (pn[p]||p) + ': ' + (s||'N/S') + (n?' ('+n+')':'') + '\n'; });
 
-    const dateSignature = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
-    
+    // Préparer le lien vers l'état des lieux de retour pré-rempli
+    const lienRetour = 'https://jmpasqual17-design.github.io/retour.html' +
+      '?owner=' + encodeURIComponent(data.ownerName || '') +
+      '&ownerEmail=' + encodeURIComponent(data.ownerEmail || '') +
+      '&renter=' + encodeURIComponent(data.renterName || '') +
+      '&renterEmail=' + encodeURIComponent(data.renterEmail || '') +
+      '&bike=' + encodeURIComponent(data.bikeModel || '') +
+      '&serial=' + encodeURIComponent(data.serialNumber || '') +
+      '&start=' + encodeURIComponent(data.startDate || '');
+
     const commonParams = {
+      type_etat: 'départ',
+      velo: data.bikeModel || 'Non spécifié',
       proprietaire: data.ownerName,
       proprietaire_email: data.ownerEmail,
       locataire: data.renterName,
       locataire_email: data.renterEmail,
-      velo: data.bikeModel,
       numero_serie: data.serialNumber || 'Non spécifié',
       debut: data.startDate,
       fin: data.endDate,
       observations: data.generalNotes || 'Aucune',
       accessoires: (data.extras && data.extras.length > 0) ? data.extras.join(', ') : 'Aucun',
-      controle_velo: bikeReport || 'Aucun contrôle effectué',
-      date_signature: dateSignature,
+      controle_velo: bikeReport || 'Aucun contrôle',
+      date_signature: new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' }),
       pdf_link: pdfLink,
-      // ⬇️ AJOUTEZ CE LIEN ⬇️
-      lien_retour: 'https://jmpasqual17-design.github.io/retour.html'
+      lien_retour: lienRetour   // Ceci déclenchera l'affichage du bloc dans le template
     };
 
     // Envoi au propriétaire
@@ -1330,19 +1339,16 @@ async function sendWithEmailJS(data, pdfBase64) {
       to_name: data.renterName
     });
 
-    showToast('Document envoyé aux deux parties', 'success');
+    showToast('État des lieux envoyé aux deux parties', 'success');
 
-    if (confirm('✅ État des lieux envoyé avec succès ! Voulez-vous télécharger une copie du PDF ?')) {
+    if (confirm('✅ Document envoyé. Télécharger une copie du PDF ?')) {
       const a = document.createElement('a'); a.href = pdfBase64; a.download = fileName;
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
     }
     return true;
-    
   } catch (error) {
-    console.error('❌ Erreur sendWithEmailJS:', error);
+    console.error('Erreur:', error);
     showToast('Erreur lors de l\'envoi: ' + (error.message || 'Erreur inconnue'), 'error');
-    const btn = document.getElementById('generateSendBtn');
-    if (btn) { btn.disabled = false; btn.innerHTML = 'Signer et envoyer le document'; }
     return false;
   }
 }
