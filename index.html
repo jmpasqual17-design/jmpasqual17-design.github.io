@@ -1282,49 +1282,222 @@
   // ==========================================================
   // ENVOI EMAILJS
   // ==========================================================
-  async function sendWithEmailJS(data, pdfBase64) {
-    try {
-      const renterName = (data.renterName || 'location').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-      const dateStr = new Date().toISOString().split('T')[0];
-      const fileName = 'ETAT_DES_LIEUX_DEPART_' + renterName + '_' + dateStr + '.pdf';
-      const pdfLink = await uploadPDF(pdfBase64, fileName);
+ // ==========================================================
+// ENVOI EMAILJS - AVEC ÉTAT DES LIEUX DE RETOUR PRÉ-REMPLI
+// ==========================================================
+async function sendWithEmailJS(data, pdfBase64) {
+  try {
+    const renterName = (data.renterName || 'location').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const dateStr = new Date().toISOString().split('T')[0];
+    const fileName = 'ETAT_DES_LIEUX_DEPART_' + renterName + '_' + dateStr + '.pdf';
+    const pdfLink = await uploadPDF(pdfBase64, fileName);
 
-      const bp = ['frame','handlebar','seat','fork','wheel_front','wheel_rear','tire_front','tire_rear','brakes','transmission','chain','pedals'];
-      const pn = { frame:'Cadre',handlebar:'Guidon',seat:'Selle',fork:'Fourche',wheel_front:'Roue avant',wheel_rear:'Roue arrière',tire_front:'Pneu avant',tire_rear:'Pneu arrière',brakes:'Freins',transmission:'Transmission',chain:'Chaîne',pedals:'Pédales' };
-      let bikeReport = '';
-      bp.forEach(p => { const s = data['state_'+p]||'', n = data['note_'+p]||''; if(s||n) bikeReport += (pn[p]||p) + ': ' + (s||'N/S') + (n?' ('+n+')':'') + '\n'; });
+    // Construire le rapport d'inspection
+    const bp = ['frame','handlebar','seat','fork','wheel_front','wheel_rear','tire_front','tire_rear','brakes','transmission','chain','pedals'];
+    const pn = { frame:'Cadre',handlebar:'Guidon',seat:'Selle',fork:'Fourche',wheel_front:'Roue avant',wheel_rear:'Roue arrière',tire_front:'Pneu avant',tire_rear:'Pneu arrière',brakes:'Freins',transmission:'Transmission',chain:'Chaîne',pedals:'Pédales' };
+    let bikeReport = '';
+    bp.forEach(p => { const s = data['state_'+p]||'', n = data['note_'+p]||''; if(s||n) bikeReport += (pn[p]||p) + ': ' + (s||'N/S') + (n?' ('+n+')':'') + '\n'; });
 
-      const dateSignature = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
-      const commonParams = {
-        proprietaire: data.ownerName, proprietaire_email: data.ownerEmail,
-        locataire: data.renterName, locataire_email: data.renterEmail,
-        velo: data.bikeModel, numero_serie: data.serialNumber || 'Non spécifié',
-        debut: data.startDate, fin: data.endDate,
-        observations: data.generalNotes || 'Aucune',
-        accessoires: (data.extras && data.extras.length > 0) ? data.extras.join(', ') : 'Aucun',
-        controle_velo: bikeReport || 'Aucun contrôle effectué',
-        date_signature: dateSignature, pdf_link: pdfLink
-      };
+    const dateSignature = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    
+    const commonParams = {
+      proprietaire: data.ownerName, proprietaire_email: data.ownerEmail,
+      locataire: data.renterName, locataire_email: data.renterEmail,
+      velo: data.bikeModel, numero_serie: data.serialNumber || 'Non spécifié',
+      debut: data.startDate, fin: data.endDate,
+      observations: data.generalNotes || 'Aucune',
+      accessoires: (data.extras && data.extras.length > 0) ? data.extras.join(', ') : 'Aucun',
+      controle_velo: bikeReport || 'Aucun contrôle effectué',
+      date_signature: dateSignature, pdf_link: pdfLink
+    };
 
-      showToast('Envoi au propriétaire...', 'info');
-      await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, { ...commonParams, to_email: data.ownerEmail, to_name: data.ownerName });
-      showToast('Envoi au locataire...', 'info');
-      await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, { ...commonParams, to_email: data.renterEmail, to_name: data.renterName });
-      showToast('Document envoyé aux deux parties', 'success');
+    // Envoi de l'état des lieux de départ au propriétaire
+    showToast('Envoi au propriétaire...', 'info');
+    await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, { ...commonParams, to_email: data.ownerEmail, to_name: data.ownerName });
+    
+    // Envoi de l'état des lieux de départ au locataire
+    showToast('Envoi au locataire...', 'info');
+    await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, { ...commonParams, to_email: data.renterEmail, to_name: data.renterName });
 
-      if (confirm('✅ État des lieux envoyé avec succès ! Voulez-vous télécharger une copie du PDF ?')) {
-        const a = document.createElement('a'); a.href = pdfBase64; a.download = fileName;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      }
-      return true;
-    } catch (error) {
-      console.error('❌ Erreur sendWithEmailJS:', error);
-      showToast('Erreur lors de l\'envoi: ' + (error.message || 'Erreur inconnue'), 'error');
-      const btn = document.getElementById('generateSendBtn');
-      if (btn) { btn.disabled = false; btn.innerHTML = 'Signer et envoyer le document'; }
-      return false;
+    // ===== NOUVEAU : Générer et envoyer l'état des lieux de retour pré-rempli =====
+    showToast('Préparation état des lieux de retour...', 'info');
+    
+    // Créer le PDF de retour pré-rempli
+    const retourPDF = generateRetourPDF(data);
+    const retourFileName = 'ETAT_DES_LIEUX_RETOUR_A_REMPLIR_' + renterName + '_' + dateStr + '.pdf';
+    const retourPdfLink = await uploadPDF(retourPDF, retourFileName);
+    
+    const retourParams = {
+      ...commonParams,
+      pdf_link: retourPdfLink,
+      message: 'Voici l\'état des lieux de retour pré-rempli à compléter lors de la restitution du vélo.'
+    };
+    
+    // Envoyer l'état des lieux de retour au propriétaire
+    showToast('Envoi retour au propriétaire...', 'info');
+    await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, { ...retourParams, to_email: data.ownerEmail, to_name: data.ownerName });
+    
+    // Envoyer l'état des lieux de retour au locataire
+    showToast('Envoi retour au locataire...', 'info');
+    await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, { ...retourParams, to_email: data.renterEmail, to_name: data.renterName });
+
+    showToast('Documents envoyés aux deux parties', 'success');
+
+    // Proposer le téléchargement
+    if (confirm('✅ Documents envoyés avec succès !\n\n- État des lieux de départ signé\n- État des lieux de retour pré-rempli\n\nVoulez-vous télécharger une copie du PDF de départ ?')) {
+      const a = document.createElement('a'); a.href = pdfBase64; a.download = fileName;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
     }
+    return true;
+    
+  } catch (error) {
+    console.error('❌ Erreur sendWithEmailJS:', error);
+    showToast('Erreur lors de l\'envoi: ' + (error.message || 'Erreur inconnue'), 'error');
+    const btn = document.getElementById('generateSendBtn');
+    if (btn) { btn.disabled = false; btn.innerHTML = 'Signer et envoyer le document'; }
+    return false;
   }
+}
+
+// ===== NOUVELLE FONCTION : Générer le PDF de retour pré-rempli =====
+function generateRetourPDF(data) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  const margin = 15;
+  const contentW = pageW - margin * 2;
+  let y = margin;
+
+  // TITRE
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(22);
+  doc.setTextColor(230, 126, 0);
+  doc.text('ÉTAT DES LIEUX DE RETOUR', pageW / 2, y + 10, { align: 'center' });
+  y += 16;
+  doc.setDrawColor(201, 168, 76);
+  doc.setLineWidth(0.8);
+  doc.line(margin, y, pageW - margin, y);
+  y += 6;
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(100, 100, 100);
+  doc.text('Document pré-rempli à compléter lors de la restitution — ' + new Date().toLocaleDateString('fr-FR'), pageW / 2, y, { align: 'center' });
+  y += 10;
+
+  function drawSeparator() { doc.setDrawColor(220,220,220); doc.setLineWidth(0.3); doc.line(margin, y, pageW - margin, y); y += 6; }
+  function sectionTitle(num, title) {
+    if (y > pageH - 25) { doc.addPage(); y = margin; }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.setTextColor(26,26,46);
+    doc.text(num + '. ' + title, margin, y); y += 6;
+    doc.setDrawColor(230,126,0); doc.setLineWidth(0.5); doc.line(margin, y, margin + 50, y); y += 6;
+  }
+
+  // 1. PARTIES (pré-remplies)
+  sectionTitle('1', 'PARTIES');
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+  doc.text('Propriétaire : ' + (data.ownerName || '_____________________') + ' | Email : ' + (data.ownerEmail || '_____________________'), margin, y); y += 5;
+  doc.text('Locataire : ' + (data.renterName || '_____________________') + ' | Email : ' + (data.renterEmail || '_____________________'), margin, y); y += 8;
+  drawSeparator();
+
+  // 2. LOCATION (pré-remplie)
+  sectionTitle('2', 'LOCATION');
+  doc.text('Vélo : ' + (data.bikeModel || '_____________________') + ' | N° série : ' + (data.serialNumber || '_____________________'), margin, y); y += 5;
+  doc.text('Date de retour : ___/___/______', margin, y); y += 8;
+  drawSeparator();
+
+  // 3. INSPECTION AU RETOUR (avec état de départ en référence)
+  sectionTitle('3', 'INSPECTION AU RETOUR (comparer avec l\'état de départ)');
+  
+  doc.setFillColor(230,126,0); doc.rect(margin, y, contentW, 6, 'F');
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(255,255,255);
+  doc.text('Pièce', margin + 2, y + 4.5); 
+  doc.text('État départ', margin + 45, y + 4.5); 
+  doc.text('État retour (à remplir)', margin + 85, y + 4.5);
+  y += 7;
+  
+  const bikeParts = [
+    { key: 'frame', label: 'Cadre' },{ key: 'handlebar', label: 'Guidon' },{ key: 'seat', label: 'Selle' },
+    { key: 'fork', label: 'Fourche' },{ key: 'wheel_front', label: 'Roue avant' },{ key: 'wheel_rear', label: 'Roue arrière' },
+    { key: 'tire_front', label: 'Pneu avant' },{ key: 'tire_rear', label: 'Pneu arrière' },{ key: 'brakes', label: 'Freins' },
+    { key: 'transmission', label: 'Transmission' },{ key: 'chain', label: 'Chaîne' },{ key: 'pedals', label: 'Pédales' }
+  ];
+  
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(50,50,50);
+  bikeParts.forEach((part, index) => {
+    if (y > pageH - 20) { doc.addPage(); y = margin; }
+    if (index % 2 === 0) { doc.setFillColor(255,248,240); doc.rect(margin, y, contentW, 5.5, 'F'); }
+    
+    const stateDepart = data['state_' + part.key] || 'Non renseigné';
+    
+    doc.setFont('helvetica', 'bold');
+    doc.text(part.label, margin + 2, y + 4);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(100,100,100);
+    doc.text(stateDepart, margin + 45, y + 4);
+    doc.setTextColor(50,50,50);
+    doc.text('_____________', margin + 85, y + 4);
+    y += 5.5;
+  });
+  
+  y += 5;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(26,26,46);
+  doc.text('Différences constatées :', margin, y); y += 5;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+  doc.text('___________________________________________________________________________', margin + 3, y); y += 5;
+  doc.text('___________________________________________________________________________', margin + 3, y); y += 5;
+  doc.text('___________________________________________________________________________', margin + 3, y); y += 8;
+  drawSeparator();
+
+  // 4. ACCESSOIRES (pré-remplis avec état de départ)
+  sectionTitle('4', 'ACCESSOIRES RESTITUÉS');
+  const accessories = [{ key: 'helmet', label: 'Casque' },{ key: 'lock', label: 'Antivol' },{ key: 'lights', label: 'Éclairage' },{ key: 'basket', label: 'Panier' },{ key: 'repairkit', label: 'Kit réparation' },{ key: 'other', label: 'Autre' }];
+  let hasAcc = false;
+  accessories.forEach(acc => {
+    if (data.extras && data.extras.includes(acc.key)) {
+      hasAcc = true;
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+      doc.text('☐ ' + acc.label + ' — État retour : _____________', margin + 5, y); y += 5;
+    }
+  });
+  if (!hasAcc) { doc.text('Aucun accessoire fourni au départ', margin + 5, y); y += 5; }
+  y += 5;
+  drawSeparator();
+
+  // 5. PHOTOS (zone vierge)
+  sectionTitle('5', 'PHOTOS AU RETOUR');
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(150,150,150);
+  doc.text('(Espace réservé pour les photos à prendre lors du retour)', margin, y); y += 5;
+  doc.setDrawColor(200,200,200); doc.setLineWidth(0.3);
+  doc.rect(margin, y, 60, 40); doc.text('Photo 1', margin + 20, y + 22);
+  doc.rect(margin + 65, y, 60, 40); doc.text('Photo 2', margin + 85, y + 22);
+  y += 45;
+  drawSeparator();
+
+  // 6. FRAIS ÉVENTUELS
+  sectionTitle('6', 'FRAIS ET RETENUES ÉVENTUELS');
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(50,50,50);
+  doc.text('Montant des réparations : _____________ €', margin, y); y += 5;
+  doc.text('Frais de nettoyage : _____________ €', margin, y); y += 5;
+  doc.text('Retenue sur caution : _____________ €', margin, y); y += 5;
+  doc.text('Caution restituée : _____________ €', margin, y); y += 8;
+  drawSeparator();
+
+  // 7. SIGNATURES (zone vierge)
+  if (y > pageH - 50) { doc.addPage(); y = margin; }
+  sectionTitle('7', 'SIGNATURES (à compléter lors du retour)');
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+  doc.text('Propriétaire : ___________________________', margin, y); y += 8;
+  doc.text('Locataire : ___________________________', margin, y); y += 12;
+
+  // Pied de page
+  doc.setDrawColor(200,200,200); doc.setLineWidth(0.5);
+  doc.line(margin, y, pageW - margin, y); y += 5;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(150,150,150);
+  doc.text('Document pré-rempli généré le ' + new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' — À compléter et signer lors de la restitution du vélo', pageW / 2, y, { align: 'center' });
+
+  return doc.output('datauristring');
+}
 
   // ==========================================================
   // BOUTON ENVOYER
