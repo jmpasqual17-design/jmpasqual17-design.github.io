@@ -573,7 +573,9 @@
         pdf_link: pdfLink,
         lien_retour: lienRetour
       };
-
+      // sauvegarde des données pour enrichir EDL retour
+      localStorage.setItem('expressVeloEtatDepart', JSON.stringify(data));
+      
       showToast('Envoi au propriétaire...','info');
       await emailjs.send(EMAIL.serviceID, EMAIL.templateID, { ...params, to_email: data.ownerEmail, to_name: data.ownerName });
 
