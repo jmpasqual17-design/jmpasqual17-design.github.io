@@ -1289,13 +1289,24 @@ async function sendWithEmailJS(data, pdfBase64) {
     const fileName = 'ETAT_DES_LIEUX_DEPART_' + renterName + '_' + dateStr + '.pdf';
     const pdfLink = await uploadPDF(pdfBase64, fileName);
 
-    // Construire un rapport (pour information)
+    // Construire le rapport SANS sauts de ligne
     const bp = ['frame','handlebar','seat','fork','wheel_front','wheel_rear','tire_front','tire_rear','brakes','transmission','chain','pedals'];
     const pn = { frame:'Cadre',handlebar:'Guidon',seat:'Selle',fork:'Fourche',wheel_front:'Roue avant',wheel_rear:'Roue arrière',tire_front:'Pneu avant',tire_rear:'Pneu arrière',brakes:'Freins',transmission:'Transmission',chain:'Chaîne',pedals:'Pédales' };
     let bikeReport = '';
-    bp.forEach(p => { const s = data['state_'+p]||'', n = data['note_'+p]||''; if(s||n) bikeReport += (pn[p]||p) + ': ' + (s||'N/S') + (n?' ('+n+')':'') + '\n'; });
+    bp.forEach(p => { 
+      const s = data['state_'+p] || ''; 
+      const n = data['note_'+p] || ''; 
+      if(s||n) bikeReport += (pn[p]||p) + ': ' + (s||'N/S') + (n ? ' (' + n + ')' : '') + ' | ';  // <- séparateur | au lieu de \n
+    });
 
-    // Préparer le lien vers l'état des lieux de retour pré-rempli
+    // Nettoyer les observations : pas de saut de ligne
+    const cleanObs = (data.generalNotes || 'Aucune').replace(/[\n\r]+/g, ' ').substring(0, 200);
+    // Nettoyer les accessoires
+    const cleanAccessoires = (data.extras && data.extras.length > 0) 
+      ? data.extras.join(', ').substring(0, 200) 
+      : 'Aucun';
+
+    // Lien vers retour pré-rempli
     const lienRetour = 'https://jmpasqual17-design.github.io/retour.html' +
       '?owner=' + encodeURIComponent(data.ownerName || '') +
       '&ownerEmail=' + encodeURIComponent(data.ownerEmail || '') +
@@ -1307,20 +1318,20 @@ async function sendWithEmailJS(data, pdfBase64) {
 
     const commonParams = {
       type_etat: 'départ',
-      velo: data.bikeModel || 'Non spécifié',
-      proprietaire: data.ownerName,
-      proprietaire_email: data.ownerEmail,
-      locataire: data.renterName,
-      locataire_email: data.renterEmail,
-      numero_serie: data.serialNumber || 'Non spécifié',
+      velo: (data.bikeModel || 'Non spécifié').substring(0, 100),
+      proprietaire: (data.ownerName || '').substring(0, 100),
+      proprietaire_email: (data.ownerEmail || '').substring(0, 100),
+      locataire: (data.renterName || '').substring(0, 100),
+      locataire_email: (data.renterEmail || '').substring(0, 100),
+      numero_serie: (data.serialNumber || 'Non spécifié').substring(0, 50),
       debut: data.startDate,
       fin: data.endDate,
-      observations: data.generalNotes || 'Aucune',
-      accessoires: (data.extras && data.extras.length > 0) ? data.extras.join(', ') : 'Aucun',
+      observations: cleanObs,
+      accessoires: cleanAccessoires,
       controle_velo: bikeReport || 'Aucun contrôle',
       date_signature: new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' }),
       pdf_link: pdfLink,
-      lien_retour: lienRetour   // Ceci déclenchera l'affichage du bloc dans le template
+      lien_retour: lienRetour
     };
 
     // Envoi au propriétaire
