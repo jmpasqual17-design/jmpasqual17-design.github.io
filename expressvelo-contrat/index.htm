@@ -7,91 +7,543 @@
 
   <style>
     :root {
-      --primary: #1a1a2e; --primary-light: #16213e; --accent: #0f3460;
-      --gold: #c9a84c; --success: #2d6a4f; --error: #c1121f;
-      --gray-50: #f8f9fa; --gray-100: #f1f3f5; --gray-200: #e9ecef;
-      --gray-300: #dee2e6; --gray-400: #ced4da; --gray-500: #adb5bd;
-      --gray-600: #6c757d; --gray-700: #495057; --gray-800: #343a40;
-      --gray-900: #212529; --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-      --shadow: 0 4px 20px rgba(0,0,0,0.1); --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
-      --radius: 8px; --radius-lg: 12px;
+      --primary: #1a1a2e;
+      --primary-light: #16213e;
+      --accent: #0f3460;
+      --gold: #c9a84c;
+      --success: #2d6a4f;
+      --error: #c1121f;
+      --gray-50: #f8f9fa;
+      --gray-100: #f1f3f5;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #6c757d;
+      --gray-700: #495057;
+      --gray-800: #343a40;
+      --gray-900: #212529;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow: 0 4px 20px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+      --radius: 8px;
+      --radius-lg: 12px;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#f5f7fa; color:var(--gray-800); line-height:1.6; min-height:100vh; padding:24px; display:flex; justify-content:center; align-items:flex-start; }
-    .document-wrapper { width:100%; max-width:900px; background:white; border-radius:var(--radius-lg); box-shadow:var(--shadow-lg); overflow:hidden; }
-    .header { background:linear-gradient(135deg,var(--primary) 0%,var(--primary-light) 100%); color:white; padding:32px 40px; border-bottom:3px solid var(--gold); }
-    .header-label { font-size:11px; text-transform:uppercase; letter-spacing:3px; color:var(--gold); font-weight:600; margin-bottom:8px; }
-    .header h1 { font-size:28px; font-weight:700; letter-spacing:-0.5px; margin-bottom:4px; }
-    .header h1 span { color:var(--gold); font-weight:300; }
-    .header .subtitle { font-size:14px; opacity:0.8; font-weight:400; margin-bottom:16px; }
-    .header .meta { display:flex; gap:20px; font-size:12px; opacity:0.75; flex-wrap:wrap; }
-    .header .meta span { display:flex; align-items:center; gap:6px; }
-    .header .meta .dot { width:5px; height:5px; background:var(--gold); border-radius:50%; display:inline-block; }
-    .form-body { padding:32px 40px 40px; }
-    .section { margin-bottom:28px; padding-bottom:24px; border-bottom:1px solid var(--gray-200); }
-    .section:last-of-type { border-bottom:none; margin-bottom:0; padding-bottom:0; }
-    .section-header { display:flex; align-items:center; gap:12px; margin-bottom:20px; }
-    .section-number { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; background:var(--primary); color:white; border-radius:6px; font-size:13px; font-weight:700; flex-shrink:0; }
-    .section-title { font-size:16px; font-weight:700; color:var(--gray-900); letter-spacing:-0.3px; }
-    .section-subtitle { font-size:12px; color:var(--gray-500); margin-left:auto; }
-    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px 20px; }
-    .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px 20px; }
-    .full { grid-column:1 / -1; }
-    .field { display:flex; flex-direction:column; gap:6px; }
-    .field label { font-size:12px; font-weight:600; color:var(--gray-700); text-transform:uppercase; letter-spacing:0.5px; }
-    .field label .required { color:var(--error); margin-left:3px; }
-    .field .hint { font-size:11px; color:var(--gray-500); font-weight:400; text-transform:none; letter-spacing:0; }
-    .field input, .field select, .field textarea { width:100%; padding:10px 14px; border:1.5px solid var(--gray-300); border-radius:var(--radius); font-size:14px; font-family:inherit; color:var(--gray-900); background:white; transition:all 0.2s; line-height:1.5; }
-    .field input:focus, .field select:focus, .field textarea:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(15,52,96,0.08); background:var(--gray-50); }
-    .field input::placeholder, .field textarea::placeholder { color:var(--gray-400); font-style:italic; }
-    .field textarea { min-height:80px; resize:vertical; }
-    select { cursor:pointer; appearance:none; background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23495057' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat:no-repeat; background-position:right 12px center; padding-right:40px; }
-    .info-box { background:#e8f0fe; border-left:4px solid #1a56db; padding:12px 16px; border-radius:var(--radius); margin-bottom:16px; font-size:13px; color:#1e40af; line-height:1.6; }
-    .info-box.gold { background:#f8f9fa; border-left-color:var(--gold); color:var(--gray-700); font-style:italic; }
-    .info-box.warning { background:#f8f9fa; border-left-color:#c1121f; color:var(--gray-700); }
-    .info-box.accent { background:#f8f9fa; border-left-color:var(--accent); color:var(--gray-700); }
-    .preambule-box { background:#f8f9fa; border-left:4px solid var(--gold); padding:14px 18px; border-radius:var(--radius); margin-bottom:28px; font-size:13px; color:var(--gray-700); line-height:1.6; font-style:italic; }
-    .preambule-box strong { display:block; margin-bottom:6px; font-style:normal; text-transform:uppercase; letter-spacing:1px; font-size:11px; color:var(--gold); }
-    .penalties-table { width:100%; border-collapse:collapse; margin-bottom:16px; font-size:13px; }
-    .penalties-table th { background:var(--primary); color:white; padding:10px 14px; text-align:left; font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:0.5px; }
-    .penalties-table td { padding:10px 14px; border-bottom:1px solid var(--gray-200); color:var(--gray-700); vertical-align:middle; }
-    .penalties-table tr:nth-child(even) td { background:var(--gray-50); }
-    .penalties-table .penalty-input { width:80px; padding:6px 10px; border:1px solid var(--gray-300); border-radius:4px; font-size:13px; text-align:right; font-family:inherit; }
-    .penalties-table .penalty-input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 2px rgba(15,52,96,0.08); }
-    .penalties-table .penalty-text { font-size:13px; color:var(--gray-700); font-style:italic; }
-    .accessory-item { display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--gray-50); border-radius:var(--radius); border:1px solid var(--gray-200); }
-    .accessory-item .checkbox-label { display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; font-weight:500; color:var(--gray-700); min-width:90px; user-select:none; }
-    .accessory-item .checkbox-label input[type="checkbox"] { width:16px; height:16px; accent-color:var(--accent); cursor:pointer; }
-    .accessory-item select { padding:7px 10px; border:1px solid var(--gray-300); border-radius:6px; font-size:13px; background:white; flex:1; min-width:110px; height:36px; font-family:inherit; }
-    .sign-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-    .sign-box { background:var(--gray-50); border-radius:var(--radius-lg); padding:20px 24px 24px; border:1.5px solid var(--gray-200); }
-    .sign-box .sign-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
-    .sign-box .sign-header .name { font-weight:700; font-size:15px; color:var(--gray-900); }
-    .sign-box .sign-header .badge { font-size:10px; padding:3px 12px; border-radius:20px; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
-    .badge-owner { background:#e8f0fe; color:#1a56db; } .badge-renter { background:#e6f4ea; color:#137333; }
-    .sign-box .mention { font-size:12px; color:var(--gray-500); font-style:italic; margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid var(--gray-200); }
-    .sign-box .signature-canvas { width:100%; height:90px; background:white; border-radius:var(--radius); border:1.5px solid var(--gray-300); cursor:crosshair; display:block; touch-action:none; }
-    .sign-box .sign-actions { display:flex; gap:8px; margin-top:8px; align-items:center; }
-    .sign-box .sign-actions .btn-text { background:transparent; border:1px solid var(--gray-300); padding:5px 14px; border-radius:20px; font-size:11px; color:var(--gray-600); cursor:pointer; font-weight:500; font-family:inherit; }
-    .sign-box .sign-status { font-size:12px; margin-left:auto; padding:3px 10px; border-radius:12px; background:var(--gray-100); color:var(--gray-500); }
-    .sign-box .sign-status.signed { background:#e6f4ea; color:#137333; font-weight:600; }
-    .declaration-box { background:var(--gray-50); border:1px solid var(--gray-200); border-radius:var(--radius); padding:16px; margin-bottom:12px; }
-    .declaration-box p { font-size:13px; color:var(--gray-700); font-style:italic; margin-bottom:4px; }
-    .obligations-list { margin:0 0 16px 16px; font-size:13px; line-height:2; color:var(--gray-700); }
-    .conditions-text { font-size:13px; color:var(--gray-700); line-height:1.7; } .conditions-text p { margin-bottom:8px; }
-    .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:28px; padding-top:20px; border-top:2px solid var(--gray-200); }
-    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 24px; border:none; border-radius:var(--radius); font-size:14px; font-weight:600; font-family:inherit; cursor:pointer; transition:all 0.2s; flex:1 1 auto; min-width:140px; }
-    .btn:disabled { opacity:0.6; cursor:not-allowed; }
-    .btn-primary { background:var(--primary); color:white; } .btn-primary:hover:not(:disabled) { background:#16213e; }
-    .btn-success { background:var(--success); color:white; } .btn-success:hover:not(:disabled) { background:#1b5e3a; }
-    .btn-outline { background:white; color:var(--gray-700); border:1.5px solid var(--gray-300); } .btn-outline:hover:not(:disabled) { background:var(--gray-50); }
-    .btn-ghost { background:transparent; color:var(--gray-600); } .btn-ghost:hover:not(:disabled) { background:var(--gray-50); }
-    .spinner { display:inline-block; width:18px; height:18px; border:2.5px solid rgba(255,255,255,0.3); border-radius:50%; border-top-color:#fff; animation:spin 0.7s linear infinite; }
-    @keyframes spin { to { transform:rotate(360deg); } }
-    .toast-container { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:9999; width:100%; max-width:500px; padding:0 16px; }
-    .toast { background:var(--gray-900); color:white; padding:14px 24px; border-radius:var(--radius); font-size:13px; box-shadow:var(--shadow-lg); opacity:0; transform:translateY(20px); transition:all 0.4s; width:100%; text-align:center; margin-bottom:8px; }
-    .toast.show { opacity:1; transform:translateY(0); } .toast.success { background:#1b4332; } .toast.error { background:#5a1118; }
-    @media (max-width:768px) { body { padding:12px; } .header { padding:24px; } .header h1 { font-size:22px; } .form-body { padding:24px; } .grid-2, .grid-3 { grid-template-columns:1fr; } .sign-grid { grid-template-columns:1fr; } .actions { flex-direction:column; } .btn { width:100%; } }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      color: var(--gray-800);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .document-wrapper {
+      width: 100%;
+      max-width: 900px;
+      background: white;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      padding: 32px 40px;
+      border-bottom: 3px solid var(--gold);
+    }
+    .header-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+    .header h1 span {
+      color: var(--gold);
+      font-weight: 300;
+    }
+    .header .subtitle {
+      font-size: 14px;
+      opacity: 0.8;
+      font-weight: 400;
+      margin-bottom: 16px;
+    }
+    .header .meta {
+      display: flex;
+      gap: 20px;
+      font-size: 12px;
+      opacity: 0.75;
+      flex-wrap: wrap;
+    }
+    .header .meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .header .meta .dot {
+      width: 5px;
+      height: 5px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .form-body {
+      padding: 32px 40px 40px;
+    }
+
+    .section {
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .section:last-of-type {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .section-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      color: white;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gray-900);
+      letter-spacing: -0.3px;
+    }
+    .section-subtitle {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-left: auto;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px 20px; }
+    .full { grid-column: 1 / -1; }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-700);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .field label .required {
+      color: var(--error);
+      margin-left: 3px;
+    }
+    .field .hint {
+      font-size: 11px;
+      color: var(--gray-500);
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--gray-300);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--gray-900);
+      background: white;
+      transition: all 0.2s;
+      line-height: 1.5;
+    }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.08);
+      background: var(--gray-50);
+    }
+    .field input::placeholder,
+    .field textarea::placeholder {
+      color: var(--gray-400);
+      font-style: italic;
+    }
+    .field textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23495057' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 40px;
+    }
+
+    .info-box {
+      background: #e8f0fe;
+      border-left: 4px solid #1a56db;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: #1e40af;
+      line-height: 1.6;
+    }
+
+    .info-box.gold {
+      background: #f8f9fa;
+      border-left-color: var(--gold);
+      color: var(--gray-700);
+      font-style: italic;
+    }
+
+    .info-box.warning {
+      background: #f8f9fa;
+      border-left-color: #c1121f;
+      color: var(--gray-700);
+    }
+
+    .info-box.accent {
+      background: #f8f9fa;
+      border-left-color: var(--accent);
+      color: var(--gray-700);
+    }
+
+    .preambule-box {
+      background: #f8f9fa;
+      border-left: 4px solid var(--gold);
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: var(--gray-700);
+      line-height: 1.6;
+      font-style: italic;
+    }
+    .preambule-box strong {
+      display: block;
+      margin-bottom: 6px;
+      font-style: normal;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 11px;
+      color: var(--gold);
+    }
+
+    .penalties-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    .penalties-table th {
+      background: var(--primary);
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .penalties-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--gray-200);
+      color: var(--gray-700);
+      vertical-align: middle;
+    }
+    .penalties-table tr:nth-child(even) td {
+      background: var(--gray-50);
+    }
+    .penalties-table .penalty-input {
+      width: 80px;
+      padding: 6px 10px;
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      font-size: 13px;
+      text-align: right;
+      font-family: inherit;
+    }
+    .penalties-table .penalty-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(15, 52, 96, 0.08);
+    }
+    .penalties-table .penalty-text {
+      font-size: 13px;
+      color: var(--gray-700);
+      font-style: italic;
+    }
+
+    .accessory-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--gray-50);
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+    }
+    .accessory-item .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-700);
+      min-width: 90px;
+      user-select: none;
+    }
+    .accessory-item .checkbox-label input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .accessory-item select {
+      padding: 7px 10px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 13px;
+      background: white;
+      flex: 1;
+      min-width: 110px;
+      height: 36px;
+      font-family: inherit;
+    }
+
+    .sign-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .sign-box {
+      background: var(--gray-50);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px 24px;
+      border: 1.5px solid var(--gray-200);
+    }
+    .sign-box .sign-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .sign-box .sign-header .name {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--gray-900);
+    }
+    .sign-box .sign-header .badge {
+      font-size: 10px;
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .badge-owner { background: #e8f0fe; color: #1a56db; }
+    .badge-renter { background: #e6f4ea; color: #137333; }
+    .sign-box .mention {
+      font-size: 12px;
+      color: var(--gray-500);
+      font-style: italic;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .sign-box .signature-canvas {
+      width: 100%;
+      height: 90px;
+      background: white;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--gray-300);
+      cursor: crosshair;
+      display: block;
+      touch-action: none;
+    }
+    .sign-box .sign-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      align-items: center;
+    }
+    .sign-box .sign-actions .btn-text {
+      background: transparent;
+      border: 1px solid var(--gray-300);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: var(--gray-600);
+      cursor: pointer;
+      font-weight: 500;
+      font-family: inherit;
+    }
+    .sign-box .sign-status {
+      font-size: 12px;
+      margin-left: auto;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: var(--gray-100);
+      color: var(--gray-500);
+    }
+    .sign-box .sign-status.signed {
+      background: #e6f4ea;
+      color: #137333;
+      font-weight: 600;
+    }
+
+    .declaration-box {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .declaration-box p {
+      font-size: 13px;
+      color: var(--gray-700);
+      font-style: italic;
+      margin-bottom: 4px;
+    }
+
+    .obligations-list {
+      margin: 0 0 16px 16px;
+      font-size: 13px;
+      line-height: 2;
+      color: var(--gray-700);
+    }
+
+    .conditions-text {
+      font-size: 13px;
+      color: var(--gray-700);
+      line-height: 1.7;
+    }
+    .conditions-text p { margin-bottom: 8px; }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 2px solid var(--gray-200);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex: 1 1 auto;
+      min-width: 140px;
+    }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover:not(:disabled) { background: #16213e; }
+    .btn-success { background: var(--success); color: white; }
+    .btn-success:hover:not(:disabled) { background: #1b5e3a; }
+    .btn-outline { background: white; color: var(--gray-700); border: 1.5px solid var(--gray-300); }
+    .btn-outline:hover:not(:disabled) { background: var(--gray-50); }
+    .btn-ghost { background: transparent; color: var(--gray-600); }
+    .btn-ghost:hover:not(:disabled) { background: var(--gray-50); }
+
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      width: 100%;
+      max-width: 500px;
+      padding: 0 16px;
+    }
+    .toast {
+      background: var(--gray-900);
+      color: white;
+      padding: 14px 24px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s;
+      width: 100%;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: #1b4332; }
+    .toast.error { background: #5a1118; }
+
+    @media (max-width: 768px) {
+      body { padding: 12px; }
+      .header { padding: 24px; }
+      .header h1 { font-size: 22px; }
+      .form-body { padding: 24px; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .sign-grid { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; }
+      .btn { width: 100%; }
+    }
   </style>
 </head>
 <body>
@@ -118,7 +570,12 @@
       </div>
 
       <!-- SECTION 1 : BAILLEUR -->
-      <div class="section"><div class="section-header"><span class="section-number">1</span><span class="section-title">Bailleur (propriétaire)</span><span class="section-subtitle">Informations obligatoires</span></div>
+      <div class="section">
+        <div class="section-header">
+          <span class="section-number">1</span>
+          <span class="section-title">Bailleur (propriétaire)</span>
+          <span class="section-subtitle">Informations obligatoires</span>
+        </div>
         <div class="grid-2">
           <div class="field"><label>Nom et prénom <span class="required">*</span></label><input type="text" name="bailleur_nom" placeholder="Nom complet" required></div>
           <div class="field"><label>Adresse <span class="required">*</span></label><input type="text" name="bailleur_adresse" placeholder="Adresse complète" required></div>
@@ -128,7 +585,12 @@
       </div>
 
       <!-- SECTION 2 : LOCATAIRE -->
-      <div class="section"><div class="section-header"><span class="section-number">2</span><span class="section-title">Locataire (utilisateur)</span><span class="section-subtitle">Informations obligatoires</span></div>
+      <div class="section">
+        <div class="section-header">
+          <span class="section-number">2</span>
+          <span class="section-title">Locataire (utilisateur)</span>
+          <span class="section-subtitle">Informations obligatoires</span>
+        </div>
         <div class="grid-2">
           <div class="field"><label>Nom et prénom <span class="required">*</span></label><input type="text" name="locataire_nom" placeholder="Nom complet" required></div>
           <div class="field"><label>Adresse <span class="required">*</span></label><input type="text" name="locataire_adresse" placeholder="Adresse complète" required></div>
@@ -139,9 +601,10 @@
       </div>
 
       <!-- SECTION 3 : OBJET DU CONTRAT ET VÉLO -->
-      <div class="section"><div class="section-header"><span class="section-number">3</span><span class="section-title">Objet du contrat</span></div>
+      <div class="section">
+        <div class="section-header"><span class="section-number">3</span><span class="section-title">Objet du contrat</span></div>
         <div class="info-box">Le présent contrat porte sur la mise à disposition temporaire, à titre onéreux, d'un vélo appartenant au Bailleur, identifié dans la fiche descriptive ci-dessous. Le Locataire reconnaît recevoir le vélo en bon état apparent de fonctionnement, sauf réserves expressément mentionnées dans l'état des lieux contradictoire établi au départ.</div>
-        <div class="section-header" style="margin-top:20px;"><span style="font-weight:700;color:var(--gray-900);font-size:15px;">Caractéristiques du vélo</span></div>
+        <div class="section-header" style="margin-top: 20px;"><span style="font-weight: 700; color: var(--gray-900); font-size: 15px;">Caractéristiques du vélo</span></div>
         <div class="grid-3">
           <div class="field"><label>Marque / modèle <span class="required">*</span></label><input type="text" name="velo_modele" placeholder="Marque et modèle" required></div>
           <div class="field"><label>Type</label><select name="velo_type"><option value="mecanique">Mécanique</option><option value="electrique">Électrique</option></select></div>
@@ -152,11 +615,12 @@
           <div class="field"><label>Valeur à neuf (€)</label><input type="number" name="velo_val_neuf" min="0" step="0.01" placeholder="0.00"></div>
           <div class="field"><label>Valeur actuelle estimée (€)</label><input type="number" name="velo_val_actuelle" min="0" step="0.01" placeholder="0.00"></div>
         </div>
-        <div class="info-box gold" style="margin-top:16px;margin-bottom:0;">La fiche descriptive du vélo et l'état des lieux annexé font partie intégrante du présent contrat. Toute différence entre l'état constaté au départ et celui constaté au retour pourra donner lieu à retenue sur le dépôt de garantie, dans les conditions prévues ci-après.</div>
+        <div class="info-box gold" style="margin-top: 16px; margin-bottom: 0;">La fiche descriptive du vélo et l'état des lieux annexé font partie intégrante du présent contrat. Toute différence entre l'état constaté au départ et celui constaté au retour pourra donner lieu à retenue sur le dépôt de garantie, dans les conditions prévues ci-après.</div>
       </div>
 
       <!-- SECTION 4 : ACCESSOIRES -->
-      <div class="section"><div class="section-header"><span class="section-number">4</span><span class="section-title">Accessoires fournis</span></div>
+      <div class="section">
+        <div class="section-header"><span class="section-number">4</span><span class="section-title">Accessoires fournis</span></div>
         <div class="grid-2">
           <div class="accessory-item"><label class="checkbox-label"><input type="checkbox" name="extras" value="helmet">Casque</label><select name="state_helmet"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Endommagé">Endommagé</option></select></div>
           <div class="accessory-item"><label class="checkbox-label"><input type="checkbox" name="extras" value="lock">Antivol</label><select name="state_lock"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Défaillant">Défaillant</option></select></div>
@@ -167,74 +631,49 @@
         </div>
       </div>
 
-      <!-- SECTION 5 : DURÉE -->
-      <div class="section"><div class="section-header"><span class="section-number">5</span><span class="section-title">Durée de location</span></div>
-        <div class="grid-3">
+      <!-- SECTION 5 : DURÉE (modifiée avec contrainte horaire) -->
+      <div class="section">
+        <div class="section-header"><span class="section-number">5</span><span class="section-title">Durée de location</span></div>
+        <div class="grid-2">
           <div class="field">
             <label>Date de début <span class="required">*</span></label>
-            <div style="display:flex;gap:8px;">
-              <input type="date" name="date_debut_date" required style="flex:2;">
-              <select name="date_debut_heure" required style="flex:1;">
-                <option value="">Heure</option>
-                <option value="08:00">08:00</option><option value="08:30">08:30</option>
-                <option value="09:00">09:00</option><option value="09:30">09:30</option>
-                <option value="10:00">10:00</option><option value="10:30">10:30</option>
-                <option value="11:00">11:00</option><option value="11:30">11:30</option>
-                <option value="12:00">12:00</option><option value="12:30">12:30</option>
-                <option value="13:00">13:00</option><option value="13:30">13:30</option>
-                <option value="14:00">14:00</option><option value="14:30">14:30</option>
-                <option value="15:00">15:00</option><option value="15:30">15:30</option>
-                <option value="16:00">16:00</option><option value="16:30">16:30</option>
-                <option value="17:00">17:00</option><option value="17:30">17:30</option>
-                <option value="18:00">18:00</option><option value="18:30">18:30</option>
-                <option value="19:00">19:00</option><option value="19:30">19:30</option>
-                <option value="20:00">20:00</option><option value="20:30">20:30</option>
-                <option value="21:00">21:00</option>
-              </select>
-            </div>
+            <input type="date" name="date_debut_date" required>
+          </div>
+          <div class="field">
+            <label>Heure de début <span class="required">*</span></label>
+            <select name="date_debut_heure" required></select>
+            <span class="hint">De 08:00 à 21:00, toutes les 30 min</span>
           </div>
           <div class="field">
             <label>Date de fin <span class="required">*</span></label>
-            <div style="display:flex;gap:8px;">
-              <input type="date" name="date_fin_date" required style="flex:2;">
-              <select name="date_fin_heure" required style="flex:1;">
-                <option value="">Heure</option>
-                <option value="08:00">08:00</option><option value="08:30">08:30</option>
-                <option value="09:00">09:00</option><option value="09:30">09:30</option>
-                <option value="10:00">10:00</option><option value="10:30">10:30</option>
-                <option value="11:00">11:00</option><option value="11:30">11:30</option>
-                <option value="12:00">12:00</option><option value="12:30">12:30</option>
-                <option value="13:00">13:00</option><option value="13:30">13:30</option>
-                <option value="14:00">14:00</option><option value="14:30">14:30</option>
-                <option value="15:00">15:00</option><option value="15:30">15:30</option>
-                <option value="16:00">16:00</option><option value="16:30">16:30</option>
-                <option value="17:00">17:00</option><option value="17:30">17:30</option>
-                <option value="18:00">18:00</option><option value="18:30">18:30</option>
-                <option value="19:00">19:00</option><option value="19:30">19:30</option>
-                <option value="20:00">20:00</option><option value="20:30">20:30</option>
-                <option value="21:00">21:00</option>
-              </select>
-            </div>
+            <input type="date" name="date_fin_date" required>
           </div>
-          <div class="field"><label>Retard de restitution (€/h)</label><input type="number" name="retard_tarif" min="0" step="0.01" placeholder="0.00"></div>
+          <div class="field">
+            <label>Heure de fin <span class="required">*</span></label>
+            <select name="date_fin_heure" required></select>
+            <span class="hint">De 08:00 à 21:00, toutes les 30 min</span>
+          </div>
+          <div class="field full"><label>Retard de restitution (€/h)</label><input type="number" name="retard_tarif" min="0" step="0.01" placeholder="0.00"></div>
         </div>
       </div>
 
-      <!-- SECTION 6 : PRIX -->
-      <div class="section"><div class="section-header"><span class="section-number">6</span><span class="section-title">Prix, paiement et dépôt de garantie</span></div>
-        <div class="info-box gold" style="margin-bottom:20px;">Le dépôt de garantie ne constitue pas un paiement anticipé du prix de location. Il garantit notamment la restitution du vélo, des accessoires, ainsi que le paiement des éventuels dommages, frais, pénalités ou sommes restant dues par le Locataire.</div>
+      <!-- SECTION 6 : PRIX, PAIEMENT ET DÉPÔT DE GARANTIE -->
+      <div class="section">
+        <div class="section-header"><span class="section-number">6</span><span class="section-title">Prix, paiement et dépôt de garantie</span></div>
+        <div class="info-box gold" style="margin-bottom: 20px;">Le dépôt de garantie ne constitue pas un paiement anticipé du prix de location. Il garantit notamment la restitution du vélo, des accessoires, ainsi que le paiement des éventuels dommages, frais, pénalités ou sommes restant dues par le Locataire.</div>
         <div class="grid-2">
           <div class="field"><label>Tarif (€/jour ou €/semaine)</label><input type="text" name="tarif_location" placeholder="Ex: 15€/jour"></div>
           <div class="field"><label>Montant total estimé (€)</label><input type="number" name="montant_total" min="0" step="0.01" placeholder="0.00"></div>
           <div class="field"><label>Dépôt de garantie / Caution (€)</label><input type="number" name="caution" min="0" step="0.01" placeholder="0.00"></div>
           <div class="field"><label>Mode de paiement</label><input type="text" name="mode_paiement" placeholder="Espèces / virement / CB"></div>
         </div>
-        <div class="info-box gold" style="margin-top:16px;margin-bottom:0;">La caution est destinée à couvrir les dommages éventuels et la restitution du matériel. Elle est restituée au locataire à l'issue de la location, déduction faite des éventuelles réparations nécessaires non couvertes par l'usure normale.</div>
+        <div class="info-box gold" style="margin-top: 16px; margin-bottom: 0;">La caution est destinée à couvrir les dommages éventuels et la restitution du matériel. Elle est restituée au locataire à l'issue de la location, déduction faite des éventuelles réparations nécessaires non couvertes par l'usure normale.</div>
       </div>
 
       <!-- SECTION 7 : ASSURANCE -->
-      <div class="section"><div class="section-header"><span class="section-number">7</span><span class="section-title">Assurance, franchise et responsabilité</span></div>
-        <div class="info-box gold" style="margin-bottom:20px;">Le Bailleur déclare, préalablement à la signature du présent contrat, si le vélo fait ou non l'objet d'une assurance couvrant le vol, la casse ou les dommages matériels. Le Locataire reconnaît avoir été informé des garanties éventuellement applicables, de leurs limites, exclusions et franchises.</div>
+      <div class="section">
+        <div class="section-header"><span class="section-number">7</span><span class="section-title">Assurance, franchise et responsabilité</span></div>
+        <div class="info-box gold" style="margin-bottom: 20px;">Le Bailleur déclare, préalablement à la signature du présent contrat, si le vélo fait ou non l'objet d'une assurance couvrant le vol, la casse ou les dommages matériels. Le Locataire reconnaît avoir été informé des garanties éventuellement applicables, de leurs limites, exclusions et franchises.</div>
         <div class="grid-3">
           <div class="field"><label>Vol</label><select name="assurance_vol"><option value="non">Non</option><option value="oui">Oui</option></select></div>
           <div class="field"><label>Casse accidentelle</label><select name="assurance_casse"><option value="non">Non</option><option value="oui">Oui</option></select></div>
@@ -242,33 +681,113 @@
           <div class="field"><label>Batterie (VAE)</label><select name="assurance_batterie"><option value="non">Non</option><option value="oui">Oui</option></select></div>
           <div class="field"><label>Franchise (€)</label><input type="number" name="franchise" min="0" step="0.01" placeholder="0.00"></div>
         </div>
-        <div class="info-box gold" style="margin-top:16px;margin-bottom:16px;"><strong>Franchise :</strong> En cas de sinistre couvert, une franchise reste à la charge du Locataire (voir contrat d'assurance).</div>
-        <div class="info-box warning" style="margin-bottom:16px;">
-          <strong style="color:#c1121f;">Exclusions fréquentes :</strong>
-          <ul style="margin:8px 0 0 16px;font-size:12px;line-height:1.8;"><li>Absence d'utilisation de l'antivol fourni.</li><li>Stationnement dans un lieu non sécurisé.</li><li>Usage non conforme (sauts, cascade, compétition).</li><li>Immersion dans l'eau (VAE).</li><li>Perte d'accessoires.</li></ul>
+        <div class="info-box gold" style="margin-top: 16px; margin-bottom: 16px;"><strong>Franchise :</strong> En cas de sinistre couvert, une franchise reste à la charge du Locataire (voir contrat d'assurance).</div>
+        <div class="info-box warning" style="margin-bottom: 16px;">
+          <strong style="color: #c1121f;">Exclusions fréquentes :</strong>
+          <ul style="margin: 8px 0 0 16px; font-size: 12px; line-height: 1.8;">
+            <li>Absence d'utilisation de l'antivol fourni.</li><li>Stationnement dans un lieu non sécurisé.</li><li>Usage non conforme (sauts, cascade, compétition).</li><li>Immersion dans l'eau (VAE).</li><li>Perte d'accessoires.</li>
+          </ul>
         </div>
-        <div class="info-box" style="margin-bottom:0;">Le propriétaire et le locataire sont invités à vérifier que le vélo bénéficie d'une assurance responsabilité civile.</div>
+        <div class="info-box" style="margin-bottom: 0;">Le propriétaire et le locataire sont invités à vérifier que le vélo bénéficie d'une assurance responsabilité civile.</div>
       </div>
 
-      <!-- SECTIONS 8 à 15 (résumées pour la réponse) -->
-      <div class="section"><div class="section-header"><span class="section-number">8</span><span class="section-title">Obligations du Locataire</span></div><div class="info-box">Le Locataire s'oblige, pendant toute la durée de la location, à utiliser le vélo en bon père de famille.</div><ul class="obligations-list"><li>Utiliser le vélo de manière prudente.</li><li>Respecter le Code de la route.</li><li>Maintenir le vélo en bon état.</li><li>Utiliser systématiquement l'antivol fourni.</li><li>Ne pas transporter de passagers non prévus.</li><li>Ne pas prêter ou sous-louer le vélo.</li><li>Ne pas modifier le vélo.</li><li>Restituer le vélo complet.</li></ul></div>
-      <div class="section"><div class="section-header"><span class="section-number">9</span><span class="section-title">Obligations du Bailleur</span></div><div class="info-box">Le Bailleur s'engage à remettre au Locataire un vélo conforme à la description.</div><ul class="obligations-list"><li>Fournir un vélo en bon état de fonctionnement.</li><li>Fournir les accessoires nécessaires.</li><li>Informer le Locataire de tout défaut connu.</li><li>Remettre un vélo propre et entretenu.</li></ul></div>
-      <div class="section"><div class="section-header"><span class="section-number">10</span><span class="section-title">Responsabilité</span></div><div class="info-box">Le Locataire demeure responsable du vélo pendant toute la durée de la location.</div></div>
-      <div class="section"><div class="section-header"><span class="section-number">11</span><span class="section-title">Pénalités</span></div><table class="penalties-table"><thead><tr><th>Manquement constaté</th><th>Conséquence financière</th></tr></thead><tbody><tr><td>Retard de restitution</td><td><input type="number" name="penalite_retard" class="penalty-input"> € par heure</td></tr><tr><td>Perte accessoire</td><td><input type="number" name="penalite_accessoire" class="penalty-input"> € par accessoire</td></tr><tr><td>Restitution sale</td><td><input type="number" name="penalite_nettoyage" class="penalty-input"> €</td></tr></tbody></table></div>
-      <div class="section"><div class="section-header"><span class="section-number">12</span><span class="section-title">Résiliation</span></div><div class="info-box">Le présent contrat pourra être résilié de plein droit en cas de manquement grave.</div></div>
-      <div class="section"><div class="section-header"><span class="section-number">13</span><span class="section-title">Données personnelles</span></div><div class="info-box">Les données personnelles sont collectées uniquement pour la gestion de la location.</div></div>
-      <div class="section"><div class="section-header"><span class="section-number">14</span><span class="section-title">Droit applicable</span></div><div class="info-box">Le présent contrat est soumis au droit français.</div></div>
-      <div class="section"><div class="section-header"><span class="section-number">15</span><span class="section-title">Déclaration et engagements</span></div><div class="declaration-box"><p>Le Locataire déclare avoir pris connaissance des conditions générales.</p></div><div class="declaration-box"><p>Le Bailleur déclare proposer un vélo en bon état de fonctionnement.</p></div></div>
+      <!-- SECTIONS 8 à 15 -->
+      <div class="section">
+        <div class="section-header"><span class="section-number">8</span><span class="section-title">Obligations du Locataire</span></div>
+        <div class="info-box">Le Locataire s'oblige, pendant toute la durée de la location, à utiliser le vélo en bon père de famille, conformément à sa destination normale, aux règles de sécurité applicables et aux prescriptions éventuelles communiquées par le Bailleur.</div>
+        <ul class="obligations-list"><li>Utiliser le vélo de manière prudente.</li><li>Respecter le Code de la route.</li><li>Maintenir le vélo en bon état.</li><li>Utiliser systématiquement l'antivol fourni.</li><li>Ne pas transporter de passagers non prévus.</li><li>Ne pas prêter ou sous-louer le vélo.</li><li>Ne pas modifier le vélo.</li><li>Restituer le vélo complet.</li></ul>
+        <div class="info-box gold">En cas de vol, perte, accident, dégradation ou tout autre incident affectant le vélo ou ses accessoires, le Locataire devra en informer le Bailleur sans délai et, en cas de vol, transmettre une copie du dépôt de plainte dans un délai maximal de vingt-quatre heures (24h).</div>
+        <div class="info-box accent" style="margin-bottom: 0;"><strong>Vélos électriques (VAE) :</strong> Le locataire s'interdit de démonter la batterie, de la recharger avec un chargeur non fourni, ou de l'exposer à des températures extrêmes.</div>
+      </div>
+
+      <div class="section">
+        <div class="section-header"><span class="section-number">9</span><span class="section-title">Obligations du Bailleur</span></div>
+        <div class="info-box">Le Bailleur s'engage à remettre au Locataire un vélo conforme à la description figurant au présent contrat, propre, entretenu et en état normal de fonctionnement, sous réserve des réserves expressément indiquées dans l'état des lieux de départ.</div>
+        <ul class="obligations-list"><li>Fournir un vélo en bon état de fonctionnement.</li><li>Fournir les accessoires nécessaires.</li><li>Informer le Locataire de tout défaut connu.</li><li>Remettre un vélo propre et entretenu.</li></ul>
+        <div class="info-box accent" style="margin-bottom: 0;"><strong>Vélos électriques (VAE) :</strong> En cas de panne de batterie pendant la location (hors faute du locataire), le loueur propose une solution de remplacement ou un remboursement proportionnel.</div>
+      </div>
+
+      <div class="section">
+        <div class="section-header"><span class="section-number">10</span><span class="section-title">Responsabilité</span></div>
+        <div class="info-box">Le Locataire demeure responsable du vélo, de ses équipements et accessoires pendant toute la durée de la location, depuis sa remise effective jusqu'à sa restitution complète au Bailleur.</div>
+        <p style="font-weight: 600; margin-bottom: 8px; font-size: 13px; color: var(--gray-700);">Le Locataire est responsable :</p>
+        <ul class="obligations-list"><li>Des dommages causés au vélo.</li><li>Des dommages causés à des tiers.</li><li>Des amendes et infractions.</li><li>De la batterie (VAE) en cas de mauvaise utilisation.</li></ul>
+        <div class="info-box gold" style="margin-bottom: 16px;">Sauf faute prouvée de sa part, le Bailleur ne saurait être tenu responsable des dommages corporels, matériels ou immatériels subis par le Locataire ou causés à des tiers du fait de l'utilisation du vélo.</div>
+        <p style="font-weight: 600; margin-bottom: 8px; font-size: 13px; color: var(--gray-700);">Le Bailleur n'est pas responsable :</p>
+        <ul class="obligations-list" style="margin-bottom: 0;"><li>Des accidents corporels du Locataire.</li><li>Des objets transportés.</li><li>Des pertes d'exploitation éventuelles.</li></ul>
+      </div>
+
+      <div class="section">
+        <div class="section-header"><span class="section-number">11</span><span class="section-title">Pénalités</span></div>
+        <table class="penalties-table">
+          <thead><tr><th style="width: 55%;">Manquement constaté</th><th style="width: 45%;">Conséquence financière</th></tr></thead>
+          <tbody>
+            <tr><td>Retard de restitution</td><td><div style="display: flex; align-items: center; gap: 8px;"><input type="number" name="penalite_retard" min="0" step="0.01" placeholder="0.00" class="penalty-input"><span>€ par heure de retard commencée</span></div></td></tr>
+            <tr><td>Perte ou non-restitution d'un accessoire</td><td><div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;"><span style="font-size: 12px;">Coût de remplacement ou forfait de</span><input type="number" name="penalite_accessoire" min="0" step="0.01" placeholder="0.00" class="penalty-input"><span>€ par accessoire</span></div></td></tr>
+            <tr><td>Restitution anormalement sale</td><td><div style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 12px;">Frais de nettoyage de</span><input type="number" name="penalite_nettoyage" min="0" step="0.01" placeholder="0.00" class="penalty-input"><span>€</span></div></td></tr>
+            <tr><td>Dommages non couverts ou exclus de l'assurance</td><td class="penalty-text">Coût réel de réparation ou de remplacement, sur justificatif.</td></tr>
+            <tr><td>Batterie endommagée ou usage non conforme d'un VAE</td><td class="penalty-text">Coût réel de réparation ou de remplacement, dans la limite de la valeur déclarée.</td></tr>
+          </tbody>
+        </table>
+        <div class="info-box gold" style="margin-bottom: 0;">Les pénalités et frais ci-dessus pourront être imputés sur le dépôt de garantie, sans préjudice de toute demande complémentaire si le montant des dommages excède le dépôt versé.</div>
+      </div>
+
+      <div class="section">
+        <div class="section-header"><span class="section-number">12</span><span class="section-title">Résiliation</span></div>
+        <div class="info-box">Le présent contrat pourra être résilié de plein droit, sans formalité judiciaire préalable, en cas de manquement grave de l'une des parties à ses obligations, notamment en cas d'usage dangereux, non conforme ou frauduleux du vélo.</div>
+        <ul class="obligations-list" style="margin-bottom: 0;"><li>Par le Bailleur en cas d'usage dangereux ou non conforme.</li><li>Par le Locataire à tout moment (sans remboursement sauf accord).</li><li>Immédiatement en cas de vol ou sinistre majeur.</li></ul>
+      </div>
+
+      <div class="section">
+        <div class="section-header"><span class="section-number">13</span><span class="section-title">Données personnelles</span></div>
+        <div class="info-box">Les données personnelles échangées dans le cadre du présent contrat sont collectées uniquement pour l'identification des parties, la gestion de la location, la sécurité du matériel et, le cas échéant, la gestion d'un litige ou d'un sinistre.</div>
+        <ul class="obligations-list"><li>À l'identification des parties.</li><li>À la gestion de la location.</li><li>À la sécurité du matériel.</li></ul>
+        <div class="info-box gold" style="margin-bottom: 0;">Chaque partie s'engage à conserver ces informations de manière confidentielle, à ne pas les communiquer à des tiers sauf nécessité liée à l'exécution du contrat, à une obligation légale, à une déclaration d'assurance ou à une procédure amiable ou judiciaire.</div>
+      </div>
+
+      <div class="section">
+        <div class="section-header"><span class="section-number">14</span><span class="section-title">Droit applicable et règlement des litiges</span></div>
+        <div class="info-box">Le présent contrat est soumis au droit français. En cas de différend relatif à sa validité, son interprétation ou son exécution, les parties s'engagent à rechercher prioritairement une solution amiable. À défaut d'accord amiable, le litige pourra être porté devant la juridiction compétente conformément aux règles de droit commun.</div>
+        <div class="conditions-text" style="margin-bottom: 0;">
+          <p><strong>Clause d'arbitrage :</strong></p>
+          <ol style="margin: 8px 0 0 16px; font-size: 13px; line-height: 1.8;">
+            <li>L'arbitrage sera conduit par un arbitre unique désigné d'un commun accord par les parties, ou, à défaut, par le président du Tribunal de commerce du lieu de domicile du loueur.</li>
+            <li>La procédure d'arbitrage se déroulera en français, selon les règles de l'arbitrage de la Chambre de commerce internationale (CCI) pour les petits litiges, dans sa version simplifiée.</li>
+            <li>La sentence arbitrale sera motivée, rendue dans un délai de deux mois à compter de la saisine de l'arbitre, et sera définitive et exécutoire comme une décision de justice.</li>
+            <li>Chaque partie supporte ses propres frais d'avocat et la moitié des frais d'arbitrage, sauf décision contraire de l'arbitre.</li>
+            <li>Les parties renoncent à faire appel de la sentence arbitrale.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header"><span class="section-number">15</span><span class="section-title">Déclaration et engagements des parties</span></div>
+        <div class="declaration-box"><p><strong>Le Locataire (utilisateur) déclare :</strong></p><p>« Je certifie avoir pris connaissance et accepter les conditions générales de location figurant sur le présent contrat. »</p><p>« Je reconnais avoir récupéré le vélo en bon état de fonctionnement, tel que décrit ci-dessus, et m'engage à le restituer dans le même état d'usure, déduction faite de l'usure normale. »</p></div>
+        <div class="declaration-box" style="margin-bottom: 0;"><p><strong>Le Bailleur (propriétaire) déclare :</strong></p><p>« J'accepte les conditions générales de location figurant sur le présent contrat, certifie proposer à la location un vélo en bon état de fonctionnement, tel que décrit ci-dessus, et accepte que celui-ci me soit restitué dans le même état d'usure, déduction faite de l'usure normale. »</p></div>
+      </div>
 
       <!-- SECTION 16 : SIGNATURES -->
-      <div class="section"><div class="section-header"><span class="section-number">16</span><span class="section-title">Signatures électroniques</span><span class="section-subtitle">Obligatoires</span></div>
+      <div class="section">
+        <div class="section-header"><span class="section-number">16</span><span class="section-title">Signatures électroniques</span><span class="section-subtitle">Obligatoires</span></div>
         <div class="grid-2" style="margin-bottom:16px;">
           <div class="field"><label>Lieu de signature</label><input type="text" name="lieu" placeholder="Ville"></div>
           <div class="field"><label>Date de signature</label><input type="date" name="date_signature"></div>
         </div>
         <div class="sign-grid">
-          <div class="sign-box"><div class="sign-header"><span class="name">Bailleur</span><span class="badge badge-owner">Propriétaire</span></div><div class="mention">« Lu et approuvé — Bon pour accord »</div><canvas class="signature-canvas" id="signature-bailleur"></canvas><div class="sign-actions"><button type="button" class="btn-text" onclick="clearSignature('bailleur')">Effacer</button><span class="sign-status" id="bailleurStatus">En attente</span></div></div>
-          <div class="sign-box"><div class="sign-header"><span class="name">Locataire</span><span class="badge badge-renter">Utilisateur</span></div><div class="mention">« Lu et approuvé — Bon pour accord »</div><canvas class="signature-canvas" id="signature-locataire"></canvas><div class="sign-actions"><button type="button" class="btn-text" onclick="clearSignature('locataire')">Effacer</button><span class="sign-status" id="locataireStatus">En attente</span></div></div>
+          <div class="sign-box">
+            <div class="sign-header"><span class="name">Bailleur</span><span class="badge badge-owner">Propriétaire</span></div>
+            <div class="mention">« Lu et approuvé — Bon pour accord »</div>
+            <canvas class="signature-canvas" id="signature-bailleur"></canvas>
+            <div class="sign-actions"><button type="button" class="btn-text" onclick="clearSignature('bailleur')">Effacer</button><span class="sign-status" id="bailleurStatus">En attente</span></div>
+            <input type="hidden" name="signatureBailleur" id="signatureBailleur">
+          </div>
+          <div class="sign-box">
+            <div class="sign-header"><span class="name">Locataire</span><span class="badge badge-renter">Utilisateur</span></div>
+            <div class="mention">« Lu et approuvé — Bon pour accord »</div>
+            <canvas class="signature-canvas" id="signature-locataire"></canvas>
+            <div class="sign-actions"><button type="button" class="btn-text" onclick="clearSignature('locataire')">Effacer</button><span class="sign-status" id="locataireStatus">En attente</span></div>
+            <input type="hidden" name="signatureLocataire" id="signatureLocataire">
+          </div>
         </div>
       </div>
 
@@ -292,190 +811,588 @@
 <script>
   'use strict';
 
-  const EMAILJS_CONFIG = { publicKey:'zz4KdlO2Xyw0Y5Gej', serviceID:'service_g1ip1lt', templateID:'template_sozwa7c' };
-  (function(){ try { emailjs.init({publicKey:EMAILJS_CONFIG.publicKey}); } catch(e){} })();
-  document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+  const EMAILJS_CONFIG = {
+    publicKey: 'zz4KdlO2Xyw0Y5Gej',
+    serviceID: 'service_g1ip1lt',
+    templateID: 'template_sozwa7c'
+  };
 
-  function showToast(msg,type='info'){
-    const c=document.getElementById('toastContainer'); if(!c)return;
-    const t=document.createElement('div'); t.className='toast '+type; t.textContent=msg;
-    c.appendChild(t); requestAnimationFrame(()=>t.classList.add('show'));
-    setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),400); },4000);
+  (function() { 
+    try { 
+      emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey }); 
+      console.log('✅ EmailJS initialisé'); 
+    } catch(e) { 
+      console.error('❌ Erreur EmailJS:', e); 
+    } 
+  })();
+
+  document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.textContent = message;
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 4000);
   }
 
-  const cB=document.getElementById('signature-bailleur'), cL=document.getElementById('signature-locataire');
-  const sB=document.getElementById('bailleurStatus'), sL=document.getElementById('locataireStatus');
-  function resizeCanvas(c){const r=c.getBoundingClientRect(),dpr=devicePixelRatio||1; c.width=r.width*dpr; c.height=90*dpr; c.style.height='90px'; c.style.width='100%'; c.getContext('2d').scale(dpr,dpr);}
-  resizeCanvas(cB); resizeCanvas(cL);
-  const padB=new SignaturePad(cB,{backgroundColor:'white',penColor:'#1a1a2e',minWidth:1.5,maxWidth:3});
-  const padL=new SignaturePad(cL,{backgroundColor:'white',penColor:'#1a1a2e',minWidth:1.5,maxWidth:3});
-  function updateSignStatus(){sB.textContent=padB.isEmpty()?'En attente':'Signé';sB.className='sign-status'+(padB.isEmpty()?'':' signed');sL.textContent=padL.isEmpty()?'En attente':'Signé';sL.className='sign-status'+(padL.isEmpty()?'':' signed');}
-  padB.addEventListener('endStroke',updateSignStatus); padL.addEventListener('endStroke',updateSignStatus);
-  window.clearSignature=type=>{if(type==='bailleur')padB.clear();else padL.clear();updateSignStatus();};
-  window.addEventListener('resize',()=>{const b=padB.toData(),l=padL.toData();resizeCanvas(cB);resizeCanvas(cL);padB.fromData(b);padL.fromData(l);});
+  const canvasBailleur = document.getElementById('signature-bailleur');
+  const canvasLocataire = document.getElementById('signature-locataire');
+  const bailleurStatus = document.getElementById('bailleurStatus');
+  const locataireStatus = document.getElementById('locataireStatus');
 
-  function getFormData(){
-    const fd=new FormData(document.getElementById('contratForm')),data={};
-    for(const[k,v]of fd.entries()){if(k==='extras'){if(!data.extras)data.extras=[];data.extras.push(v);}else data[k]=v;}
-    if(data.date_debut_date&&data.date_debut_heure) data.date_debut=data.date_debut_date+'T'+data.date_debut_heure;
-    if(data.date_fin_date&&data.date_fin_heure) data.date_fin=data.date_fin_date+'T'+data.date_fin_heure;
-    data.signatureBailleur=padB.isEmpty()?'':padB.toDataURL();
-    data.signatureLocataire=padL.isEmpty()?'':padL.toDataURL();
+  function resizeCanvas(canvas) {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = 90 * dpr;
+    canvas.style.height = '90px';
+    canvas.style.width = '100%';
+    canvas.getContext('2d').scale(dpr, dpr);
+  }
+  resizeCanvas(canvasBailleur);
+  resizeCanvas(canvasLocataire);
+
+  const sigPadBailleur = new SignaturePad(canvasBailleur, { backgroundColor: 'white', penColor: '#1a1a2e', minWidth: 1.5, maxWidth: 3 });
+  const sigPadLocataire = new SignaturePad(canvasLocataire, { backgroundColor: 'white', penColor: '#1a1a2e', minWidth: 1.5, maxWidth: 3 });
+
+  function updateSignatureStatus() {
+    bailleurStatus.textContent = sigPadBailleur.isEmpty() ? 'En attente' : 'Signé';
+    bailleurStatus.className = 'sign-status' + (sigPadBailleur.isEmpty() ? '' : ' signed');
+    locataireStatus.textContent = sigPadLocataire.isEmpty() ? 'En attente' : 'Signé';
+    locataireStatus.className = 'sign-status' + (sigPadLocataire.isEmpty() ? '' : ' signed');
+  }
+
+  sigPadBailleur.addEventListener('endStroke', updateSignatureStatus);
+  sigPadLocataire.addEventListener('endStroke', updateSignatureStatus);
+
+  window.clearSignature = function(type) {
+    if (type === 'bailleur') sigPadBailleur.clear();
+    else sigPadLocataire.clear();
+    updateSignatureStatus();
+  };
+
+  window.addEventListener('resize', () => {
+    const bD = sigPadBailleur.toData(), lD = sigPadLocataire.toData();
+    resizeCanvas(canvasBailleur); resizeCanvas(canvasLocataire);
+    sigPadBailleur.fromData(bD); sigPadLocataire.fromData(lD);
+  });
+
+  // Génération de la liste des créneaux horaires 08:00-20:30 toutes les 30 minutes
+  function populateTimeSlots() {
+    const slots = [];
+    for (let h = 8; h <= 20; h++) {
+      for (let m of [0, 30]) {
+        const hour = h.toString().padStart(2, '0');
+        const min = m.toString().padStart(2, '0');
+        slots.push(`${hour}:${min}`);
+      }
+    }
+    // Ajouter 21:00 si nécessaire, mais 20:30 + 30min = 21:00, inclure manuellement
+    slots.push('21:00');
+    return slots;
+  }
+
+  const debutHeureSelect = document.querySelector('[name="date_debut_heure"]');
+  const finHeureSelect = document.querySelector('[name="date_fin_heure"]');
+  const timeSlots = populateTimeSlots();
+  timeSlots.forEach(slot => {
+    const opt = document.createElement('option');
+    opt.value = slot;
+    opt.textContent = slot;
+    debutHeureSelect.appendChild(opt.cloneNode(true));
+    finHeureSelect.appendChild(opt);
+  });
+
+  // Assurer que la date de fin est postérieure à la date de début
+  function validateDates() {
+    const dateDebutDate = document.querySelector('[name="date_debut_date"]').value;
+    const dateDebutHeure = document.querySelector('[name="date_debut_heure"]').value;
+    const dateFinDate = document.querySelector('[name="date_fin_date"]').value;
+    const dateFinHeure = document.querySelector('[name="date_fin_heure"]').value;
+    if (!dateDebutDate || !dateDebutHeure || !dateFinDate || !dateFinHeure) return true;
+    const debut = new Date(`${dateDebutDate}T${dateDebutHeure}`);
+    const fin = new Date(`${dateFinDate}T${dateFinHeure}`);
+    return fin > debut;
+  }
+
+  document.querySelector('[name="date_fin_date"]').addEventListener('change', function() {
+    if (!validateDates()) {
+      showToast('La date de fin doit être postérieure à la date de début.', 'error');
+      this.value = '';
+    }
+  });
+  document.querySelector('[name="date_fin_heure"]').addEventListener('change', function() {
+    if (!validateDates()) {
+      showToast('L\'heure de fin doit être postérieure à l\'heure de début.', 'error');
+      this.value = '';
+    }
+  });
+
+  function getFormData() {
+    const form = document.getElementById('contratForm');
+    const fd = new FormData(form);
+    const data = {};
+    for (const [k, v] of fd.entries()) {
+      if (k === 'extras') { if (!data.extras) data.extras = []; data.extras.push(v); }
+      else data[k] = v;
+    }
+    // Recomposer les dates complètes
+    const dd = data.date_debut_date || '';
+    const dh = data.date_debut_heure || '';
+    const fdDate = data.date_fin_date || '';
+    const fh = data.date_fin_heure || '';
+    data.date_debut = dd && dh ? `${dd}T${dh}` : '';
+    data.date_fin = fdDate && fh ? `${fdDate}T${fh}` : '';
+    data.signatureBailleur = sigPadBailleur.isEmpty() ? '' : sigPadBailleur.toDataURL();
+    data.signatureLocataire = sigPadLocataire.isEmpty() ? '' : sigPadLocataire.toDataURL();
     return data;
   }
 
-  function validateForm(){
-    const bN=document.querySelector('[name="bailleur_nom"]').value.trim();
-    const bE=document.querySelector('[name="bailleur_email"]').value.trim();
-    const lN=document.querySelector('[name="locataire_nom"]').value.trim();
-    const lE=document.querySelector('[name="locataire_email"]').value.trim();
-    const vM=document.querySelector('[name="velo_modele"]').value.trim();
-    const dDd=document.querySelector('[name="date_debut_date"]').value;
-    const dDh=document.querySelector('[name="date_debut_heure"]').value;
-    const dFd=document.querySelector('[name="date_fin_date"]').value;
-    const dFh=document.querySelector('[name="date_fin_heure"]').value;
-    if(!bN||!bE){showToast('Informations du bailleur requises','error');return false;}
-    if(!lN||!lE){showToast('Informations du locataire requises','error');return false;}
-    if(!vM){showToast('Modèle du vélo requis','error');return false;}
-    if(!dDd||!dDh){showToast('Date et heure de début requises','error');return false;}
-    if(!dFd||!dFh){showToast('Date et heure de fin requises','error');return false;}
-    if(padB.isEmpty()){showToast('Le bailleur doit signer','error');return false;}
-    if(padL.isEmpty()){showToast('Le locataire doit signer','error');return false;}
-    const re=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if(!re.test(bE)){showToast('Email du bailleur invalide','error');return false;}
-    if(!re.test(lE)){showToast('Email du locataire invalide','error');return false;}
+  function validateForm() {
+    const bN = document.querySelector('[name="bailleur_nom"]').value.trim();
+    const bE = document.querySelector('[name="bailleur_email"]').value.trim();
+    const lN = document.querySelector('[name="locataire_nom"]').value.trim();
+    const lE = document.querySelector('[name="locataire_email"]').value.trim();
+    const vM = document.querySelector('[name="velo_modele"]').value.trim();
+    const dd = document.querySelector('[name="date_debut_date"]').value;
+    const dh = document.querySelector('[name="date_debut_heure"]').value;
+    const fd = document.querySelector('[name="date_fin_date"]').value;
+    const fh = document.querySelector('[name="date_fin_heure"]').value;
+    if (!bN || !bE) { showToast('Informations du bailleur requises', 'error'); return false; }
+    if (!lN || !lE) { showToast('Informations du locataire requises', 'error'); return false; }
+    if (!vM || !dd || !dh || !fd || !fh) { showToast('Vélo et dates requis', 'error'); return false; }
+    if (!validateDates()) { showToast('La date de fin doit être postérieure à la date de début.', 'error'); return false; }
+    if (sigPadBailleur.isEmpty()) { showToast('Le bailleur doit signer', 'error'); return false; }
+    if (sigPadLocataire.isEmpty()) { showToast('Le locataire doit signer', 'error'); return false; }
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!re.test(bE)) { showToast('Email du bailleur invalide', 'error'); return false; }
+    if (!re.test(lE)) { showToast('Email du locataire invalide', 'error'); return false; }
     return true;
   }
 
-  function generateNativePDF(data){
-    const {jsPDF}=window.jspdf;
-    const doc=new jsPDF({unit:'mm',format:'a4'});
-    const pw=doc.internal.pageSize.getWidth(),ph=doc.internal.pageSize.getHeight();
-    const m=15,cw=pw-m*2; let y=m;
-    doc.setFont('helvetica','bold').setFontSize(22).setTextColor(26,26,46);
-    doc.text('CONTRAT DE LOCATION VÉLO',pw/2,y+10,{align:'center'}); y+=16;
-    doc.setDrawColor(201,168,76).setLineWidth(0.8).line(m,y,pw-m,y); y+=6;
-    doc.setFont('helvetica','normal').setFontSize(9).setTextColor(100,100,100);
-    doc.text('Contrat entre particuliers — '+new Date().toLocaleDateString('fr-FR'),pw/2,y,{align:'center'}); y+=10;
-    const sep=()=>{doc.setDrawColor(220,220,220).setLineWidth(0.3).line(m,y,pw-m,y);y+=6;};
-    const title=(num,title)=>{if(y>ph-25){doc.addPage();y=m;}doc.setFont('helvetica','bold').setFontSize(14).setTextColor(26,26,46);doc.text(num+'. '+title,m,y);y+=6;doc.setDrawColor(26,26,46).setLineWidth(0.5).line(m,y,m+50,y);y+=6;};
-    const addItalic=(text,color)=>{doc.setFont('helvetica','italic').setFontSize(8).setTextColor(color||80);const lines=doc.splitTextToSize(text,cw);doc.text(lines,m,y);y+=lines.length*4+3;};
+  // PDF professionnel complet
+  function generateNativePDF(data) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+    const margin = 15;
+    const contentW = pageW - margin * 2;
+    let y = margin;
+
+    // Fonctions d'aide
+    function checkPageBreak(h) { if (y + h > pageH - margin) { doc.addPage(); y = margin; } }
+    function drawSeparator() { doc.setDrawColor(220,220,220); doc.setLineWidth(0.3); doc.line(margin, y, pageW - margin, y); y += 6; }
+    function sectionTitle(num, title) {
+      checkPageBreak(12);
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.setTextColor(26,26,46);
+      doc.text(`${num}. ${title}`, margin, y); y += 6;
+      doc.setDrawColor(26,26,46); doc.setLineWidth(0.5); doc.line(margin, y, margin + 50, y); y += 6;
+    }
+    function normalText(text, size = 9, color = [50,50,50], indent = 0) {
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(size); doc.setTextColor(...color);
+      const lines = doc.splitTextToSize(text, contentW - indent);
+      lines.forEach(line => { checkPageBreak(5); doc.text(line, margin + indent, y); y += 5; });
+    }
+    function italicText(text, size = 9, color = [80,80,80]) {
+      doc.setFont('helvetica', 'italic'); doc.setFontSize(size); doc.setTextColor(...color);
+      const lines = doc.splitTextToSize(text, contentW);
+      lines.forEach(line => { checkPageBreak(5); doc.text(line, margin, y); y += 5; });
+    }
+    function bulletList(items, indent = 5) {
+      items.forEach(item => {
+        checkPageBreak(5);
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(50,50,50);
+        doc.text('• ' + item, margin + indent, y); y += 5;
+      });
+    }
+
+    // Entête
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(22); doc.setTextColor(26,26,46);
+    doc.text('CONTRAT DE LOCATION VÉLO', pageW / 2, y + 10, { align: 'center' });
+    y += 16;
+    doc.setDrawColor(201, 168, 76); doc.setLineWidth(0.8); doc.line(margin, y, pageW - margin, y); y += 6;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(100,100,100);
+    doc.text('Contrat entre particuliers — ' + new Date().toLocaleDateString('fr-FR'), pageW / 2, y, { align: 'center' });
+    y += 10;
 
     // Préambule
-    addItalic('Le présent contrat a pour objet de définir les conditions dans lesquelles le loueur met temporairement à disposition du Locataire le vélo décrit ci-après.',80); y+=3; sep();
+    italicText('Le présent contrat a pour objet de définir les conditions dans lesquelles le loueur met temporairement à disposition du Locataire le vélo décrit ci-après. Les parties déclarent agir en qualité de particuliers, être juridiquement capables de contracter et accepter l\'ensemble des stipulations du présent contrat sans réserve.');
+    y += 4; drawSeparator();
+
     // 1. Bailleur
-    title('1','BAILLEUR (PROPRIÉTAIRE)');
-    doc.setFont('helvetica','normal').setFontSize(9); doc.text('Nom : '+(data.bailleur_nom||'-')+' | Adresse : '+(data.bailleur_adresse||'-')+' | Tél : '+(data.bailleur_tel||'-')+' | Email : '+(data.bailleur_email||'-'),m,y); y+=8; sep();
+    sectionTitle('1', 'BAILLEUR (PROPRIÉTAIRE)');
+    normalText(`Nom : ${data.bailleur_nom || '-'}  |  Adresse : ${data.bailleur_adresse || '-'}`);
+    normalText(`Tél : ${data.bailleur_tel || '-'}  |  Email : ${data.bailleur_email || '-'}`);
+    y += 3; drawSeparator();
+
     // 2. Locataire
-    title('2','LOCATAIRE (UTILISATEUR)');
-    doc.text('Nom : '+(data.locataire_nom||'-')+' | Adresse : '+(data.locataire_adresse||'-')+' | Tél : '+(data.locataire_tel||'-')+' | Email : '+(data.locataire_email||'-')+' | ID : '+(data.locataire_id||'-'),m,y); y+=8; sep();
-    // 3. Vélo
-    if(y>ph-50){doc.addPage();y=m;}
-    title('3','OBJET DU CONTRAT');
-    addItalic('Le présent contrat porte sur la mise à disposition temporaire, à titre onéreux, d\'un vélo appartenant au Bailleur.',80); y+=2;
-    doc.setFont('helvetica','bold').setFontSize(12); doc.text('Caractéristiques du vélo',m,y); y+=7;
-    const veloCarac=[['Marque / modèle',data.velo_modele||'-'],['Type',data.velo_type==='electrique'?'Électrique':'Mécanique'],['Numéro de série',data.velo_serie||'-'],['Couleur',data.velo_couleur||'-'],['Kilométrage estimé',data.velo_km?data.velo_km+' km':'-'],['Date d\'achat',data.velo_date_achat||'-'],['Valeur à neuf',data.velo_val_neuf?data.velo_val_neuf+' €':'-'],['Valeur actuelle estimée',data.velo_val_actuelle?data.velo_val_actuelle+' €':'-']];
-    veloCarac.forEach((row,i)=>{if(y>ph-20){doc.addPage();y=m;}if(i%2===0){doc.setFillColor(248,248,248);doc.rect(m,y-2,cw,5.5,'F');}doc.setFont('helvetica','bold').setFontSize(8).setTextColor(50,50,50);doc.text(row[0],m+2,y+1);doc.setFont('helvetica','normal');doc.text(row[1],m+95,y+1);y+=5.5;}); y+=3; sep();
+    sectionTitle('2', 'LOCATAIRE (UTILISATEUR)');
+    normalText(`Nom : ${data.locataire_nom || '-'}  |  Adresse : ${data.locataire_adresse || '-'}`);
+    normalText(`Tél : ${data.locataire_tel || '-'}  |  Email : ${data.locataire_email || '-'}`);
+    normalText(`Pièce d'identité : ${data.locataire_id || '-'}`);
+    y += 3; drawSeparator();
+
+    // 3. Objet
+    sectionTitle('3', 'OBJET DU CONTRAT');
+    italicText('Le présent contrat porte sur la mise à disposition temporaire, à titre onéreux, d\'un vélo appartenant au Bailleur, identifié dans la fiche descriptive ci-dessous. Le Locataire reconnaît recevoir le vélo en bon état apparent de fonctionnement, sauf réserves expressément mentionnées dans l\'état des lieux contradictoire établi au départ.');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(26,26,46); y += 4;
+    checkPageBreak(6); doc.text('Caractéristiques du vélo', margin, y); y += 7;
+    normalText(`Modèle : ${data.velo_modele || '-'}  |  Type : ${data.velo_type || '-'}  |  N° série : ${data.velo_serie || '-'}`);
+    normalText(`Couleur : ${data.velo_couleur || '-'}  |  Km : ${data.velo_km || '-'}  |  Date d'achat : ${data.velo_date_achat || '-'}`);
+    normalText(`Valeur à neuf : ${data.velo_val_neuf ? data.velo_val_neuf + ' €' : '-'}  |  Valeur actuelle : ${data.velo_val_actuelle ? data.velo_val_actuelle + ' €' : '-'}`);
+    y += 2; drawSeparator();
+
     // 4. Accessoires
-    title('4','ACCESSOIRES FOURNIS');
-    const accs=[{key:'helmet',label:'Casque'},{key:'lock',label:'Antivol'},{key:'lights',label:'Éclairage'},{key:'basket',label:'Panier'},{key:'repairkit',label:'Kit réparation'},{key:'other',label:'Autre'}];
-    let hasAcc=false; accs.forEach(acc=>{if(data.extras&&data.extras.includes(acc.key)){hasAcc=true;doc.setFont('helvetica','normal').setFontSize(9);doc.text('• '+acc.label+' : '+(data['state_'+acc.key]||'Bon état'),m+5,y);y+=5;}});
-    if(!hasAcc){doc.text('Aucun accessoire fourni',m+5,y);y+=5;} y+=3; sep();
+    sectionTitle('4', 'ACCESSOIRES FOURNIS');
+    const accs = [
+      { key: 'helmet', label: 'Casque' },
+      { key: 'lock', label: 'Antivol' },
+      { key: 'lights', label: 'Éclairage' },
+      { key: 'basket', label: 'Panier' },
+      { key: 'repairkit', label: 'Kit réparation' },
+      { key: 'other', label: 'Autre' }
+    ];
+    let hasAcc = false;
+    accs.forEach(a => {
+      if (data.extras && data.extras.includes(a.key)) {
+        hasAcc = true;
+        const state = data[`state_${a.key}`] || 'Non spécifié';
+        checkPageBreak(5); normalText(`• ${a.label} : ${state}`, 9, [50,50,50], 5);
+      }
+    });
+    if (!hasAcc) normalText('Aucun accessoire fourni.', 9, [50,50,50], 5);
+    y += 3; drawSeparator();
+
     // 5. Durée
-    title('5','DURÉE DE LOCATION');
-    let debutAffiche='-',finAffiche='-';
-    if(data.date_debut){const d=new Date(data.date_debut);if(!isNaN(d.getTime())){debutAffiche=d.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})+' à '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});}else{debutAffiche=data.date_debut.replace('T',' à ');}}
-    if(data.date_fin){const d=new Date(data.date_fin);if(!isNaN(d.getTime())){finAffiche=d.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})+' à '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});}else{finAffiche=data.date_fin.replace('T',' à ');}}
-    doc.setFont('helvetica','normal').setFontSize(9).setTextColor(50,50,50);
-    doc.text('Date de début : '+debutAffiche,m,y); y+=5;
-    doc.text('Date de fin : '+finAffiche,m,y); y+=5;
-    doc.text('Pénalité de retard : '+(data.retard_tarif||'Non spécifié')+' €/h',m,y); y+=6; sep();
-    // 6. Prix
-    if(y>ph-40){doc.addPage();y=m;}
-    title('6','PRIX, PAIEMENT ET DÉPÔT DE GARANTIE');
-    addItalic('Le dépôt de garantie ne constitue pas un paiement anticipé du prix de location.',80);
-    doc.setFont('helvetica','normal').setFontSize(9); doc.text('Tarif : '+(data.tarif_location||'-')+' | Total : '+(data.montant_total||'-')+' € | Caution : '+(data.caution||'-')+' € | Paiement : '+(data.mode_paiement||'-'),m,y); y+=8; sep();
+    sectionTitle('5', 'DURÉE DE LOCATION');
+    normalText(`Date de début : ${data.date_debut || '-'}  |  Date de fin : ${data.date_fin || '-'}`);
+    normalText(`Tarif de retard : ${data.retard_tarif ? data.retard_tarif + ' €/h' : '-'}`);
+    y += 3; drawSeparator();
+
+    // 6. Prix et paiement
+    sectionTitle('6', 'PRIX, PAIEMENT ET DÉPÔT DE GARANTIE');
+    normalText(`Tarif : ${data.tarif_location || '-'}  |  Montant total estimé : ${data.montant_total ? data.montant_total + ' €' : '-'}`);
+    normalText(`Caution : ${data.caution ? data.caution + ' €' : '-'}  |  Mode de paiement : ${data.mode_paiement || '-'}`);
+    italicText('Le dépôt de garantie ne constitue pas un paiement anticipé du prix de location. Il garantit notamment la restitution du vélo, des accessoires, ainsi que le paiement des éventuels dommages, frais, pénalités ou sommes restant dues par le Locataire. La caution est restituée au locataire à l\'issue de la location, déduction faite des éventuelles réparations nécessaires non couvertes par l\'usure normale.');
+    y += 3; drawSeparator();
+
     // 7. Assurance
-    if(y>ph-50){doc.addPage();y=m;}
-    title('7','ASSURANCE');
-    doc.setFont('helvetica','normal').setFontSize(9);
-    doc.text('Vol : '+(data.assurance_vol==='oui'?'Oui':'Non')+' | Casse : '+(data.assurance_casse==='oui'?'Oui':'Non')+' | Dommages : '+(data.assurance_dom==='oui'?'Oui':'Non')+' | Batterie : '+(data.assurance_batterie==='oui'?'Oui':'Non')+' | Franchise : '+(data.franchise||'-')+' €',m,y); y+=10; sep();
-    // 8-15 (condensées)
-    title('8','OBLIGATIONS DU LOCATAIRE'); addItalic('Le Locataire s\'oblige à utiliser le vélo en bon père de famille.',80); sep();
-    title('9','OBLIGATIONS DU BAILLEUR'); addItalic('Le Bailleur s\'engage à remettre un vélo conforme.',80); sep();
-    title('10','RESPONSABILITÉ'); addItalic('Le Locataire demeure responsable du vélo pendant toute la durée de la location.',80); sep();
-    title('11','PÉNALITÉS');
-    doc.setFont('helvetica','normal').setFontSize(9);
-    doc.text('Retard : '+(data.penalite_retard||'-')+' €/h | Accessoire : '+(data.penalite_accessoire||'-')+' € | Nettoyage : '+(data.penalite_nettoyage||'-')+' €',m,y); y+=8; sep();
-    title('12','RÉSILIATION'); addItalic('Le contrat pourra être résilié en cas de manquement grave.',80); sep();
-    title('13','DONNÉES PERSONNELLES'); addItalic('Les données sont collectées pour la gestion de la location.',80); sep();
-    title('14','DROIT APPLICABLE'); addItalic('Le contrat est soumis au droit français.',80); sep();
-    title('15','DÉCLARATION ET ENGAGEMENTS'); addItalic('Les parties déclarent avoir pris connaissance des conditions générales.',80); sep();
+    sectionTitle('7', 'ASSURANCE, FRANCHISE ET RESPONSABILITÉ');
+    normalText(`Vol : ${data.assurance_vol || '-'}  |  Casse : ${data.assurance_casse || '-'}  |  Dommages : ${data.assurance_dom || '-'}`);
+    normalText(`Batterie : ${data.assurance_batterie || '-'}  |  Franchise : ${data.franchise ? data.franchise + ' €' : '-'}`);
+    italicText('Le Bailleur déclare, préalablement à la signature du présent contrat, si le vélo fait ou non l\'objet d\'une assurance couvrant le vol, la casse ou les dommages matériels. Le Locataire reconnaît avoir été informé des garanties éventuellement applicables, de leurs limites, exclusions et franchises.');
+    italicText('Exclusions fréquentes : absence d\'antivol, stationnement non sécurisé, usage non conforme, immersion, perte d\'accessoires.');
+    normalText('Les parties sont invitées à vérifier que le vélo bénéficie d\'une assurance responsabilité civile.', 9, [50,50,50]);
+    y += 3; drawSeparator();
+
+    // 8. Obligations Locataire
+    sectionTitle('8', 'OBLIGATIONS DU LOCATAIRE');
+    italicText('Le Locataire s\'oblige, pendant toute la durée de la location, à utiliser le vélo en bon père de famille, conformément à sa destination normale, aux règles de sécurité applicables et aux prescriptions éventuelles communiquées par le Bailleur.');
+    bulletList(['Utiliser le vélo de manière prudente', 'Respecter le Code de la route', 'Maintenir le vélo en bon état', 'Utiliser systématiquement l\'antivol fourni', 'Ne pas transporter de passagers non prévus', 'Ne pas prêter ou sous-louer le vélo', 'Ne pas modifier le vélo', 'Restituer le vélo complet']);
+    italicText('En cas de vol, perte, accident, dégradation ou tout autre incident affectant le vélo ou ses accessoires, le Locataire devra en informer le Bailleur sans délai et, en cas de vol, transmettre une copie du dépôt de plainte dans un délai maximal de vingt-quatre heures (24h).');
+    normalText('Vélos électriques (VAE) : Le locataire s\'interdit de démonter la batterie, de la recharger avec un chargeur non fourni, ou de l\'exposer à des températures extrêmes.', 9, [50,50,50]);
+    y += 3; drawSeparator();
+
+    // 9. Obligations Bailleur
+    sectionTitle('9', 'OBLIGATIONS DU BAILLEUR');
+    italicText('Le Bailleur s\'engage à remettre au Locataire un vélo conforme à la description figurant au présent contrat, propre, entretenu et en état normal de fonctionnement, sous réserve des réserves expressément indiquées dans l\'état des lieux de départ.');
+    bulletList(['Fournir un vélo en bon état de fonctionnement', 'Fournir les accessoires nécessaires', 'Informer le Locataire de tout défaut connu', 'Remettre un vélo propre et entretenu']);
+    normalText('Vélos électriques (VAE) : En cas de panne de batterie pendant la location (hors faute du locataire), le loueur propose une solution de remplacement ou un remboursement proportionnel.', 9, [50,50,50]);
+    y += 3; drawSeparator();
+
+    // 10. Responsabilité
+    sectionTitle('10', 'RESPONSABILITÉ');
+    normalText('Le Locataire demeure responsable du vélo, de ses équipements et accessoires pendant toute la durée de la location, depuis sa remise effective jusqu\'à sa restitution complète au Bailleur.');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(50,50,50);
+    checkPageBreak(6); doc.text('Le Locataire est responsable :', margin, y); y += 6;
+    bulletList(['Des dommages causés au vélo', 'Des dommages causés à des tiers', 'Des amendes et infractions', 'De la batterie (VAE) en cas de mauvaise utilisation']);
+    italicText('Sauf faute prouvée de sa part, le Bailleur ne saurait être tenu responsable des dommages corporels, matériels ou immatériels subis par le Locataire ou causés à des tiers du fait de l\'utilisation du vélo.');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(50,50,50);
+    checkPageBreak(6); doc.text('Le Bailleur n\'est pas responsable :', margin, y); y += 6;
+    bulletList(['Des accidents corporels du Locataire', 'Des objets transportés', 'Des pertes d\'exploitation éventuelles']);
+    y += 3; drawSeparator();
+
+    // 11. Pénalités
+    sectionTitle('11', 'PÉNALITÉS');
+    // Tableau simplifié
+    const penalties = [
+      ['Retard de restitution', data.penalite_retard ? `${data.penalite_retard} €/h` : 'Non défini'],
+      ['Perte accessoire', data.penalite_accessoire ? `${data.penalite_accessoire} €/accessoire` : 'Non défini'],
+      ['Nettoyage anormal', data.penalite_nettoyage ? `${data.penalite_nettoyage} €` : 'Non défini'],
+      ['Dommages exclus', 'Coût réel de réparation/remplacement'],
+      ['Batterie endommagée (VAE)', 'Coût réel, limité à la valeur déclarée']
+    ];
+    penalties.forEach(p => {
+      checkPageBreak(6);
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(50,50,50);
+      doc.text(p[0] + ' : ', margin, y);
+      doc.setFont('helvetica', 'normal');
+      doc.text(p[1], margin + 55, y);
+      y += 6;
+    });
+    italicText('Les pénalités et frais ci-dessus pourront être imputés sur le dépôt de garantie, sans préjudice de toute demande complémentaire si le montant des dommages excède le dépôt versé.');
+    y += 3; drawSeparator();
+
+    // 12. Résiliation
+    sectionTitle('12', 'RÉSILIATION');
+    normalText('Le présent contrat pourra être résilié de plein droit, sans formalité judiciaire préalable, en cas de manquement grave de l\'une des parties à ses obligations, notamment en cas d\'usage dangereux, non conforme ou frauduleux du vélo.');
+    bulletList(['Par le Bailleur en cas d\'usage dangereux ou non conforme', 'Par le Locataire à tout moment (sans remboursement sauf accord)', 'Immédiatement en cas de vol ou sinistre majeur']);
+    y += 3; drawSeparator();
+
+    // 13. Données personnelles
+    sectionTitle('13', 'DONNÉES PERSONNELLES');
+    normalText('Les données personnelles échangées dans le cadre du présent contrat sont collectées uniquement pour l\'identification des parties, la gestion de la location, la sécurité du matériel et, le cas échéant, la gestion d\'un litige ou d\'un sinistre.');
+    bulletList(['Identification des parties', 'Gestion de la location', 'Sécurité du matériel']);
+    italicText('Chaque partie s\'engage à conserver ces informations de manière confidentielle, à ne pas les communiquer à des tiers sauf nécessité liée à l\'exécution du contrat, à une obligation légale, à une déclaration d\'assurance ou à une procédure amiable ou judiciaire.');
+    y += 3; drawSeparator();
+
+    // 14. Droit applicable
+    sectionTitle('14', 'DROIT APPLICABLE ET RÈGLEMENT DES LITIGES');
+    normalText('Le présent contrat est soumis au droit français. En cas de différend relatif à sa validité, son interprétation ou son exécution, les parties s\'engagent à rechercher prioritairement une solution amiable. À défaut d\'accord amiable, le litige pourra être porté devant la juridiction compétente conformément aux règles de droit commun.');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(50,50,50);
+    checkPageBreak(6); doc.text('Clause d\'arbitrage :', margin, y); y += 7;
+    normalText('1. Arbitre unique désigné d\'un commun accord, ou par le président du Tribunal de commerce.', 9, [50,50,50], 5);
+    normalText('2. Procédure en français, selon les règles de la CCI pour petits litiges.', 9, [50,50,50], 5);
+    normalText('3. Sentence motivée dans les deux mois, définitive et exécutoire.', 9, [50,50,50], 5);
+    normalText('4. Chaque partie supporte ses frais et la moitié des frais d\'arbitrage.', 9, [50,50,50], 5);
+    normalText('5. Renonciation à l\'appel de la sentence.', 9, [50,50,50], 5);
+    y += 3; drawSeparator();
+
+    // 15. Déclaration et engagements
+    sectionTitle('15', 'DÉCLARATION ET ENGAGEMENTS DES PARTIES');
+    italicText('« Le Locataire (utilisateur) déclare : Je certifie avoir pris connaissance et accepter les conditions générales de location figurant sur le présent contrat. Je reconnais avoir récupéré le vélo en bon état de fonctionnement, tel que décrit ci-dessus, et m\'engage à le restituer dans le même état d\'usure, déduction faite de l\'usure normale. »');
+    y += 2;
+    italicText('« Le Bailleur (propriétaire) déclare : J\'accepte les conditions générales de location figurant sur le présent contrat, certifie proposer à la location un vélo en bon état de fonctionnement, tel que décrit ci-dessus, et accepte que celui-ci me soit restitué dans le même état d\'usure, déduction faite de l\'usure normale. »');
+    y += 3; drawSeparator();
+
     // 16. Signatures
-    if(y>ph-40){doc.addPage();y=m;}
-    title('16','SIGNATURES ÉLECTRONIQUES');
-    doc.setFont('helvetica','normal').setFontSize(9);
-    doc.text('Lieu : '+(data.lieu||'-')+' | Date : '+(data.date_signature||'-'),m,y); y+=10;
-    doc.setFont('helvetica','bold').setFontSize(10);
-    doc.text('Bailleur',m,y); if(data.signatureBailleur){try{doc.addImage(data.signatureBailleur,'PNG',m,y+5,50,16);y+=22;}catch(e){y+=6;}} y+=8;
-    doc.text('Locataire',m,y); if(data.signatureLocataire){try{doc.addImage(data.signatureLocataire,'PNG',m,y+5,50,16);y+=22;}catch(e){y+=6;}} y+=10;
-    doc.setDrawColor(200,200,200).setLineWidth(0.5).line(m,y,pw-m,y); y+=5;
-    doc.setFont('helvetica','normal').setFontSize(7).setTextColor(150,150,150);
-    doc.text('Document signé électroniquement — Conforme eIDAS — Généré le '+new Date().toLocaleDateString('fr-FR'),pw/2,y,{align:'center'});
+    if (y > pageH - 60) { doc.addPage(); y = margin; }
+    sectionTitle('16', 'SIGNATURES ÉLECTRONIQUES');
+    normalText(`Lieu : ${data.lieu || '-'}  |  Date : ${data.date_signature || '-'}`);
+    y += 5;
+    // Bailler
+    checkPageBreak(25);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(26,26,46);
+    doc.text('Bailleur (propriétaire) :', margin, y); y += 6;
+    doc.setFont('helvetica', 'italic'); doc.setFontSize(8); doc.setTextColor(100,100,100);
+    doc.text('« Lu et approuvé — Bon pour accord »', margin, y); y += 5;
+    if (data.signatureBailleur) {
+      try { doc.addImage(data.signatureBailleur, 'PNG', margin, y, 50, 16); y += 18; } catch(e) { normalText('(Signature présente)', 9, [100,100,100]); y += 5; }
+    } else { normalText('Non signé', 9, [200,100,100]); y += 5; }
+    y += 6;
+    // Locataire
+    checkPageBreak(25);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(26,26,46);
+    doc.text('Locataire (utilisateur) :', margin, y); y += 6;
+    doc.setFont('helvetica', 'italic'); doc.setFontSize(8); doc.setTextColor(100,100,100);
+    doc.text('« Lu et approuvé — Bon pour accord »', margin, y); y += 5;
+    if (data.signatureLocataire) {
+      try { doc.addImage(data.signatureLocataire, 'PNG', margin, y, 50, 16); y += 18; } catch(e) { normalText('(Signature présente)', 9, [100,100,100]); y += 5; }
+    } else { normalText('Non signé', 9, [200,100,100]); y += 5; }
+    y += 5;
+    doc.setDrawColor(200,200,200); doc.setLineWidth(0.5); doc.line(margin, y, pageW - margin, y); y += 5;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(150,150,150);
+    doc.text('Document signé électroniquement — Conforme au règlement eIDAS — Généré le ' + new Date().toLocaleDateString('fr-FR'), pageW / 2, y, { align: 'center' });
+
     return doc.output('datauristring');
   }
 
-  async function uploadPDF(b64,fn){
-    try{
-      const data=b64.split(',')[1]||b64,bytes=atob(data),arr=[];
-      for(let o=0;o<bytes.length;o+=512){const s=bytes.slice(o,o+512),n=new Array(s.length);for(let i=0;i<s.length;i++)n[i]=s.charCodeAt(i);arr.push(new Uint8Array(n));}
-      const blob=new Blob(arr,{type:'application/pdf'}),fd=new FormData();fd.append('file',blob,fn);
-      const r=await fetch('https://tmpfiles.org/api/v1/upload',{method:'POST',body:fd});
-      if(r.ok){const j=await r.json();return j.data.url.replace('https://tmpfiles.org/','https://tmpfiles.org/dl/');}
+  async function uploadPDF(pdfBase64, fileName) {
+    try {
+      const base64Data = pdfBase64.split(',')[1] || pdfBase64;
+      const byteCharacters = atob(base64Data);
+      const byteArrays = [];
+      for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+        const slice = byteCharacters.slice(offset, offset + 512);
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) byteNumbers[i] = slice.charCodeAt(i);
+        byteArrays.push(new Uint8Array(byteNumbers));
+      }
+      const blob = new Blob(byteArrays, { type: 'application/pdf' });
+      const fd = new FormData();
+      fd.append('file', blob, fileName);
+      const response = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: fd });
+      if (response.ok) {
+        const result = await response.json();
+        return result.data.url.replace('https://tmpfiles.org/', 'https://tmpfiles.org/dl/');
+      }
       throw new Error('Upload failed');
-    }catch(e){return b64;}
+    } catch(e) { return pdfBase64; }
   }
 
-  async function sendEmails(data,pdfB64){
-    try{
-      const fn='CONTRAT_LOCATION_VELO.pdf',pdfLink=await uploadPDF(pdfB64,fn);
-      const cp={bailleur_nom:data.bailleur_nom,bailleur_email:data.bailleur_email,locataire_nom:data.locataire_nom,locataire_email:data.locataire_email,velo_modele:data.velo_modele,pdf_link:pdfLink,lien_etat_depart:'https://jmpasqual17-design.github.io/'};
-      await emailjs.send(EMAILJS_CONFIG.serviceID,EMAILJS_CONFIG.templateID,{...cp,to_email:data.bailleur_email,to_name:data.bailleur_nom});
-      await emailjs.send(EMAILJS_CONFIG.serviceID,EMAILJS_CONFIG.templateID,{...cp,to_email:data.locataire_email,to_name:data.locataire_nom});
-      showToast('Contrat envoyé aux deux parties','success');
-      setTimeout(()=>{
-        const contratData={ownerName:data.bailleur_nom,ownerEmail:data.bailleur_email,renterName:data.locataire_nom,renterEmail:data.locataire_email,bikeModel:data.velo_modele,serialNumber:data.velo_serie,startDate:data.date_debut?data.date_debut.split('T')[0]:'',endDate:data.date_fin?data.date_fin.split('T')[0]:''};
-        localStorage.setItem('contratVeloData',JSON.stringify(contratData));
-        // Boîte de dialogue pour redirection...
-        if(confirm('✅ Contrat envoyé ! Voulez-vous passer à l\'état des lieux de départ ?')){window.location.href='https://jmpasqual17-design.github.io/';}
-        else if(confirm('Télécharger une copie du PDF ?')){const a=document.createElement('a');a.href=pdfB64;a.download=fn;document.body.appendChild(a);a.click();document.body.removeChild(a);}
-      },1000);
+  async function sendWithEmailJS(data, pdfBase64) {
+    try {
+      const rn = (data.locataire_nom || 'contrat').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const ds = new Date().toISOString().split('T')[0];
+      const fn = 'CONTRAT_LOCATION_VELO_' + rn + '_' + ds + '.pdf';
+      
+      showToast('Mise en ligne du PDF...', 'info');
+      const pdfLink = await uploadPDF(pdfBase64, fn);
+      
+      const cp = {
+        bailleur_nom: data.bailleur_nom || '',
+        bailleur_email: data.bailleur_email || '',
+        locataire_nom: data.locataire_nom || '',
+        locataire_email: data.locataire_email || '',
+        velo_modele: data.velo_modele || '',
+        date_debut: data.date_debut || '',
+        date_fin: data.date_fin || '',
+        montant_total: data.montant_total || '',
+        lieu: data.lieu || '',
+        date_signature: data.date_signature || '',
+        pdf_link: pdfLink
+      };
+      
+      showToast('Envoi au bailleur...', 'info');
+      await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, { ...cp, to_email: data.bailleur_email, to_name: data.bailleur_nom });
+      
+      showToast('Envoi au locataire...', 'info');
+      await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, { ...cp, to_email: data.locataire_email, to_name: data.locataire_nom });
+      
+      showToast('Contrat envoyé aux deux parties', 'success');
+      
+      setTimeout(() => {
+        const contratData = {
+          ownerName: data.bailleur_nom || '',
+          ownerEmail: data.bailleur_email || '',
+          renterName: data.locataire_nom || '',
+          renterEmail: data.locataire_email || '',
+          bikeModel: data.velo_modele || '',
+          serialNumber: data.velo_serie || '',
+          startDate: data.date_debut ? data.date_debut.split('T')[0] : '',
+          endDate: data.date_fin ? data.date_fin.split('T')[0] : '',
+          contractSigned: true,
+          contractDate: new Date().toISOString()
+        };
+        
+        try { localStorage.setItem('contratVeloData', JSON.stringify(contratData)); } catch(e) {}
+        
+        const overlay = document.createElement('div');
+        overlay.id = 'redirectionOverlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:10000;';
+        
+        const dialog = document.createElement('div');
+        dialog.style.cssText = 'background:white;border-radius:16px;padding:40px;max-width:500px;width:90%;text-align:center;box-shadow:0 25px 80px rgba(0,0,0,0.4);';
+        
+        dialog.innerHTML = `
+          <div style="font-size:64px;margin-bottom:20px;">✅</div>
+          <h2 style="color:#1a1a2e;margin-bottom:12px;font-size:22px;">Contrat envoyé avec succès !</h2>
+          <p style="color:#6c757d;margin-bottom:8px;font-size:14px;">Le contrat a été envoyé par email aux deux parties.</p>
+          <p style="color:#495057;margin-bottom:28px;font-size:15px;">Voulez-vous maintenant procéder à <strong>l'état des lieux de départ</strong> du vélo ?</p>
+          <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">
+            <button id="btnGoToEtatLieux" style="background:#0d7a3e;color:white;border:none;padding:14px 28px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;flex:1;min-width:160px;">Oui, faire l'état des lieux</button>
+            <button id="btnLater" style="background:white;color:#495057;border:2px solid #dee2e6;padding:14px 28px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;flex:1;min-width:160px;">Non, plus tard</button>
+          </div>
+          <button id="btnDownload" style="background:transparent;color:#0f3460;border:none;padding:10px 20px;border-radius:8px;font-size:13px;cursor:pointer;text-decoration:underline;">📄 Télécharger une copie du contrat</button>
+        `;
+        
+        overlay.appendChild(dialog);
+        document.body.appendChild(overlay);
+        
+        document.getElementById('btnGoToEtatLieux').onclick = function() {
+          window.location.href = 'https://jmpasqual17-design.github.io/';
+        };
+        
+        document.getElementById('btnLater').onclick = function() {
+          document.body.removeChild(overlay);
+          if (confirm('Voulez-vous télécharger une copie du contrat ?')) {
+            const a = document.createElement('a'); a.href = pdfBase64; a.download = fn;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          }
+        };
+        
+        document.getElementById('btnDownload').onclick = function() {
+          const a = document.createElement('a'); a.href = pdfBase64; a.download = fn;
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          showToast('PDF téléchargé avec succès', 'success');
+        };
+        
+        overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
+        
+      }, 1500);
+      
       return true;
-    }catch(e){showToast('Erreur: '+e.message,'error');return false;}
+      
+    } catch (error) {
+      console.error('❌ Erreur sendWithEmailJS:', error);
+      showToast('Erreur lors de l\'envoi: ' + (error.message || 'Erreur inconnue'), 'error');
+      const btn = document.getElementById('generateSendBtn');
+      if (btn) { btn.disabled = false; btn.innerHTML = 'Signer et envoyer le contrat'; }
+      return false;
+    }
   }
 
-  document.getElementById('generateSendBtn').addEventListener('click',async function(){
-    if(!validateForm())return; this.disabled=true; const orig=this.innerHTML; this.innerHTML='<span class="spinner"></span> Traitement...';
-    try{const data=getFormData();const pdf=generateNativePDF(data);await sendEmails(data,pdf);}
-    catch(e){showToast('Erreur: '+e.message,'error');}
-    this.disabled=false; this.innerHTML=orig;
+  // BOUTONS
+  document.getElementById('generateSendBtn').addEventListener('click', async function() {
+    console.log('🖱️ Clic sur Signer et envoyer');
+    if (!validateForm()) return;
+    this.disabled = true;
+    const oh = this.innerHTML;
+    this.innerHTML = '<span class="spinner"></span> Traitement...';
+    try {
+      const data = getFormData();
+      showToast('Génération du PDF...', 'info');
+      const pdfBase64 = generateNativePDF(data);
+      console.log('📄 PDF généré, taille:', (pdfBase64.length / 1024).toFixed(2), 'KB');
+      await sendWithEmailJS(data, pdfBase64);
+    } catch(e) {
+      console.error('❌ Erreur:', e);
+      showToast('Erreur: ' + e.message, 'error');
+    }
+    this.disabled = false;
+    this.innerHTML = oh;
   });
 
-  document.getElementById('downloadEtatBtn').addEventListener('click',function(){
-    const data=getFormData(); this.disabled=true;
-    try{
-      const pdf=generateNativePDF(data);
-      const a=document.createElement('a');a.href=pdf;a.download='CONTRAT_LOCATION_VELO.pdf';
-      document.body.appendChild(a);a.click();document.body.removeChild(a);
-      showToast('PDF téléchargé','success');
-    }catch(e){showToast('Erreur','error');}
-    this.disabled=false;
+  document.getElementById('downloadEtatBtn').addEventListener('click', function() {
+    const data = getFormData();
+    this.disabled = true;
+    try {
+      const pdfBase64 = generateNativePDF(data);
+      const rn = (data.locataire_nom || 'contrat').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const a = document.createElement('a');
+      a.href = pdfBase64;
+      a.download = 'CONTRAT_LOCATION_VELO_' + rn + '_' + new Date().toISOString().split('T')[0] + '.pdf';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      showToast('PDF téléchargé', 'success');
+    } catch(e) { showToast('Erreur', 'error'); }
+    this.disabled = false;
   });
 
-  document.getElementById('saveEtatBtn').addEventListener('click',()=>{localStorage.setItem('contratVelo',JSON.stringify(getFormData()));showToast('Brouillon enregistré','success');});
-  document.getElementById('resetFormBtn').addEventListener('click',()=>{if(confirm('Réinitialiser ?')){document.getElementById('contratForm').reset();padB.clear();padL.clear();updateSignStatus();showToast('Formulaire réinitialisé','info');}});
-  (function(){const s=localStorage.getItem('contratVelo');if(!s)return;try{const d=JSON.parse(s);Object.keys(d).forEach(k=>{if(['extras','signatureBailleur','signatureLocataire'].includes(k))return;const el=document.querySelector('[name="'+k+'"]');if(el)el.value=d[k]||'';});}catch(e){localStorage.removeItem('contratVelo');}})();
-  updateSignStatus();
+  document.getElementById('saveEtatBtn').addEventListener('click', function() {
+    localStorage.setItem('contratVelo', JSON.stringify(getFormData()));
+    showToast('Brouillon enregistré', 'success');
+  });
+
+  document.getElementById('resetFormBtn').addEventListener('click', function() {
+    if (confirm('Réinitialiser le formulaire ?')) {
+      document.getElementById('contratForm').reset();
+      sigPadBailleur.clear(); sigPadLocataire.clear();
+      updateSignatureStatus();
+      showToast('Formulaire réinitialisé', 'info');
+    }
+  });
+
+  (function() {
+    const s = localStorage.getItem('contratVelo');
+    if (!s) return;
+    try {
+      const d = JSON.parse(s);
+      Object.keys(d).forEach(k => {
+        if (['extras','signatureBailleur','signatureLocataire'].includes(k)) return;
+        const el = document.querySelector('[name="'+k+'"]');
+        if (el) el.value = d[k] || '';
+      });
+      if (d.extras) d.extras.forEach(v => { const cb = document.querySelector('input[name="extras"][value="'+v+'"]'); if(cb) cb.checked = true; });
+    } catch(e) { localStorage.removeItem('contratVelo'); }
+  })();
+
+  updateSignatureStatus();
+  console.log('🚀 Contrat de location prêt');
 </script>
+
 </body>
 </html>
