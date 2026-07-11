@@ -922,10 +922,18 @@
       if (k === 'extras') { if (!data.extras) data.extras = []; data.extras.push(v); }
       else data[k] = v;
     }
+// ⚡ RECONSTITUER LES DATES AVEC HEURES
+    if (data.date_debut_date && data.date_debut_heure) {
+      data.date_debut = data.date_debut_date + 'T' + data.date_debut_heure;
+    }
+    if (data.date_fin_date && data.date_fin_heure) {
+      data.date_fin = data.date_fin_date + 'T' + data.date_fin_heure;
+    }
+    
     data.signatureBailleur = sigPadBailleur.isEmpty() ? '' : sigPadBailleur.toDataURL();
     data.signatureLocataire = sigPadLocataire.isEmpty() ? '' : sigPadLocataire.toDataURL();
     return data;
-  }
+}
 
   function validateForm() {
     const bN = document.querySelector('[name="bailleur_nom"]').value.trim();
@@ -935,6 +943,14 @@
     const vM = document.querySelector('[name="velo_modele"]').value.trim();
     const dD = document.querySelector('[name="date_debut"]').value;
     const dF = document.querySelector('[name="date_fin"]').value;
+    const dD_date = document.querySelector('[name="date_debut_date"]').value;
+    const dD_heure = document.querySelector('[name="date_debut_heure"]').value;
+    const dF_date = document.querySelector('[name="date_fin_date"]').value;
+    const dF_heure = document.querySelector('[name="date_fin_heure"]').value;
+    
+    if (!dD_date || !dD_heure || !dF_date || !dF_heure) { 
+      showToast('Dates et heures requises', 'error'); return false; 
+    }
     if (!bN || !bE) { showToast('Informations du bailleur requises', 'error'); return false; }
     if (!lN || !lE) { showToast('Informations du locataire requises', 'error'); return false; }
     if (!vM || !dD || !dF) { showToast('Vélo et dates requis', 'error'); return false; }
