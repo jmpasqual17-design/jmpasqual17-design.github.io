@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Déclaration de dommage - Vélo</title>
+
+  <style>
+    :root {
+      --primary: #1a1a2e; --primary-light: #16213e; --accent: #0f3460;
+      --gold: #c9a84c; --success: #2d6a4f; --error: #c1121f;
+      --warning: #e67e00; --danger: #c1121f;
+      --gray-50: #f8f9fa; --gray-100: #f1f3f5; --gray-200: #e9ecef;
+      --gray-300: #dee2e6; --gray-400: #ced4da; --gray-500: #adb5bd;
+      --gray-600: #6c757d; --gray-700: #495057; --gray-800: #343a40;
+      --gray-900: #212529; --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow: 0 4px 20px rgba(0,0,0,0.1); --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+      --radius: 8px; --radius-lg: 12px;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#f5f7fa; color:var(--gray-800); line-height:1.6; min-height:100vh; padding:24px; display:flex; justify-content:center; align-items:flex-start; }
+    .document-wrapper { width:100%; max-width:900px; background:white; border-radius:var(--radius-lg); box-shadow:var(--shadow-lg); overflow:hidden; }
+    .header { background:linear-gradient(135deg,var(--danger) 0%,#8b0000 100%); color:white; padding:32px 40px; border-bottom:3px solid var(--gold); }
+    .header-label { font-size:11px; text-transform:uppercase; letter-spacing:3px; color:#ffcccc; font-weight:600; margin-bottom:8px; }
+    .header h1 { font-size:28px; font-weight:700; letter-spacing:-0.5px; margin-bottom:4px; }
+    .header h1 span { color:var(--gold); font-weight:300; }
+    .header .subtitle { font-size:14px; opacity:0.9; font-weight:400; margin-bottom:16px; }
+    .header .meta { display:flex; gap:20px; font-size:12px; opacity:0.85; flex-wrap:wrap; }
+    .header .meta span { display:flex; align-items:center; gap:6px; }
+    .header .meta .dot { width:5px; height:5px; background:#ffcccc; border-radius:50%; display:inline-block; }
+    .form-body { padding:32px 40px 40px; }
+    .section { margin-bottom:28px; padding-bottom:24px; border-bottom:1px solid var(--gray-200); }
+    .section:last-of-type { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+    .section-header { display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+    .section-number { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; background:var(--danger); color:white; border-radius:6px; font-size:13px; font-weight:700; flex-shrink:0; }
+    .section-title { font-size:16px; font-weight:700; color:var(--gray-900); letter-spacing:-0.3px; }
+    .section-subtitle { font-size:12px; color:var(--gray-500); margin-left:auto; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px 20px; }
+    .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px 20px; }
+    .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px 20px; }
+    .full { grid-column:1 / -1; }
+    .span-2 { grid-column:span 2; }
+    .field { display:flex; flex-direction:column; gap:6px; }
+    .field label { font-size:12px; font-weight:600; color:var(--gray-700); text-transform:uppercase; letter-spacing:0.5px; }
+    .field label .required { color:var(--error); margin-left:3px; }
+    .field .hint { font-size:11px; color:var(--gray-500); font-weight:400; text-transform:none; letter-spacing:0; }
+    .field input, .field select, .field textarea { width:100%; padding:10px 14px; border:1.5px solid var(--gray-300); border-radius:var(--radius); font-size:14px; font-family:inherit; color:var(--gray-900); background:white; transition:all 0.2s; line-height:1.5; }
+    .field input:focus, .field select:focus, .field textarea:focus { outline:none; border-color:var(--danger); box-shadow:0 0 0 3px rgba(193,18,31,0.08); background:var(--gray-50); }
+    .field textarea { min-height:80px; resize:vertical; }
+    select { cursor:pointer; appearance:none; background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23495057' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat:no-repeat; background-position:right 12px center; padding-right:40px; }
+    .info-box { background:#fff5f5; border-left:4px solid var(--danger); padding:12px 16px; border-radius:var(--radius); margin-bottom:16px; font-size:13px; color:#8b0000; line-height:1.6; }
+    .info-box.gold { background:#f8f9fa; border-left-color:var(--gold); color:var(--gray-700); font-style:italic; }
+    .checkbox-group { display:flex; align-items:center; gap:10px; padding:8px 0; }
+    .checkbox-group input[type="checkbox"] { width:18px; height:18px; accent-color:var(--danger); cursor:pointer; }
+    .checkbox-group label { font-size:13px; cursor:pointer; user-select:none; }
+    .damage-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .damage-item { display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--gray-50); border-radius:var(--radius); border:1px solid var(--gray-200); }
+    .damage-item .part-name { font-size:13px; font-weight:600; color:var(--gray-700); min-width:85px; }
+    .damage-item select, .damage-item input { padding:7px 10px; border:1px solid var(--gray-300); border-radius:6px; font-size:13px; background:white; flex:1; min-width:85px; height:36px; font-family:inherit; }
+    .photo-upload { border:2px dashed var(--gray-300); border-radius:var(--radius); padding:28px; text-align:center; cursor:pointer; transition:all 0.3s; background:var(--gray-50); }
+    .photo-upload:hover { border-color:var(--danger); background:#fff5f5; }
+    .photo-upload .upload-icon { width:48px; height:48px; margin:0 auto 12px; background:var(--gray-200); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; color:var(--gray-600); }
+    .photo-upload .upload-text { font-size:14px; font-weight:600; color:var(--gray-700); margin-bottom:4px; }
+    .photo-upload .upload-hint { font-size:12px; color:var(--gray-500); }
+    .photo-upload input[type="file"] { display:none; }
+    .photos-preview { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .photos-preview .photo-item { position:relative; width:85px; height:65px; border-radius:6px; overflow:hidden; border:2px solid var(--gray-200); }
+    .photos-preview .photo-item img { width:100%; height:100%; object-fit:cover; }
+    .photos-preview .photo-item .remove-photo { position:absolute; top:3px; right:3px; width:18px; height:18px; background:rgba(0,0,0,0.7); color:white; border:none; border-radius:50%; cursor:pointer; font-size:10px; display:flex; align-items:center; justify-content:center; }
+    .sign-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .sign-box { background:var(--gray-50); border-radius:var(--radius-lg); padding:20px 24px 24px; border:1.5px solid var(--gray-200); }
+    .sign-box .sign-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+    .sign-box .sign-header .name { font-weight:700; font-size:15px; color:var(--gray-900); }
+    .sign-box .sign-header .badge { font-size:10px; padding:3px 12px; border-radius:20px; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+    .badge-owner { background:#ffe0e0; color:#8b0000; }
+    .sign-box .mention { font-size:12px; color:var(--gray-500); font-style:italic; margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid var(--gray-200); }
+    .sign-box .signature-canvas { width:100%; height:90px; background:white; border-radius:var(--radius); border:1.5px solid var(--gray-300); cursor:crosshair; display:block; touch-action:none; }
+    .sign-box .sign-actions { display:flex; gap:8px; margin-top:8px; align-items:center; }
+    .sign-box .sign-actions .btn-text { background:transparent; border:1px solid var(--gray-300); padding:5px 14px; border-radius:20px; font-size:11px; color:var(--gray-600); cursor:pointer; font-weight:500; font-family:inherit; }
+    .sign-box .sign-status { font-size:12px; margin-left:auto; padding:3px 10px; border-radius:12px; background:var(--gray-100); color:var(--gray-500); }
+    .sign-box .sign-status.signed { background:#ffe0e0; color:#8b0000; font-weight:600; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:28px; padding-top:20px; border-top:2px solid var(--gray-200); }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 24px; border:none; border-radius:var(--radius); font-size:14px; font-weight:600; font-family:inherit; cursor:pointer; transition:all 0.2s; flex:1 1 auto; min-width:140px; }
+    .btn:disabled { opacity:0.6; cursor:not-allowed; }
+    .btn-danger { background:var(--danger); color:white; }
+    .btn-danger:hover:not(:disabled) { background:#8b0000; }
+    .btn-outline { background:white; color:var(--gray-700); border:1.5px solid var(--gray-300); }
+    .btn-outline:hover:not(:disabled) { background:var(--gray-50); }
+    .btn-ghost { background:transparent; color:var(--gray-600); }
+    .spinner { display:inline-block; width:18px; height:18px; border:2.5px solid rgba(255,255,255,0.3); border-radius:50%; border-top-color:#fff; animation:spin 0.7s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .toast-container { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:9999; width:100%; max-width:500px; padding:0 16px; }
+    .toast { background:var(--gray-900); color:white; padding:14px 24px; border-radius:var(--radius); font-size:13px; box-shadow:var(--shadow-lg); opacity:0; transform:translateY(20px); transition:all 0.4s; width:100%; text-align:center; margin-bottom:8px; }
+    .toast.show { opacity:1; transform:translateY(0); }
+    .toast.success { background:#1b4332; }
+    .toast.error { background:#5a1118; }
+    @media (max-width:768px) { body { padding:12px; } .header { padding:24px; } .header h1 { font-size:22px; } .form-body { padding:24px; } .grid-2, .grid-3, .grid-4 { grid-template-columns:1fr; } .damage-grid { grid-template-columns:1fr; } .sign-grid { grid-template-columns:1fr; } .actions { flex-direction:column; } .btn { width:100%; } }
+  </style>
+</head>
+<body>
+
+<div class="document-wrapper">
+  <header class="header">
+    <div class="header-label">Document assurance</div>
+    <h1>DÉCLARATION <span>DE DOMMAGE</span></h1>
+    <p class="subtitle">Formulaire à destination de l'assureur — Vélo</p>
+    <div class="meta">
+      <span><span class="dot"></span> Date : <span id="currentDate"></span></span>
+      <span><span class="dot"></span> Document juridique</span>
+      <span><span class="dot"></span> Signature électronique</span>
+    </div>
+  </header>
+
+  <div class="form-body" id="contractContainer">
+    <form id="dommageForm" novalidate>
+
+      <!-- SECTION 1 : ASSURÉ -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-number">1</span>
+          <span class="section-title">Assuré (propriétaire)</span>
+          <span class="section-subtitle">Informations obligatoires</span>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>Nom et prénom <span class="required">*</span></label><input type="text" name="assure_nom" placeholder="Nom complet" required></div>
+          <div class="field"><label>Date de naissance</label><input type="date" name="assure_naissance"></div>
+          <div class="field"><label>Adresse <span class="required">*</span></label><input type="text" name="assure_adresse" placeholder="Adresse complète" required></div>
+          <div class="field"><label>Téléphone <span class="required">*</span></label><input type="tel" name="assure_tel" placeholder="Numéro de téléphone" required></div>
+          <div class="field"><label>Email <span class="required">*</span></label><input type="email" name="assure_email" placeholder="Adresse email" required></div>
+          <div class="field"><label>Numéro de contrat d'assurance <span class="required">*</span></label><input type="text" name="assure_contrat" placeholder="N° de contrat" required></div>
+        </div>
+      </div>
+
+      <!-- SECTION 2 : VÉLO -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-number">2</span>
+          <span class="section-title">Vélo concerné</span>
+        </div>
+        <div class="grid-3">
+          <div class="field"><label>Marque / modèle <span class="required">*</span></label><input type="text" name="velo_modele" placeholder="Marque et modèle" required></div>
+          <div class="field"><label>Type</label><select name="velo_type"><option value="mecanique">Mécanique</option><option value="electrique">Électrique</option></select></div>
+          <div class="field"><label>Numéro de série</label><input type="text" name="velo_serie" placeholder="N° de série"></div>
+          <div class="field"><label>Couleur</label><input type="text" name="velo_couleur" placeholder="Couleur"></div>
+          <div class="field"><label>Date d'achat</label><input type="date" name="velo_date_achat"></div>
+          <div class="field"><label>Valeur d'achat (€)</label><input type="number" name="velo_valeur" min="0" step="0.01" placeholder="0.00"></div>
+        </div>
+        <div class="field full" style="margin-top:12px;">
+          <label>Numéro de gravage / identification</label>
+          <input type="text" name="velo_gravage" placeholder="N° de gravage Bicycode ou autre">
+        </div>
+      </div>
+
+      <!-- SECTION 3 : CIRCONSTANCES -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-number">3</span>
+          <span class="section-title">Circonstances du dommage</span>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>Date du sinistre <span class="required">*</span></label><input type="datetime-local" name="sinistre_date" required></div>
+          <div class="field"><label>Lieu du sinistre <span class="required">*</span></label><input type="text" name="sinistre_lieu" placeholder="Adresse ou lieu précis" required></div>
+        </div>
+        <div class="field full" style="margin-top:12px;">
+          <label>Type de sinistre <span class="required">*</span></label>
+          <select name="sinistre_type" required>
+            <option value="">Sélectionner le type de sinistre</option>
+            <option value="vol">Vol</option>
+            <option value="tentative_vol">Tentative de vol</option>
+            <option value="vandalisme">Vandalisme</option>
+            <option value="accident">Accident de la circulation</option>
+            <option value="chute">Chute</option>
+            <option value="incendie">Incendie</option>
+            <option value="catastrophe">Catastrophe naturelle</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+        <div class="field full" style="margin-top:12px;">
+          <label>Description détaillée du sinistre <span class="required">*</span></label>
+          <textarea name="sinistre_description" placeholder="Décrire précisément les circonstances : comment, quand, où, présence de témoins..." required></textarea>
+        </div>
+        <div class="field full" style="margin-top:12px;">
+          <label>Témoin(s) éventuel(s)</label>
+          <textarea name="sinistre_temoins" placeholder="Nom, prénom, adresse, téléphone des témoins"></textarea>
+        </div>
+        <div class="checkbox-group full" style="margin-top:12px;">
+          <input type="checkbox" name="sinistre_police" value="oui">
+          <label>Une plainte a été déposée auprès des autorités (police/gendarmerie)</label>
+        </div>
+        <div class="field full" style="margin-top:8px;">
+          <label>Référence du dépôt de plainte</label>
+          <input type="text" name="sinistre_ref_plainte" placeholder="N° de procès-verbal ou référence du dépôt de plainte">
+        </div>
+      </div>
+
+      <!-- SECTION 4 : DOMMAGES -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-number">4</span>
+          <span class="section-title">Dommages constatés</span>
+        </div>
+        <div class="info-box">
+          Décrire précisément les dommages subis par le vélo. Joindre des photos détaillées des parties endommagées.
+        </div>
+        <div class="damage-grid">
+          <div class="damage-item"><span class="part-name">Cadre</span><select name="dommage_frame"><option value="">Indemne</option><option value="rayé">Rayé</option><option value="fissuré">Fissuré</option><option value="cassé">Cassé</option><option value="tordu">Tordu</option></select><input type="text" name="note_dommage_frame" placeholder="Détail"></div>
+          <div class="damage-item"><span class="part-name">Fourche</span><select name="dommage_fork"><option value="">Indemne</option><option value="rayé">Rayé</option><option value="fissuré">Fissuré</option><option value="cassé">Cassé</option><option value="tordu">Tordu</option></select><input type="text" name="note_dommage_fork" placeholder="Détail"></div>
+          <div class="damage-item"><span class="part-name">Roue avant</span><select name="dommage_wheel_front"><option value="">Indemne</option><option value="voilé">Voilé</option><option value="cassé">Cassé</option><option value="tordu">Tordu</option></select><input type="text" name="note_dommage_wheel_front" placeholder="Détail"></div>
+          <div class="damage-item"><span class="part-name">Roue arrière</span><select name="dommage_wheel_rear"><option value="">Indemne</option><option value="voilé">Voilé</option><option value="cassé">Cassé</option><option value="tordu">Tordu</option></select><input type="text" name="note_dommage_wheel_rear" placeholder="Détail"></div>
+          <div class="damage-item"><span class="part-name">Guidon</span><select name="dommage_handlebar"><option value="">Indemne</option><option value="rayé">Rayé</option><option value="tordu">Tordu</option><option value="cassé">Cassé</option></select><input type="text" name="note_dommage_handlebar" placeholder="Détail"></div>
+          <div class="damage-item"><span class="part-name">Selle</span><select name="dommage_seat"><option value="">Indemne</option><option value="déchiré">Déchiré</option><option value="cassé">Cassé</option></select><input type="text" name="note_dommage_seat" placeholder="Détail"></div>
+          <div class="damage-item"><span class="part-name">Freins</span><select name="dommage_brakes"><option value="">Indemne</option><option value="cassé">Cassé</option><option value="défaillant">Défaillant</option></select><input type="text" name="note_dommage_brakes" placeholder="Détail"></div>
+          <div class="damage-item"><span class="part-name">Transmission</span><select name="dommage_transmission"><option value="">Indemne</option><option value="cassé">Cassé</option><option value="défaillant">Défaillant</option></select><input type="text" name="note_dommage_transmission" placeholder="Détail"></div>
+          <div class="damage-item"><span class="part-name">Batterie</span><select name="dommage_battery"><option value="">Indemne</option><option value="endommagé">Endommagée</option><option value="volé">Volée</option></select><input type="text" name="note_dommage_battery" placeholder="Détail"></div>
+          <div class="damage-item"><span class="part-name">Accessoires</span><select name="dommage_accessories"><option value="">Indemne</option><option value="endommagé">Endommagés</option><option value="volé">Volés</option></select><input type="text" name="note_dommage_accessories" placeholder="Détail"></div>
+        </div>
+        <div class="field full" style="margin-top:12px;">
+          <label>Estimation du montant des dommages (€)</label>
+          <input type="number" name="dommage_montant" min="0" step="0.01" placeholder="0.00">
+        </div>
+      </div>
+
+      <!-- SECTION 5 : PHOTOS -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-number">5</span>
+          <span class="section-title">Photos des dommages</span>
+          <span class="section-subtitle">6 maximum</span>
+        </div>
+        <div class="info-box gold">
+          Prendre des photos détaillées de chaque partie endommagée, ainsi qu'une photo générale du vélo.
+        </div>
+        <div class="photo-upload" id="photoDropZone">
+          <div class="upload-icon">+</div>
+          <p class="upload-text">Cliquez ou déposez vos photos ici</p>
+          <p class="upload-hint">JPG, PNG — 6 maximum</p>
+          <input id="photosInput" type="file" accept="image/*" multiple>
+        </div>
+        <div id="photosPreview" class="photos-preview"></div>
+      </div>
+
+      <!-- SECTION 6 : SIGNATURE -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-number">6</span>
+          <span class="section-title">Signature de l'assuré</span>
+          <span class="section-subtitle">Obligatoire</span>
+        </div>
+        <div class="info-box gold" style="margin-bottom:20px;">
+          Je certifie sur l'honneur l'exactitude des renseignements fournis dans la présente déclaration. Je suis informé(e) que toute fausse déclaration peut entraîner la déchéance de mes droits à indemnisation.
+        </div>
+        <div class="grid-2" style="margin-bottom:16px;">
+          <div class="field"><label>Lieu</label><input type="text" name="signature_lieu" placeholder="Ville"></div>
+          <div class="field"><label>Date</label><input type="date" name="signature_date"></div>
+        </div>
+        <div class="sign-grid">
+          <div class="sign-box">
+            <div class="sign-header"><span class="name">Assuré</span><span class="badge badge-owner">Déclarant</span></div>
+            <div class="mention">« Je certifie l'exactitude des informations fournies »</div>
+            <canvas class="signature-canvas" id="signature-assure"></canvas>
+            <div class="sign-actions"><button type="button" class="btn-text" onclick="clearSignature()">Effacer</button><span class="sign-status" id="assureStatus">En attente</span></div>
+            <input type="hidden" name="signatureAssure" id="signatureAssure">
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-danger" id="generateSendBtn">Signer et envoyer la déclaration</button>
+        <button type="button" class="btn btn-outline" id="downloadEtatBtn">Télécharger le PDF</button>
+        <button type="button" class="btn btn-outline" id="saveEtatBtn">Enregistrer le brouillon</button>
+        <button type="button" class="btn btn-ghost" id="resetFormBtn">Réinitialiser</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script>
+  'use strict';
+
+  const EMAILJS_CONFIG = {
+    publicKey: 'zz4KdlO2Xyw0Y5Gej',
+    serviceID: 'service_g1ip1lt',
+    templateID: 'template_dommage'
+  };
+
+  (function() { try { emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey }); } catch(e) {} })();
+
+  document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+
+  function showToast(msg, type='info') {
+    const c = document.getElementById('toastContainer');
+    if (!c) return;
+    const t = document.createElement('div');
+    t.className = 'toast '+type;
+    t.textContent = msg;
+    c.appendChild(t);
+    requestAnimationFrame(() => t.classList.add('show'));
+    setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 4000);
+  }
+
+  // Photos
+  const photosInput = document.getElementById('photosInput');
+  const photosPreview = document.getElementById('photosPreview');
+  let photos = [];
+
+  function compressImage(file, mw=400, mh=300, q=0.4) {
+    return new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const c = document.createElement('canvas');
+          let w=img.width, h=img.height;
+          if (w>mw) { h=(h*mw)/w; w=mw; }
+          if (h>mh) { w=(w*mh)/h; h=mh; }
+          c.width=w; c.height=h;
+          c.getContext('2d').drawImage(img,0,0,w,h);
+          resolve(c.toDataURL('image/jpeg',q));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      r.onerror = reject;
+      r.readAsDataURL(file);
+    });
+  }
+
+  function renderPhotos() {
+    photosPreview.innerHTML = '';
+    photos.forEach((url,i) => {
+      const d = document.createElement('div');
+      d.className = 'photo-item';
+      d.innerHTML = `<img src="${url}" alt="Photo ${i+1}"><button class="remove-photo" data-index="${i}">&times;</button>`;
+      photosPreview.appendChild(d);
+    });
+    document.querySelectorAll('.remove-photo').forEach(b => {
+      b.addEventListener('click', e => { e.stopPropagation(); photos.splice(b.dataset.index,1); renderPhotos(); });
+    });
+  }
+
+  photosInput.addEventListener('change', async e => {
+    const files = Array.from(e.target.files);
+    if (photos.length+files.length>6) { showToast('Maximum 6 photos','error'); return; }
+    for (const f of files) {
+      if (!f.type.startsWith('image/')) continue;
+      try { photos.push(await compressImage(f)); } catch(err) {}
+    }
+    renderPhotos();
+    photosInput.value = '';
+  });
+
+  const dropZone = document.getElementById('photoDropZone');
+  dropZone.addEventListener('click', ()=>photosInput.click());
+  dropZone.addEventListener('dragover', e=>{ e.preventDefault(); dropZone.style.borderColor='#c1121f'; });
+  dropZone.addEventListener('dragleave', ()=>{ dropZone.style.borderColor='#dee2e6'; });
+  dropZone.addEventListener('drop', async e => {
+    e.preventDefault();
+    dropZone.style.borderColor='#dee2e6';
+    const files = Array.from(e.dataTransfer.files);
+    if (photos.length+files.length>6) { showToast('Maximum 6 photos','error'); return; }
+    for (const f of files) {
+      if (!f.type.startsWith('image/')) continue;
+      try { photos.push(await compressImage(f)); } catch(err) {}
+    }
+    renderPhotos();
+  });
+
+  // Signature
+  const cAssure = document.getElementById('signature-assure');
+  const sAssure = document.getElementById('assureStatus');
+
+  function resizeCanvas(c) {
+    const r = c.getBoundingClientRect();
+    const dpr = devicePixelRatio||1;
+    c.width = r.width*dpr;
+    c.height = 90*dpr;
+    c.style.height = '90px';
+    c.style.width = '100%';
+    c.getContext('2d').scale(dpr,dpr);
+  }
+  resizeCanvas(cAssure);
+
+  const padAssure = new SignaturePad(cAssure, { backgroundColor:'white', penColor:'#1a1a2e', minWidth:1.5, maxWidth:3 });
+
+  function updateSignStatus() {
+    sAssure.textContent = padAssure.isEmpty() ? 'En attente' : 'Signé';
+    sAssure.className = 'sign-status' + (padAssure.isEmpty()?'':' signed');
+  }
+  padAssure.addEventListener('endStroke', updateSignStatus);
+  window.clearSignature = () => { padAssure.clear(); updateSignStatus(); };
+  window.addEventListener('resize', ()=>{ const d=padAssure.toData(); resizeCanvas(cAssure); padAssure.fromData(d); });
+
+  function getFormData() {
+    const fd = new FormData(document.getElementById('dommageForm'));
+    const data = {};
+    for (const [k,v] of fd.entries()) data[k]=v;
+    data.photos = photos;
+    data.signatureAssure = padAssure.isEmpty() ? '' : padAssure.toDataURL();
+    return data;
+  }
+
+  function validateForm() {
+    const aN = document.querySelector('[name="assure_nom"]').value.trim();
+    const aE = document.querySelector('[name="assure_email"]').value.trim();
+    const aC = document.querySelector('[name="assure_contrat"]').value.trim();
+    const vM = document.querySelector('[name="velo_modele"]').value.trim();
+    const sD = document.querySelector('[name="sinistre_date"]').value;
+    const sL = document.querySelector('[name="sinistre_lieu"]').value.trim();
+    const sT = document.querySelector('[name="sinistre_type"]').value;
+    if (!aN||!aE||!aC) { showToast('Informations de l\'assuré requises','error'); return false; }
+    if (!vM) { showToast('Modèle du vélo requis','error'); return false; }
+    if (!sD||!sL||!sT) { showToast('Circonstances du sinistre requises','error'); return false; }
+    if (padAssure.isEmpty()) { showToast('L\'assuré doit signer','error'); return false; }
+    return true;
+  }
+
+  function generatePDF(data) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit:'mm', format:'a4' });
+    const pw=doc.internal.pageSize.getWidth(), ph=doc.internal.pageSize.getHeight();
+    const m=15, cw=pw-m*2;
+    let y=m;
+
+    doc.setFont('helvetica','bold').setFontSize(22).setTextColor(193,18,31);
+    doc.text('DÉCLARATION DE DOMMAGE', pw/2, y+10, {align:'center'});
+    y+=16;
+    doc.setDrawColor(201,168,76).setLineWidth(0.8).line(m,y,pw-m,y); y+=6;
+    doc.setFont('helvetica','normal').setFontSize(9).setTextColor(100,100,100);
+    doc.text('Formulaire assurance vélo — '+new Date().toLocaleDateString('fr-FR'), pw/2, y, {align:'center'});
+    y+=10;
+
+    const sep = ()=>{ doc.setDrawColor(220,220,220).setLineWidth(0.3).line(m,y,pw-m,y); y+=6; };
+    const title = (num,title)=>{
+      if (y>ph-25) { doc.addPage(); y=m; }
+      doc.setFont('helvetica','bold').setFontSize(14).setTextColor(26,26,46);
+      doc.text(num+'. '+title, m, y); y+=6;
+      doc.setDrawColor(193,18,31).setLineWidth(0.5).line(m,y,m+50,y); y+=6;
+    };
+
+    title('1','ASSURÉ');
+    doc.setFont('helvetica','normal').setFontSize(9);
+    doc.text('Nom : '+(data.assure_nom||'-')+' | N° contrat : '+(data.assure_contrat||'-')+' | Email : '+(data.assure_email||'-'), m, y); y+=8; sep();
+
+    title('2','VÉLO CONCERNÉ');
+    doc.text('Modèle : '+(data.velo_modele||'-')+' | Type : '+(data.velo_type||'-')+' | N° série : '+(data.velo_serie||'-')+' | Valeur : '+(data.velo_valeur||'-')+' €', m, y); y+=8; sep();
+
+    title('3','CIRCONSTANCES');
+    doc.text('Date : '+(data.siniste_date||'-')+' | Lieu : '+(data.siniste_lieu||'-')+' | Type : '+(data.siniste_type||'-'), m, y); y+=5;
+    doc.text('Description : '+(data.siniste_description||'-'), m, y); y+=5;
+    if (data.siniste_temoins) { doc.text('Témoins : '+data.siniste_temoins, m, y); y+=5; }
+    if (data.siniste_police) { doc.text('Plainte déposée - Réf : '+(data.siniste_ref_plainte||'-'), m, y); y+=5; }
+    y+=5; sep();
+
+    title('4','DOMMAGES');
+    const parts = ['frame','fork','wheel_front','wheel_rear','handlebar','seat','brakes','transmission','battery','accessories'];
+    const labels = {frame:'Cadre',fork:'Fourche',wheel_front:'Roue avant',wheel_rear:'Roue arrière',handlebar:'Guidon',seat:'Selle',brakes:'Freins',transmission:'Transmission',battery:'Batterie',accessories:'Accessoires'};
+    parts.forEach(p => {
+      const dmg = data['dommage_'+p];
+      if (dmg) {
+        doc.text('• '+labels[p]+' : '+dmg+(data['note_dommage_'+p]?' ('+data['note_dommage_'+p]+')':''), m+5, y); y+=5;
+      }
+    });
+    if (data.dommage_montant) { doc.text('Montant estimé : '+data.dommage_montant+' €', m, y); y+=5; }
+    y+=5; sep();
+
+    if (data.photos&&data.photos.length) {
+      title('5','PHOTOS');
+      for (let i=0; i<Math.min(data.photos.length,6); i++) {
+        if (y>ph-50) { doc.addPage(); y=m; }
+        try {
+          const ip = doc.getImageProperties(data.photos[i]);
+          let iw=ip.width, ih=ip.height;
+          if (iw>70) { ih=(ih*70)/iw; iw=70; }
+          if (ih>45) { iw=(iw*45)/ih; ih=45; }
+          doc.addImage(data.photos[i],'JPEG',m,y,iw,ih);
+          y+=ih+6;
+        } catch(e) { y+=4; }
+      }
+      sep();
+    }
+
+    if (y>ph-50) { doc.addPage(); y=m; }
+    title('6','SIGNATURE');
+    doc.setFont('helvetica','italic').setFontSize(8).setTextColor(100,100,100);
+    doc.text('« Je certifie sur l\'honneur l\'exactitude des renseignements fournis »', m, y); y+=4;
+    if (data.signatureAssure) { try { doc.addImage(data.signatureAssure,'PNG',m,y,55,18); y+=20; } catch(e) { y+=6; } }
+    y+=10;
+    doc.setDrawColor(200,200,200).setLineWidth(0.5).line(m,y,pw-m,y); y+=5;
+    doc.setFont('helvetica','normal').setFontSize(7).setTextColor(150,150,150);
+    doc.text('Document à transmettre à votre assureur — Généré le '+new Date().toLocaleDateString('fr-FR'), pw/2, y, {align:'center'});
+
+    return doc.output('datauristring');
+  }
+
+  async function uploadPDF(b64, fn) {
+    try {
+      const data = b64.split(',')[1]||b64;
+      const bytes = atob(data);
+      const arr = [];
+      for (let o=0; o<bytes.length; o+=512) {
+        const s = bytes.slice(o,o+512);
+        const n = new Array(s.length);
+        for (let i=0;i<s.length;i++) n[i]=s.charCodeAt(i);
+        arr.push(new Uint8Array(n));
+      }
+      const blob = new Blob(arr,{type:'application/pdf'});
+      const fd = new FormData();
+      fd.append('file',blob,fn);
+      const r = await fetch('https://tmpfiles.org/api/v1/upload',{method:'POST',body:fd});
+      if (r.ok) { const j = await r.json(); return j.data.url.replace('https://tmpfiles.org/','https://tmpfiles.org/dl/'); }
+      throw new Error('Upload failed');
+    } catch(e) { return b64; }
+  }
+
+  async function sendEmail(data, pdfB64) {
+    try {
+      const fn = 'DECLARATION_DOMMAGE.pdf';
+      const pdfLink = await uploadPDF(pdfB64, fn);
+      const params = {
+        assure_nom: data.assure_nom,
+        assure_email: data.assure_email,
+        velo_modele: data.velo_modele,
+        sinistre_type: data.siniste_type,
+        sinistre_date: data.siniste_date,
+        pdf_link: pdfLink,
+        date_signature: new Date().toLocaleDateString('fr-FR')
+      };
+
+      await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, {
+        ...params,
+        to_email: data.assure_email,
+        to_name: data.assure_nom,
+        message: `Déclaration de dommage pour le vélo ${data.velo_modele}`
+      });
+
+      showToast('Déclaration envoyée avec succès','success');
+      if (confirm('✅ Document envoyé. Télécharger une copie ?')) {
+        const a = document.createElement('a'); a.href = pdfB64; a.download = fn;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      }
+      return true;
+    } catch(e) { showToast('Erreur: '+(e.message||'Inconnue'),'error'); return false; }
+  }
+
+  document.getElementById('generateSendBtn').addEventListener('click', async function() {
+    if (!validateForm()) return;
+    this.disabled = true;
+    const orig = this.innerHTML;
+    this.innerHTML = '<span class="spinner"></span> Traitement...';
+    try {
+      const data = getFormData();
+      const pdf = generatePDF(data);
+      await sendEmail(data, pdf);
+    } catch(e) { showToast('Erreur: '+e.message,'error'); }
+    this.disabled = false;
+    this.innerHTML = orig;
+  });
+
+  document.getElementById('downloadEtatBtn').addEventListener('click', function() {
+    const data = getFormData();
+    this.disabled = true;
+    try {
+      const pdf = generatePDF(data);
+      const a = document.createElement('a');
+      a.href = pdf;
+      a.download = 'DECLARATION_DOMMAGE_'+(data.assure_nom||'assure').replace(/[^a-z0-9]/gi,'_').toLowerCase()+'_'+new Date().toISOString().split('T')[0]+'.pdf';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      showToast('PDF téléchargé','success');
+    } catch(e) { showToast('Erreur','error'); }
+    this.disabled = false;
+  });
+
+  document.getElementById('saveEtatBtn').addEventListener('click', ()=>{
+    localStorage.setItem('declarationDommage', JSON.stringify(getFormData()));
+    showToast('Brouillon enregistré','success');
+  });
+
+  document.getElementById('resetFormBtn').addEventListener('click', ()=>{
+    if (confirm('Réinitialiser le formulaire ?')) {
+      document.getElementById('dommageForm').reset();
+      padAssure.clear(); photos=[]; renderPhotos();
+      updateSignStatus();
+      showToast('Formulaire réinitialisé','info');
+    }
+  });
+
+  (function() {
+    const s = localStorage.getItem('declarationDommage');
+    if (!s) return;
+    try {
+      const d = JSON.parse(s);
+      Object.keys(d).forEach(k => {
+        if (['photos','signatureAssure'].includes(k)) return;
+        const el = document.querySelector(`[name="${k}"]`);
+        if (el) {
+          if (el.type==='checkbox') el.checked = d[k];
+          else el.value = d[k]||'';
+        }
+      });
+      if (d.photos?.length) { photos = d.photos; renderPhotos(); }
+    } catch(e) { localStorage.removeItem('declarationDommage'); }
+  })();
+
+  updateSignStatus();
+</script>
+</body>
+</html>
