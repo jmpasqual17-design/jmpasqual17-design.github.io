@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Contrat de location vélo</title>
 
-  <!-- Flatpickr CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css">
-  
   <style>
     :root {
       --primary: #1a1a2e;
@@ -219,14 +216,6 @@
       background-repeat: no-repeat;
       background-position: right 12px center;
       padding-right: 40px;
-    }
-
-    /* Style pour l'input flatpickr avec icône calendrier */
-    .flatpickr-input {
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23495057' class='bi bi-calendar3' viewBox='0 0 16 16'%3E%3Cpath d='M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z'/%3E%3Cpath d='M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      background-size: 18px;
     }
 
     .info-box {
@@ -642,7 +631,7 @@
         </div>
       </div>
 
-      <!-- SECTION 5 : DURÉE avec flatpickr -->
+      <!-- SECTION 5 : DURÉE (sans horaire) -->
       <div class="section">
         <div class="section-header">
           <span class="section-number">5</span>
@@ -650,21 +639,15 @@
         </div>
         <div class="grid-2">
           <div class="field">
-            <label>Date et heure de début <span class="required">*</span></label>
-            <input type="text" id="debut_picker" placeholder="Choisir une date et heure..." class="flatpickr-input" readonly required>
-            <span class="hint">Calendrier : 08h-21h, pas de 30 min</span>
-            <input type="hidden" name="date_debut_date" id="date_debut_date">
-            <input type="hidden" name="date_debut_heure" id="date_debut_heure">
+            <label>Date de début <span class="required">*</span></label>
+            <input type="date" name="date_debut_date" required>
           </div>
           <div class="field">
-            <label>Date et heure de fin <span class="required">*</span></label>
-            <input type="text" id="fin_picker" placeholder="Choisir une date et heure..." class="flatpickr-input" readonly required>
-            <span class="hint">Calendrier : 08h-21h, pas de 30 min</span>
-            <input type="hidden" name="date_fin_date" id="date_fin_date">
-            <input type="hidden" name="date_fin_heure" id="date_fin_heure">
+            <label>Date de fin <span class="required">*</span></label>
+            <input type="date" name="date_fin_date" required>
           </div>
           <div class="field full">
-            <label>Retard de restitution (€/h)</label>
+            <label>Retard de restitution (€/jour)</label>
             <input type="number" name="retard_tarif" min="0" step="0.01" placeholder="0.00">
           </div>
         </div>
@@ -735,7 +718,7 @@
         <table class="penalties-table">
           <thead><tr><th style="width: 55%;">Manquement constaté</th><th style="width: 45%;">Conséquence financière</th></tr></thead>
           <tbody>
-            <tr><td>Retard de restitution</td><td><div style="display: flex; align-items: center; gap: 8px;"><input type="number" name="penalite_retard" min="0" step="0.01" placeholder="0.00" class="penalty-input"><span>€ par heure de retard commencée</span></div></td></tr>
+            <tr><td>Retard de restitution</td><td><div style="display: flex; align-items: center; gap: 8px;"><input type="number" name="penalite_retard" min="0" step="0.01" placeholder="0.00" class="penalty-input"><span>€ par jour de retard</span></div></td></tr>
             <tr><td>Perte ou non-restitution d'un accessoire</td><td><div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;"><span style="font-size: 12px;">Coût de remplacement ou forfait de</span><input type="number" name="penalite_accessoire" min="0" step="0.01" placeholder="0.00" class="penalty-input"><span>€ par accessoire</span></div></td></tr>
             <tr><td>Restitution anormalement sale</td><td><div style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 12px;">Frais de nettoyage de</span><input type="number" name="penalite_nettoyage" min="0" step="0.01" placeholder="0.00" class="penalty-input"><span>€</span></div></td></tr>
             <tr><td>Dommages non couverts ou exclus de l'assurance</td><td class="penalty-text">Coût réel de réparation ou de remplacement, sur justificatif.</td></tr>
@@ -817,12 +800,9 @@
 
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
 
 <script>
   'use strict';
@@ -896,67 +876,17 @@
     sigPadBailleur.fromData(bD); sigPadLocataire.fromData(lD);
   });
 
-  // ---- Flatpickr configuration ----
-  function updateHiddenFields(selectedDates, dateStr, instance, dateFieldId, timeFieldId) {
-    if (selectedDates.length > 0) {
-      const d = selectedDates[0];
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      const hours = String(d.getHours()).padStart(2, '0');
-      const minutes = String(d.getMinutes()).padStart(2, '0');
-      document.getElementById(dateFieldId).value = `${year}-${month}-${day}`;
-      document.getElementById(timeFieldId).value = `${hours}:${minutes}`;
-      // Déclencher un événement change sur le champ heure pour la validation
-      document.getElementById(timeFieldId).dispatchEvent(new Event('change'));
-    } else {
-      document.getElementById(dateFieldId).value = '';
-      document.getElementById(timeFieldId).value = '';
-    }
-  }
-
-  const fpDebut = flatpickr("#debut_picker", {
-    enableTime: true,
-    dateFormat: "d/m/Y H:i",
-    time_24hr: true,
-    minuteIncrement: 30,
-    minTime: "08:00",
-    maxTime: "21:00",
-    locale: "fr",
-    onChange: function(selectedDates, dateStr, instance) {
-      updateHiddenFields(selectedDates, dateStr, instance, 'date_debut_date', 'date_debut_heure');
-    }
-  });
-
-  const fpFin = flatpickr("#fin_picker", {
-    enableTime: true,
-    dateFormat: "d/m/Y H:i",
-    time_24hr: true,
-    minuteIncrement: 30,
-    minTime: "08:00",
-    maxTime: "21:00",
-    locale: "fr",
-    onChange: function(selectedDates, dateStr, instance) {
-      updateHiddenFields(selectedDates, dateStr, instance, 'date_fin_date', 'date_fin_heure');
-    }
-  });
-
-  // Validation des dates
   function validateDates() {
-    const dd = document.getElementById('date_debut_date').value;
-    const dh = document.getElementById('date_debut_heure').value;
-    const fd = document.getElementById('date_fin_date').value;
-    const fh = document.getElementById('date_fin_heure').value;
-    if (!dd || !dh || !fd || !fh) return true;
-    const debut = new Date(`${dd}T${dh}`);
-    const fin = new Date(`${fd}T${fh}`);
-    return fin > debut;
+    const dd = document.querySelector('[name="date_debut_date"]').value;
+    const df = document.querySelector('[name="date_fin_date"]').value;
+    if (!dd || !df) return true;
+    return new Date(df) > new Date(dd);
   }
 
-  document.getElementById('date_fin_heure').addEventListener('change', function() {
+  document.querySelector('[name="date_fin_date"]').addEventListener('change', function() {
     if (!validateDates()) {
       showToast('La date de fin doit être postérieure à la date de début.', 'error');
-      // On pourrait effacer le champ flatpickr, mais on laisse l'utilisateur corriger
+      this.value = '';
     }
   });
 
@@ -968,12 +898,9 @@
       if (k === 'extras') { if (!data.extras) data.extras = []; data.extras.push(v); }
       else data[k] = v;
     }
-    const dd = data.date_debut_date || '';
-    const dh = data.date_debut_heure || '';
-    const fdDate = data.date_fin_date || '';
-    const fh = data.date_fin_heure || '';
-    data.date_debut = dd && dh ? `${dd}T${dh}` : '';
-    data.date_fin = fdDate && fh ? `${fdDate}T${fh}` : '';
+    // Pour la compatibilité avec le PDF, on crée un champ date_debut/date_fin lisible
+    data.date_debut = data.date_debut_date || '';
+    data.date_fin = data.date_fin_date || '';
     data.signatureBailleur = sigPadBailleur.isEmpty() ? '' : sigPadBailleur.toDataURL();
     data.signatureLocataire = sigPadLocataire.isEmpty() ? '' : sigPadLocataire.toDataURL();
     return data;
@@ -985,13 +912,11 @@
     const lN = document.querySelector('[name="locataire_nom"]').value.trim();
     const lE = document.querySelector('[name="locataire_email"]').value.trim();
     const vM = document.querySelector('[name="velo_modele"]').value.trim();
-    const dd = document.getElementById('date_debut_date').value;
-    const dh = document.getElementById('date_debut_heure').value;
-    const fd = document.getElementById('date_fin_date').value;
-    const fh = document.getElementById('date_fin_heure').value;
+    const dd = document.querySelector('[name="date_debut_date"]').value;
+    const df = document.querySelector('[name="date_fin_date"]').value;
     if (!bN || !bE) { showToast('Informations du bailleur requises', 'error'); return false; }
     if (!lN || !lE) { showToast('Informations du locataire requises', 'error'); return false; }
-    if (!vM || !dd || !dh || !fd || !fh) { showToast('Vélo et dates requis', 'error'); return false; }
+    if (!vM || !dd || !df) { showToast('Vélo et dates requis', 'error'); return false; }
     if (!validateDates()) { showToast('La date de fin doit être postérieure à la date de début.', 'error'); return false; }
     if (sigPadBailleur.isEmpty()) { showToast('Le bailleur doit signer', 'error'); return false; }
     if (sigPadLocataire.isEmpty()) { showToast('Le locataire doit signer', 'error'); return false; }
@@ -1001,6 +926,7 @@
     return true;
   }
 
+  // PDF professionnel (identique à la version précédente, adapté aux dates sans heure)
   function generateNativePDF(data) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
@@ -1036,6 +962,7 @@
       });
     }
 
+    // En-tête
     doc.setFont('helvetica', 'bold'); doc.setFontSize(22); doc.setTextColor(26,26,46);
     doc.text('CONTRAT DE LOCATION VÉLO', pageW / 2, y + 10, { align: 'center' });
     y += 16;
@@ -1044,6 +971,7 @@
     doc.text('Contrat entre particuliers — ' + new Date().toLocaleDateString('fr-FR'), pageW / 2, y, { align: 'center' });
     y += 10;
 
+    // Préambule
     italicText('Le présent contrat a pour objet de définir les conditions dans lesquelles le loueur met temporairement à disposition du Locataire le vélo décrit ci-après. Les parties déclarent agir en qualité de particuliers, être juridiquement capables de contracter et accepter l\'ensemble des stipulations du présent contrat sans réserve.');
     y += 4; drawSeparator();
 
@@ -1089,7 +1017,7 @@
 
     sectionTitle('5', 'DURÉE DE LOCATION');
     normalText(`Date de début : ${data.date_debut || '-'}  |  Date de fin : ${data.date_fin || '-'}`);
-    normalText(`Tarif de retard : ${data.retard_tarif ? data.retard_tarif + ' €/h' : '-'}`);
+    normalText(`Pénalité de retard : ${data.retard_tarif ? data.retard_tarif + ' €/jour' : '-'}`);
     y += 3; drawSeparator();
 
     sectionTitle('6', 'PRIX, PAIEMENT ET DÉPÔT DE GARANTIE');
@@ -1132,7 +1060,7 @@
 
     sectionTitle('11', 'PÉNALITÉS');
     const penalties = [
-      ['Retard de restitution', data.penalite_retard ? `${data.penalite_retard} €/h` : 'Non défini'],
+      ['Retard de restitution', data.penalite_retard ? `${data.penalite_retard} €/jour` : 'Non défini'],
       ['Perte accessoire', data.penalite_accessoire ? `${data.penalite_accessoire} €/accessoire` : 'Non défini'],
       ['Nettoyage anormal', data.penalite_nettoyage ? `${data.penalite_nettoyage} €` : 'Non défini'],
       ['Dommages exclus', 'Coût réel de réparation/remplacement'],
@@ -1268,8 +1196,8 @@
           renterEmail: data.locataire_email || '',
           bikeModel: data.velo_modele || '',
           serialNumber: data.velo_serie || '',
-          startDate: data.date_debut ? data.date_debut.split('T')[0] : '',
-          endDate: data.date_fin ? data.date_fin.split('T')[0] : '',
+          startDate: data.date_debut || '',
+          endDate: data.date_fin || '',
           contractSigned: true,
           contractDate: new Date().toISOString()
         };
@@ -1333,19 +1261,15 @@
 
   // BOUTONS
   document.getElementById('generateSendBtn').addEventListener('click', async function() {
-    console.log('🖱️ Clic sur Signer et envoyer');
     if (!validateForm()) return;
     this.disabled = true;
     const oh = this.innerHTML;
     this.innerHTML = '<span class="spinner"></span> Traitement...';
     try {
       const data = getFormData();
-      showToast('Génération du PDF...', 'info');
       const pdfBase64 = generateNativePDF(data);
-      console.log('📄 PDF généré, taille:', (pdfBase64.length / 1024).toFixed(2), 'KB');
       await sendWithEmailJS(data, pdfBase64);
     } catch(e) {
-      console.error('❌ Erreur:', e);
       showToast('Erreur: ' + e.message, 'error');
     }
     this.disabled = false;
@@ -1354,7 +1278,6 @@
 
   document.getElementById('downloadEtatBtn').addEventListener('click', function() {
     const data = getFormData();
-    this.disabled = true;
     try {
       const pdfBase64 = generateNativePDF(data);
       const rn = (data.locataire_nom || 'contrat').replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -1364,7 +1287,6 @@
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       showToast('PDF téléchargé', 'success');
     } catch(e) { showToast('Erreur', 'error'); }
-    this.disabled = false;
   });
 
   document.getElementById('saveEtatBtn').addEventListener('click', function() {
@@ -1377,8 +1299,6 @@
       document.getElementById('contratForm').reset();
       sigPadBailleur.clear(); sigPadLocataire.clear();
       updateSignatureStatus();
-      fpDebut.clear();
-      fpFin.clear();
       showToast('Formulaire réinitialisé', 'info');
     }
   });
@@ -1389,18 +1309,11 @@
     try {
       const d = JSON.parse(s);
       Object.keys(d).forEach(k => {
-        if (['extras','signatureBailleur','signatureLocataire','date_debut_date','date_debut_heure','date_fin_date','date_fin_heure'].includes(k)) return;
+        if (['extras','signatureBailleur','signatureLocataire'].includes(k)) return;
         const el = document.querySelector('[name="'+k+'"]');
         if (el) el.value = d[k] || '';
       });
       if (d.extras) d.extras.forEach(v => { const cb = document.querySelector('input[name="extras"][value="'+v+'"]'); if(cb) cb.checked = true; });
-      // Restaurer flatpickr si possible
-      if (d.date_debut_date && d.date_debut_heure) {
-        fpDebut.setDate(`${d.date_debut_date}T${d.date_debut_heure}`);
-      }
-      if (d.date_fin_date && d.date_fin_heure) {
-        fpFin.setDate(`${d.date_fin_date}T${d.date_fin_heure}`);
-      }
     } catch(e) { localStorage.removeItem('contratVelo'); }
   })();
 
