@@ -896,7 +896,7 @@
     return true;
   }
 
- function generateNativePDF(data) {
+function generateNativePDF(data) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
     const pageW = doc.internal.pageSize.getWidth();
@@ -1458,24 +1458,42 @@
     doc.text(declBLines, margin + 5, y);
     y += declBLines.length * 4 + 4;
     drawSeparator();
-    // Section 16 - Signatures
-    if (y > pageH - 50) { doc.addPage(); y = margin; }
+
+    // ---- 16. SIGNATURES ----
+    if (y > pageH - 40) { doc.addPage(); y = margin; }
     sectionTitle('16', 'SIGNATURES ÉLECTRONIQUES');
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
-    doc.text('Lieu : ' + (data.lieu || '-') + ' | Date : ' + (data.date_signature || '-'), margin, y); y += 10;
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
-    doc.text('Bailleur', margin, y);
-    if (data.signatureBailleur) { try { doc.addImage(data.signatureBailleur, 'PNG', margin, y + 5, 50, 16); y += 22; } catch(e) { y += 6; } }
-    y += 8;
-    doc.text('Locataire', margin, y);
-    if (data.signatureLocataire) { try { doc.addImage(data.signatureLocataire, 'PNG', margin, y + 5, 50, 16); y += 22; } catch(e) { y += 6; } }
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(50, 50, 50);
+    doc.text('Lieu : ' + (data.lieu || '-') + '    |    Date : ' + (data.date_signature || '-'), margin, y);
     y += 10;
-    doc.setDrawColor(200,200,200); doc.setLineWidth(0.5); doc.line(margin, y, pageW - margin, y); y += 5;
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(150,150,150);
-    doc.text('Document signé électroniquement — Conforme au règlement eIDAS — Généré le ' + new Date().toLocaleDateString('fr-FR'), pageW / 2, y, { align: 'center' });
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('Bailleur (propriétaire)', margin, y);
+    if (data.signatureBailleur) {
+      try { doc.addImage(data.signatureBailleur, 'PNG', margin, y + 5, 50, 16); y += 22; } catch(e) { y += 6; }
+    }
+    y += 8;
+
+    doc.text('Locataire (utilisateur)', margin, y);
+    if (data.signatureLocataire) {
+      try { doc.addImage(data.signatureLocataire, 'PNG', margin, y + 5, 50, 16); y += 22; } catch(e) { y += 6; }
+    }
+    y += 10;
+
+    // ---- PIED DE PAGE ----
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y, pageW - margin, y);
+    y += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(150, 150, 150);
+    doc.text('Document signé électroniquement — Conforme au règlement eIDAS — Généré le ' + new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }), pageW / 2, y, { align: 'center' });
 
     return doc.output('datauristring');
-  }
+}
 
   async function uploadPDF(pdfBase64, fileName) {
     try {
