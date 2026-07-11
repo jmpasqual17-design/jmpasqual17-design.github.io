@@ -935,32 +935,30 @@
     return data;
 }
 
-  function validateForm() {
+function validateForm() {
     const bN = document.querySelector('[name="bailleur_nom"]').value.trim();
     const bE = document.querySelector('[name="bailleur_email"]').value.trim();
     const lN = document.querySelector('[name="locataire_nom"]').value.trim();
     const lE = document.querySelector('[name="locataire_email"]').value.trim();
     const vM = document.querySelector('[name="velo_modele"]').value.trim();
-    const dD = document.querySelector('[name="date_debut"]').value;
-    const dF = document.querySelector('[name="date_fin"]').value;
     const dD_date = document.querySelector('[name="date_debut_date"]').value;
     const dD_heure = document.querySelector('[name="date_debut_heure"]').value;
     const dF_date = document.querySelector('[name="date_fin_date"]').value;
     const dF_heure = document.querySelector('[name="date_fin_heure"]').value;
     
-    if (!dD_date || !dD_heure || !dF_date || !dF_heure) { 
-      showToast('Dates et heures requises', 'error'); return false; 
-    }
     if (!bN || !bE) { showToast('Informations du bailleur requises', 'error'); return false; }
     if (!lN || !lE) { showToast('Informations du locataire requises', 'error'); return false; }
-    if (!vM || !dD || !dF) { showToast('Vélo et dates requis', 'error'); return false; }
+    if (!vM) { showToast('Modèle du vélo requis', 'error'); return false; }
+    if (!dD_date || !dD_heure) { showToast('Date et heure de début requises', 'error'); return false; }
+    if (!dF_date || !dF_heure) { showToast('Date et heure de fin requises', 'error'); return false; }
     if (sigPadBailleur.isEmpty()) { showToast('Le bailleur doit signer', 'error'); return false; }
     if (sigPadLocataire.isEmpty()) { showToast('Le locataire doit signer', 'error'); return false; }
+    
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!re.test(bE)) { showToast('Email du bailleur invalide', 'error'); return false; }
     if (!re.test(lE)) { showToast('Email du locataire invalide', 'error'); return false; }
     return true;
-  }
+}
 
 function generateNativePDF(data) {
     const { jsPDF } = window.jspdf;
