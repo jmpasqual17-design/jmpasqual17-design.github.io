@@ -98,114 +98,117 @@
     .toast.show { opacity:1; transform:translateY(0); }
     .toast.success { background:#1b4332; }
     .toast.error { background:#5a1118; }
+
+    /* ----- MEDIA QUERIES CORRIGÉES POUR MOBILE ----- */
     @media (max-width: 768px) {
-  body { padding: 8px; }
-  .header { padding: 18px 16px; }
-  .header h1 { font-size: 19px; }
-  .header .meta { flex-direction: column; gap: 4px; }
-  .form-body { padding: 16px; }
+      body { padding: 8px; }
+      .header { padding: 18px 16px; }
+      .header h1 { font-size: 19px; }
+      .header .meta { flex-direction: column; gap: 4px; }
+      .form-body { padding: 16px; }
 
-  .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 12px; }
-  .bike-grid { grid-template-columns: 1fr; gap: 8px; }
-  .sign-grid { grid-template-columns: 1fr; gap: 16px; }
-  .actions { flex-direction: column; }
-  .btn { width: 100%; font-size: 13px; padding: 10px 16px; min-width: unset; }
-        /* Permettre aux éléments de passer en colonne sur tablette */
-  .bike-item {
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 8px 10px;
-  }
-  .bike-item .part-name {
-    min-width: 100%;
-    font-size: 12px;
-    margin-bottom: 2px;
-  }
-  .bike-item select,
-  .bike-item input {
-    min-width: 0;
-    flex: 1 1 45%;
-    font-size: 12px;
-    padding: 6px 8px;
-    height: 32px;
-  }
-  .bike-item input {
-    flex: 1 1 50%;
-  }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 12px; }
+      .bike-grid { grid-template-columns: 1fr; gap: 8px; }
+      .sign-grid { grid-template-columns: 1fr; gap: 16px; }
+      .actions { flex-direction: column; }
+      .btn { width: 100%; font-size: 13px; padding: 10px 16px; min-width: unset; }
 
-  .accessory-item {
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 8px 10px;
-  }
-  .accessory-item .checkbox-label {
-    min-width: 100%;
-    font-size: 12px;
-  }
-  .accessory-item select,
-  .accessory-item input {
-    min-width: 0;
-    flex: 1 1 45%;
-    font-size: 12px;
-    padding: 6px 8px;
-    height: 32px;
-  }
-  .accessory-item input {
-    flex: 1 1 50%;
-  }
+      .bike-item {
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 8px 10px;
+      }
+      .bike-item .part-name {
+        min-width: 100%;
+        font-size: 12px;
+        margin-bottom: 2px;
+      }
+      .bike-item select,
+      .bike-item input {
+        min-width: 0;
+        flex: 1 1 45%;
+        font-size: 12px;
+        padding: 6px 8px;
+        height: 32px;
+      }
+      .bike-item input {
+        flex: 1 1 50%;
+      }
 
-  .field input,
-  .field select,
-  .field textarea {
-    font-size: 12px;
-    padding: 8px 10px;
-  }
+      .accessory-item {
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 8px 10px;
+      }
+      .accessory-item .checkbox-label {
+        min-width: 100%;
+        font-size: 12px;
+      }
+      .accessory-item select,
+      .accessory-item input {
+        min-width: 0;
+        flex: 1 1 45%;
+        font-size: 12px;
+        padding: 6px 8px;
+        height: 32px;
+      }
+      .accessory-item input {
+        flex: 1 1 50%;
+      }
 
-  .photo-upload { padding: 18px 12px; }
-  .photo-upload .upload-text { font-size: 12px; }
-  .photo-upload .upload-hint { font-size: 10px; }
-  .photo-upload .upload-icon { width: 36px; height: 36px; font-size: 16px; }
+      .field input,
+      .field select,
+      .field textarea {
+        font-size: 12px;
+        padding: 8px 10px;
+      }
 
-  .sign-box { padding: 14px 12px; }
-  .sign-box .sign-header .name { font-size: 13px; }
-  .signature-canvas { height: 70px !important; }
+      .photo-upload { padding: 18px 12px; }
+      .photo-upload .upload-text { font-size: 12px; }
+      .photo-upload .upload-hint { font-size: 10px; }
+      .photo-upload .upload-icon { width: 36px; height: 36px; font-size: 16px; }
 
-  .section { margin-bottom: 20px; padding-bottom: 16px; }
-  .section-header { gap: 8px; margin-bottom: 14px; }
-  .section-title { font-size: 14px; }
-  .section-number { width: 26px; height: 26px; font-size: 11px; }
+      .sign-box { padding: 14px 12px; }
+      .sign-box .sign-header .name { font-size: 13px; }
+      .signature-canvas { height: 70px !important; }
 
-  .info-box { font-size: 12px; padding: 10px 12px; }
-}
+      .section { margin-bottom: 20px; padding-bottom: 16px; }
+      .section-header { gap: 8px; margin-bottom: 14px; }
+      .section-title { font-size: 14px; }
+      .section-number { width: 26px; height: 26px; font-size: 11px; }
 
-@media (max-width: 520px) {
-  .grid-3 { grid-template-columns: 1fr; }
-  
-  .bike-item {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .bike-item select,
-  .bike-item input {
-    width: 100%;
-    flex: unset;
-  }
+      .info-box { font-size: 12px; padding: 10px 12px; }
+    }
 
-  .accessory-item {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .accessory-item select,
-  .accessory-item input {
-    width: 100%;
-    flex: unset;
-  }
+    @media (max-width: 520px) {
+      .grid-3 { grid-template-columns: 1fr; }
+      
+      .bike-item {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .bike-item select,
+      .bike-item input {
+        width: 100%;
+        flex: unset;
+      }
 
-  .header h1 { font-size: 17px; }
-  .header { padding: 14px 12px; }
-  .form-body { padding: 12px; }
-}
+      .accessory-item {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .accessory-item select,
+      .accessory-item input {
+        width: 100%;
+        flex: unset;
+      }
 
+      .header h1 { font-size: 17px; }
+      .header { padding: 14px 12px; }
+      .form-body { padding: 12px; }
+    }
+  </style>
+</head>
 <body>
 
 <div class="document-wrapper">
