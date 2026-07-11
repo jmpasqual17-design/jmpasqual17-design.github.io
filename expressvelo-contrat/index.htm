@@ -896,7 +896,7 @@
     return true;
   }
 
-  function generateNativePDF(data) {
+ function generateNativePDF(data) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
     const pageW = doc.internal.pageSize.getWidth();
@@ -905,6 +905,7 @@
     const contentW = pageW - margin * 2;
     let y = margin;
 
+    // ---- TITRE ----
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(22);
     doc.setTextColor(26, 26, 46);
@@ -917,93 +918,546 @@
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.setTextColor(100, 100, 100);
-    doc.text('Contrat entre particuliers — ' + new Date().toLocaleDateString('fr-FR'), pageW / 2, y, { align: 'center' });
+    doc.text('Contrat entre particuliers — ' + new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }), pageW / 2, y, { align: 'center' });
     y += 10;
 
-    function drawSeparator() { doc.setDrawColor(220,220,220); doc.setLineWidth(0.3); doc.line(margin, y, pageW - margin, y); y += 6; }
-    function sectionTitle(num, title) {
-      if (y > pageH - 25) { doc.addPage(); y = margin; }
-      doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.setTextColor(26,26,46);
-      doc.text(num + '. ' + title, margin, y); y += 6;
-      doc.setDrawColor(26,26,46); doc.setLineWidth(0.5); doc.line(margin, y, margin + 50, y); y += 6;
+    // ---- FONCTIONS UTILITAIRES ----
+    function drawSeparator() {
+      doc.setDrawColor(220, 220, 220);
+      doc.setLineWidth(0.3);
+      doc.line(margin, y, pageW - margin, y);
+      y += 6;
     }
 
-    // Préambule
-    doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(80,80,80);
+    function sectionTitle(num, title) {
+      if (y > pageH - 25) { doc.addPage(); y = margin; }
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.setTextColor(26, 26, 46);
+      doc.text(num + '. ' + title, margin, y);
+      y += 6;
+      doc.setDrawColor(26, 26, 46);
+      doc.setLineWidth(0.5);
+      doc.line(margin, y, margin + 50, y);
+      y += 6;
+    }
+
+    function addTextBox(text, x, maxW, fontSize, isItalic) {
+      doc.setFont('helvetica', isItalic ? 'italic' : 'normal');
+      doc.setFontSize(fontSize || 9);
+      const lines = doc.splitTextToSize(text, maxW);
+      doc.text(lines, x, y);
+      y += lines.length * 4.5 + 3;
+      return lines.length;
+    }
+
+    function addBoldLabel(label, value, x) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.text(label, x, y);
+      doc.setFont('helvetica', 'normal');
+      doc.text(value || '-', x + 40, y);
+      y += 5;
+    }
+
+    // ---- PRÉAMBULE ----
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(9);
+    doc.setTextColor(80, 80, 80);
     const preambule = 'Le présent contrat a pour objet de définir les conditions dans lesquelles le loueur met temporairement à disposition du Locataire le vélo décrit ci-après. Les parties déclarent agir en qualité de particuliers, être juridiquement capables de contracter et accepter l\'ensemble des stipulations du présent contrat sans réserve.';
-    doc.text(doc.splitTextToSize(preambule, contentW), margin, y);
-    y += doc.splitTextToSize(preambule, contentW).length * 5 + 6;
+    const preambuleLines = doc.splitTextToSize(preambule, contentW);
+    doc.text(preambuleLines, margin, y);
+    y += preambuleLines.length * 5 + 6;
     drawSeparator();
 
-    // Sections 1 à 16 (génération PDF)
+    // ---- 1. BAILLEUR ----
     sectionTitle('1', 'BAILLEUR (PROPRIÉTAIRE)');
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(50,50,50);
-    doc.text('Nom : ' + (data.bailleur_nom || '-') + ' | Adresse : ' + (data.bailleur_adresse || '-'), margin, y); y += 5;
-    doc.text('Tél : ' + (data.bailleur_tel || '-') + ' | Email : ' + (data.bailleur_email || '-'), margin, y); y += 8;
+    addBoldLabel('Nom :', data.bailleur_nom, margin);
+    addBoldLabel('Adresse :', data.bailleur_adresse, margin);
+    addBoldLabel('Téléphone :', data.bailleur_tel, margin);
+    addBoldLabel('Email :', data.bailleur_email, margin);
+    y += 2;
     drawSeparator();
 
+    // ---- 2. LOCATAIRE ----
     sectionTitle('2', 'LOCATAIRE (UTILISATEUR)');
-    doc.text('Nom : ' + (data.locataire_nom || '-') + ' | Adresse : ' + (data.locataire_adresse || '-'), margin, y); y += 5;
-    doc.text('Tél : ' + (data.locataire_tel || '-') + ' | Email : ' + (data.locataire_email || '-'), margin, y); y += 5;
-    doc.text('Pièce d\'identité : ' + (data.locataire_id || '-'), margin, y); y += 8;
+    addBoldLabel('Nom :', data.locataire_nom, margin);
+    addBoldLabel('Adresse :', data.locataire_adresse, margin);
+    addBoldLabel('Téléphone :', data.locataire_tel, margin);
+    addBoldLabel('Email :', data.locataire_email, margin);
+    addBoldLabel('Pièce d\'identité :', data.locataire_id, margin);
+    y += 2;
     drawSeparator();
 
+    // ---- 3. OBJET DU CONTRAT ----
+    if (y > pageH - 50) { doc.addPage(); y = margin; }
     sectionTitle('3', 'OBJET DU CONTRAT');
-    doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(80,80,80);
-    const objet = 'Le présent contrat porte sur la mise à disposition temporaire, à titre onéreux, d\'un vélo appartenant au Bailleur.';
-    doc.text(doc.splitTextToSize(objet, contentW), margin, y);
-    y += doc.splitTextToSize(objet, contentW).length * 4.5 + 5;
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(26,26,46);
-    doc.text('Caractéristiques du vélo', margin, y); y += 7;
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(50,50,50);
-    doc.text('Modèle : ' + (data.velo_modele || '-') + ' | Type : ' + (data.velo_type || '-') + ' | N° série : ' + (data.velo_serie || '-'), margin, y); y += 5;
-    doc.text('Couleur : ' + (data.velo_couleur || '-') + ' | Km : ' + (data.velo_km || '-') + ' | Valeur : ' + (data.velo_val_actuelle || '-') + ' €', margin, y); y += 8;
+    
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(9);
+    doc.setTextColor(80, 80, 80);
+    const objetContrat = 'Le présent contrat porte sur la mise à disposition temporaire, à titre onéreux, d\'un vélo appartenant au Bailleur, identifié dans la fiche descriptive ci-dessous. Le Locataire reconnaît recevoir le vélo en bon état apparent de fonctionnement, sauf réserves expressément mentionnées dans l\'état des lieux contradictoire établi au départ.';
+    const objetLines = doc.splitTextToSize(objetContrat, contentW);
+    doc.text(objetLines, margin, y);
+    y += objetLines.length * 4.5 + 5;
+
+    // Caractéristiques du vélo
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(26, 26, 46);
+    doc.text('Caractéristiques du vélo', margin, y);
+    y += 7;
+
+    // Tableau des caractéristiques
+    doc.setFillColor(240, 240, 240);
+    doc.rect(margin, y, contentW, 6, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(26, 26, 46);
+    doc.text('Caractéristique', margin + 2, y + 4.5);
+    doc.text('Valeur', margin + 100, y + 4.5);
+    y += 7;
+
+    const veloCarac = [
+      ['Marque / modèle', data.velo_modele || '-'],
+      ['Type', data.velo_type === 'electrique' ? 'Électrique' : 'Mécanique'],
+      ['Numéro de série', data.velo_serie || '-'],
+      ['Couleur', data.velo_couleur || '-'],
+      ['Kilométrage estimé', data.velo_km ? data.velo_km + ' km' : '-'],
+      ['Date d\'achat', data.velo_date_achat || '-'],
+      ['Valeur à neuf', data.velo_val_neuf ? data.velo_val_neuf + ' €' : '-'],
+      ['Valeur actuelle estimée', data.velo_val_actuelle ? data.velo_val_actuelle + ' €' : '-']
+    ];
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(50, 50, 50);
+    veloCarac.forEach((row, index) => {
+      if (y > pageH - 20) { doc.addPage(); y = margin; }
+      if (index % 2 === 0) {
+        doc.setFillColor(248, 248, 248);
+        doc.rect(margin, y - 2, contentW, 5.5, 'F');
+      }
+      doc.setFont('helvetica', 'bold');
+      doc.text(row[0], margin + 2, y + 1);
+      doc.setFont('helvetica', 'normal');
+      doc.text(row[1], margin + 100, y + 1);
+      y += 5.5;
+    });
+    y += 4;
+
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(100, 100, 100);
+    const mentionAnnexe = 'La fiche descriptive du vélo et l\'état des lieux annexé font partie intégrante du présent contrat. Toute différence entre l\'état constaté au départ et celui constaté au retour pourra donner lieu à retenue sur le dépôt de garantie.';
+    const annexeLines = doc.splitTextToSize(mentionAnnexe, contentW);
+    doc.text(annexeLines, margin, y);
+    y += annexeLines.length * 4.5 + 4;
     drawSeparator();
 
-    // Sections 4-16 (génération PDF simplifiée)
+    // ---- 4. ACCESSOIRES ----
     sectionTitle('4', 'ACCESSOIRES FOURNIS');
-    const accessories = [{key:'helmet',label:'Casque'},{key:'lock',label:'Antivol'},{key:'lights',label:'Éclairage'},{key:'basket',label:'Panier'},{key:'repairkit',label:'Kit réparation'},{key:'other',label:'Autre'}];
+    const accessories = [
+      { key: 'helmet', label: 'Casque' },
+      { key: 'lock', label: 'Antivol' },
+      { key: 'lights', label: 'Éclairage' },
+      { key: 'basket', label: 'Panier' },
+      { key: 'repairkit', label: 'Kit réparation' },
+      { key: 'other', label: 'Autre' }
+    ];
     let hasAcc = false;
     accessories.forEach(acc => {
       if (data.extras && data.extras.includes(acc.key)) {
         hasAcc = true;
-        doc.text('• ' + acc.label + ' : ' + (data['state_' + acc.key] || 'Bon état'), margin + 5, y); y += 5;
+        if (y > pageH - 20) { doc.addPage(); y = margin; }
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.text('• ' + acc.label, margin + 5, y);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.text(': ' + (data['state_' + acc.key] || 'Bon état'), margin + 40, y);
+        y += 5;
       }
     });
-    if (!hasAcc) { doc.text('Aucun accessoire fourni', margin + 5, y); y += 5; }
-    y += 5; drawSeparator();
+    if (!hasAcc) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.text('Aucun accessoire fourni', margin + 5, y);
+      y += 5;
+    }
+    y += 3;
+    drawSeparator();
 
+    // ---- 5. DURÉE ----
     sectionTitle('5', 'DURÉE DE LOCATION');
-    doc.text('Du : ' + (data.date_debut || '-') + ' au ' + (data.date_fin || '-') + ' | Retard : ' + (data.retard_tarif || '-') + ' €/h', margin, y); y += 8;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(50, 50, 50);
+    doc.text('Date de début : ' + (data.date_debut || '-') + '    |    Date de fin : ' + (data.date_fin || '-'), margin, y);
+    y += 5;
+    doc.text('Pénalité de retard : ' + (data.retard_tarif || 'Non spécifié') + ' € par heure de retard', margin, y);
+    y += 6;
     drawSeparator();
 
-    sectionTitle('6', 'PRIX ET PAIEMENT');
-    doc.text('Tarif : ' + (data.tarif_location || '-') + ' | Total : ' + (data.montant_total || '-') + ' € | Caution : ' + (data.caution || '-') + ' € | Paiement : ' + (data.mode_paiement || '-'), margin, y); y += 8;
+    // ---- 6. PRIX ET PAIEMENT ----
+    if (y > pageH - 50) { doc.addPage(); y = margin; }
+    sectionTitle('6', 'PRIX, PAIEMENT ET DÉPÔT DE GARANTIE');
+
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(80, 80, 80);
+    const depotGarantie = 'Le dépôt de garantie ne constitue pas un paiement anticipé du prix de location. Il garantit notamment la restitution du vélo, des accessoires, ainsi que le paiement des éventuels dommages, frais, pénalités ou sommes restant dues par le Locataire.';
+    const depotLines = doc.splitTextToSize(depotGarantie, contentW);
+    doc.text(depotLines, margin, y);
+    y += depotLines.length * 4 + 4;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(50, 50, 50);
+    doc.text('Tarif : ' + (data.tarif_location || '-') + '    |    Montant total estimé : ' + (data.montant_total || '-') + ' €', margin, y);
+    y += 5;
+    doc.text('Dépôt de garantie / Caution : ' + (data.caution || '-') + ' €    |    Mode de paiement : ' + (data.mode_paiement || '-'), margin, y);
+    y += 6;
+
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(100, 100, 100);
+    const restitutionCaution = 'La caution est destinée à couvrir les dommages éventuels et la restitution du matériel. Elle est restituée au locataire à l\'issue de la location, déduction faite des éventuelles réparations nécessaires non couvertes par l\'usure normale.';
+    const restitutionLines = doc.splitTextToSize(restitutionCaution, contentW);
+    doc.text(restitutionLines, margin, y);
+    y += restitutionLines.length * 4 + 4;
     drawSeparator();
 
-    sectionTitle('7', 'ASSURANCE');
-    doc.text('Vol : ' + (data.assurance_vol || '-') + ' | Casse : ' + (data.assurance_casse || '-') + ' | Dommages : ' + (data.assurance_dom || '-') + ' | Batterie : ' + (data.assurance_batterie || '-') + ' | Franchise : ' + (data.franchise || '-') + ' €', margin, y); y += 10;
+    // ---- 7. ASSURANCE ----
+    if (y > pageH - 60) { doc.addPage(); y = margin; }
+    sectionTitle('7', 'ASSURANCE, FRANCHISE ET RESPONSABILITÉ');
+
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(80, 80, 80);
+    const assuranceIntro = 'Le Bailleur déclare, préalablement à la signature du présent contrat, si le vélo fait ou non l\'objet d\'une assurance couvrant le vol, la casse ou les dommages matériels. Le Locataire reconnaît avoir été informé des garanties éventuellement applicables, de leurs limites, exclusions et franchises.';
+    const assuranceIntroLines = doc.splitTextToSize(assuranceIntro, contentW);
+    doc.text(assuranceIntroLines, margin, y);
+    y += assuranceIntroLines.length * 4 + 4;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(50, 50, 50);
+    doc.text('Vol : ' + (data.assurance_vol === 'oui' ? 'Oui' : 'Non') + '    |    Casse accidentelle : ' + (data.assurance_casse === 'oui' ? 'Oui' : 'Non') + '    |    Dommages matériels : ' + (data.assurance_dom === 'oui' ? 'Oui' : 'Non'), margin, y);
+    y += 5;
+    doc.text('Batterie (VAE) : ' + (data.assurance_batterie === 'oui' ? 'Oui' : 'Non') + '    |    Franchise : ' + (data.franchise || '-') + ' €', margin, y);
+    y += 7;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(26, 26, 46);
+    doc.text('Exclusions fréquentes :', margin, y);
+    y += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(193, 18, 31);
+    const exclusions = [
+      '• Absence d\'utilisation de l\'antivol fourni.',
+      '• Stationnement dans un lieu non sécurisé.',
+      '• Usage non conforme (sauts, cascade, compétition).',
+      '• Immersion dans l\'eau (VAE).',
+      '• Perte d\'accessoires.'
+    ];
+    exclusions.forEach(exc => {
+      doc.text(exc, margin + 5, y);
+      y += 4.5;
+    });
+    y += 3;
+
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(30, 64, 175);
+    const rcText = 'Le propriétaire et le locataire sont invités à vérifier que le vélo bénéficie d\'une assurance responsabilité civile (incluse dans la plupart des contrats d\'assurance habitation).';
+    const rcLines = doc.splitTextToSize(rcText, contentW);
+    doc.text(rcLines, margin, y);
+    y += rcLines.length * 4 + 4;
     drawSeparator();
 
-    // Sections 8-15 (titres uniquement pour rester dans la limite)
+    // ---- 8. OBLIGATIONS DU LOCATAIRE ----
+    if (y > pageH - 50) { doc.addPage(); y = margin; }
     sectionTitle('8', 'OBLIGATIONS DU LOCATAIRE');
-    doc.text('Voir détails dans le contrat.', margin, y); y += 8; drawSeparator();
-    sectionTitle('9', 'OBLIGATIONS DU BAILLEUR');
-    doc.text('Voir détails dans le contrat.', margin, y); y += 8; drawSeparator();
-    sectionTitle('10', 'RESPONSABILITÉ');
-    doc.text('Voir détails dans le contrat.', margin, y); y += 8; drawSeparator();
-    sectionTitle('11', 'PÉNALITÉS');
-    doc.text('Retard : ' + (data.penalite_retard || '-') + ' €/h | Accessoire : ' + (data.penalite_accessoire || '-') + ' € | Nettoyage : ' + (data.penalite_nettoyage || '-') + ' €', margin, y); y += 8;
-    drawSeparator();
-    sectionTitle('12', 'RÉSILIATION');
-    doc.text('Voir détails dans le contrat.', margin, y); y += 8; drawSeparator();
-    sectionTitle('13', 'DONNÉES PERSONNELLES');
-    doc.text('Voir détails dans le contrat.', margin, y); y += 8; drawSeparator();
-    sectionTitle('14', 'DROIT APPLICABLE');
-    doc.text('Voir détails dans le contrat.', margin, y); y += 8; drawSeparator();
-    sectionTitle('15', 'DÉCLARATION ET ENGAGEMENTS');
-    doc.text('Voir détails dans le contrat.', margin, y); y += 8; drawSeparator();
+    
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(80, 80, 80);
+    const oblLocataire = 'Le Locataire s\'oblige, pendant toute la durée de la location, à utiliser le vélo en bon père de famille, conformément à sa destination normale, aux règles de sécurité applicables et aux prescriptions éventuelles communiquées par le Bailleur.';
+    const oblLocataireLines = doc.splitTextToSize(oblLocataire, contentW);
+    doc.text(oblLocataireLines, margin, y);
+    y += oblLocataireLines.length * 4 + 4;
 
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(50, 50, 50);
+    const obligationsL = [
+      '• Utiliser le vélo de manière prudente.',
+      '• Respecter le Code de la route.',
+      '• Maintenir le vélo en bon état.',
+      '• Utiliser systématiquement l\'antivol fourni.',
+      '• Ne pas transporter de passagers non prévus.',
+      '• Ne pas prêter ou sous-louer le vélo.',
+      '• Ne pas modifier le vélo.',
+      '• Restituer le vélo complet.'
+    ];
+    obligationsL.forEach(obl => { doc.text(obl, margin + 5, y); y += 4.5; });
+    y += 3;
+
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(80, 80, 80);
+    const volInfo = 'En cas de vol, perte, accident, dégradation ou tout autre incident affectant le vélo ou ses accessoires, le Locataire devra en informer le Bailleur sans délai et, en cas de vol, transmettre une copie du dépôt de plainte dans un délai maximal de vingt-quatre heures (24h).';
+    const volLines = doc.splitTextToSize(volInfo, contentW);
+    doc.text(volLines, margin, y);
+    y += volLines.length * 4 + 3;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(15, 52, 96);
+    doc.text('Vélos électriques (VAE) :', margin, y);
+    doc.setFont('helvetica', 'italic');
+    doc.text(' Le locataire s\'interdit de démonter la batterie, de la recharger avec un chargeur non fourni, ou de l\'exposer à des températures extrêmes.', margin + 38, y);
+    y += 5;
+    drawSeparator();
+
+    // ---- 9. OBLIGATIONS DU BAILLEUR ----
+    if (y > pageH - 40) { doc.addPage(); y = margin; }
+    sectionTitle('9', 'OBLIGATIONS DU BAILLEUR');
+    
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(80, 80, 80);
+    const oblBailleur = 'Le Bailleur s\'engage à remettre au Locataire un vélo conforme à la description figurant au présent contrat, propre, entretenu et en état normal de fonctionnement, sous réserve des réserves expressément indiquées dans l\'état des lieux de départ.';
+    const oblBailleurLines = doc.splitTextToSize(oblBailleur, contentW);
+    doc.text(oblBailleurLines, margin, y);
+    y += oblBailleurLines.length * 4 + 4;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(50, 50, 50);
+    const obligationsB = [
+      '• Fournir un vélo en bon état de fonctionnement.',
+      '• Fournir les accessoires nécessaires.',
+      '• Informer le Locataire de tout défaut connu.',
+      '• Remettre un vélo propre et entretenu.'
+    ];
+    obligationsB.forEach(obl => { doc.text(obl, margin + 5, y); y += 4.5; });
+    y += 3;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(15, 52, 96);
+    doc.text('Vélos électriques (VAE) :', margin, y);
+    doc.setFont('helvetica', 'italic');
+    doc.text(' En cas de panne de batterie pendant la location (hors faute du locataire), le loueur propose une solution de remplacement ou un remboursement proportionnel.', margin + 38, y);
+    y += 5;
+    drawSeparator();
+
+    // ---- 10. RESPONSABILITÉ ----
+    if (y > pageH - 50) { doc.addPage(); y = margin; }
+    sectionTitle('10', 'RESPONSABILITÉ');
+    
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(80, 80, 80);
+    const respIntro = 'Le Locataire demeure responsable du vélo, de ses équipements et accessoires pendant toute la durée de la location, depuis sa remise effective jusqu\'à sa restitution complète au Bailleur.';
+    const respIntroLines = doc.splitTextToSize(respIntro, contentW);
+    doc.text(respIntroLines, margin, y);
+    y += respIntroLines.length * 4 + 4;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(50, 50, 50);
+    doc.text('Le Locataire est responsable :', margin, y);
+    y += 5;
+    doc.setFont('helvetica', 'normal');
+    const respL = [
+      '• Des dommages causés au vélo.',
+      '• Des dommages causés à des tiers.',
+      '• Des amendes et infractions.',
+      '• De la batterie (VAE) en cas de mauvaise utilisation.'
+    ];
+    respL.forEach(r => { doc.text(r, margin + 5, y); y += 4.5; });
+    y += 3;
+
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(80, 80, 80);
+    const respBailleur = 'Sauf faute prouvée de sa part, le Bailleur ne saurait être tenu responsable des dommages corporels, matériels ou immatériels subis par le Locataire ou causés à des tiers du fait de l\'utilisation du vélo.';
+    const respBailleurLines = doc.splitTextToSize(respBailleur, contentW);
+    doc.text(respBailleurLines, margin, y);
+    y += respBailleurLines.length * 4 + 4;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(50, 50, 50);
+    doc.text('Le Bailleur n\'est pas responsable :', margin, y);
+    y += 5;
+    doc.setFont('helvetica', 'normal');
+    const respB = [
+      '• Des accidents corporels du Locataire.',
+      '• Des objets transportés.',
+      '• Des pertes d\'exploitation éventuelles.'
+    ];
+    respB.forEach(r => { doc.text(r, margin + 5, y); y += 4.5; });
+    y += 3;
+    drawSeparator();
+
+    // ---- 11. PÉNALITÉS ----
+    if (y > pageH - 50) { doc.addPage(); y = margin; }
+    sectionTitle('11', 'PÉNALITÉS');
+
+    doc.setFillColor(26, 26, 46);
+    doc.rect(margin, y, contentW, 6, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(255, 255, 255);
+    doc.text('Manquement constaté', margin + 2, y + 4.5);
+    doc.text('Conséquence financière', margin + 85, y + 4.5);
+    y += 7;
+
+    const penalties = [
+      ['Retard de restitution', (data.penalite_retard || '………') + ' € par heure de retard commencée.'],
+      ['Perte ou non-restitution d\'un accessoire', 'Coût de remplacement ou forfait de ' + (data.penalite_accessoire || '………') + ' € par accessoire.'],
+      ['Restitution anormalement sale', 'Frais de nettoyage de ' + (data.penalite_nettoyage || '………') + ' €.'],
+      ['Dommages non couverts ou exclus de l\'assurance', 'Coût réel de réparation ou de remplacement, sur justificatif.'],
+      ['Batterie endommagée ou usage non conforme d\'un VAE', 'Coût réel de réparation ou de remplacement, dans la limite de la valeur déclarée.']
+    ];
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(50, 50, 50);
+    penalties.forEach((p, i) => {
+      if (y > pageH - 20) { doc.addPage(); y = margin; }
+      if (i % 2 === 0) {
+        doc.setFillColor(248, 248, 248);
+        doc.rect(margin, y - 2.5, contentW, 5.5, 'F');
+      }
+      doc.setFont('helvetica', 'bold');
+      doc.text(p[0], margin + 2, y + 1);
+      doc.setFont('helvetica', 'normal');
+      doc.text(p[1], margin + 85, y + 1);
+      y += 5.5;
+    });
+    y += 3;
+
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(80, 80, 80);
+    const penaliteNote = 'Les pénalités et frais ci-dessus pourront être imputés sur le dépôt de garantie, sans préjudice de toute demande complémentaire si le montant des dommages excède le dépôt versé.';
+    const penaliteLines = doc.splitTextToSize(penaliteNote, contentW);
+    doc.text(penaliteLines, margin, y);
+    y += penaliteLines.length * 4 + 4;
+    drawSeparator();
+
+    // ---- 12. RÉSILIATION ----
+    sectionTitle('12', 'RÉSILIATION');
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(80, 80, 80);
+    const resiliation = 'Le présent contrat pourra être résilié de plein droit, sans formalité judiciaire préalable, en cas de manquement grave de l\'une des parties à ses obligations, notamment en cas d\'usage dangereux, non conforme ou frauduleux du vélo.';
+    const resiliationLines = doc.splitTextToSize(resiliation, contentW);
+    doc.text(resiliationLines, margin, y);
+    y += resiliationLines.length * 4 + 4;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(50, 50, 50);
+    ['• Par le Bailleur en cas d\'usage dangereux ou non conforme.', '• Par le Locataire à tout moment (sans remboursement sauf accord).', '• Immédiatement en cas de vol ou sinistre majeur.'].forEach(r => { doc.text(r, margin + 5, y); y += 4.5; });
+    y += 3;
+    drawSeparator();
+
+    // ---- 13. DONNÉES PERSONNELLES ----
+    sectionTitle('13', 'DONNÉES PERSONNELLES');
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(80, 80, 80);
+    const dp = 'Les données personnelles échangées dans le cadre du présent contrat sont collectées uniquement pour l\'identification des parties, la gestion de la location, la sécurité du matériel et, le cas échéant, la gestion d\'un litige ou d\'un sinistre.';
+    const dpLines = doc.splitTextToSize(dp, contentW);
+    doc.text(dpLines, margin, y);
+    y += dpLines.length * 4 + 3;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(50, 50, 50);
+    ['• À l\'identification des parties.', '• À la gestion de la location.', '• À la sécurité du matériel.'].forEach(r => { doc.text(r, margin + 5, y); y += 4.5; });
+    y += 3;
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(80, 80, 80);
+    const dp2 = 'Chaque partie s\'engage à conserver ces informations de manière confidentielle, à ne pas les communiquer à des tiers sauf nécessité liée à l\'exécution du contrat, à une obligation légale, à une déclaration d\'assurance ou à une procédure amiable ou judiciaire.';
+    const dp2Lines = doc.splitTextToSize(dp2, contentW);
+    doc.text(dp2Lines, margin, y);
+    y += dp2Lines.length * 4 + 4;
+    drawSeparator();
+
+    // ---- 14. DROIT APPLICABLE ----
+    if (y > pageH - 50) { doc.addPage(); y = margin; }
+    sectionTitle('14', 'DROIT APPLICABLE ET RÈGLEMENT DES LITIGES');
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(80, 80, 80);
+    const droit = 'Le présent contrat est soumis au droit français. En cas de différend relatif à sa validité, son interprétation ou son exécution, les parties s\'engagent à rechercher prioritairement une solution amiable. À défaut d\'accord amiable, le litige pourra être porté devant la juridiction compétente conformément aux règles de droit commun.';
+    const droitLines = doc.splitTextToSize(droit, contentW);
+    doc.text(droitLines, margin, y);
+    y += droitLines.length * 4 + 4;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(26, 26, 46);
+    doc.text('Clause d\'arbitrage :', margin, y);
+    y += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(50, 50, 50);
+    const arbitrage = [
+      '1. L\'arbitrage sera conduit par un arbitre unique désigné d\'un commun accord par les parties, ou, à défaut, par le président du Tribunal de commerce du lieu de domicile du loueur.',
+      '2. La procédure d\'arbitrage se déroulera en français, selon les règles de l\'arbitrage de la CCI pour les petits litiges, dans sa version simplifiée.',
+      '3. La sentence arbitrale sera motivée, rendue dans un délai de deux mois à compter de la saisine de l\'arbitre, et sera définitive et exécutoire comme une décision de justice.',
+      '4. Chaque partie supporte ses propres frais d\'avocat et la moitié des frais d\'arbitrage, sauf décision contraire de l\'arbitre.',
+      '5. Les parties renoncent à faire appel de la sentence arbitrale.'
+    ];
+    arbitrage.forEach(a => {
+      const aLines = doc.splitTextToSize(a, contentW - 5);
+      doc.text(aLines, margin + 5, y);
+      y += aLines.length * 4 + 2;
+    });
+    y += 3;
+    drawSeparator();
+
+    // ---- 15. DÉCLARATION ET ENGAGEMENTS ----
+    if (y > pageH - 40) { doc.addPage(); y = margin; }
+    sectionTitle('15', 'DÉCLARATION ET ENGAGEMENTS DES PARTIES');
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(26, 26, 46);
+    doc.text('Le Locataire (utilisateur) déclare :', margin, y);
+    y += 5;
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(80, 80, 80);
+    const declL1 = '« Je certifie avoir pris connaissance et accepter les conditions générales de location figurant sur le présent contrat. »';
+    const declL1Lines = doc.splitTextToSize(declL1, contentW);
+    doc.text(declL1Lines, margin + 5, y);
+    y += declL1Lines.length * 4 + 2;
+    const declL2 = '« Je reconnais avoir récupéré le vélo en bon état de fonctionnement, tel que décrit ci-dessus, et m\'engage à le restituer dans le même état d\'usure, déduction faite de l\'usure normale. »';
+    const declL2Lines = doc.splitTextToSize(declL2, contentW);
+    doc.text(declL2Lines, margin + 5, y);
+    y += declL2Lines.length * 4 + 5;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(26, 26, 46);
+    doc.text('Le Bailleur (propriétaire) déclare :', margin, y);
+    y += 5;
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(80, 80, 80);
+    const declB = '« J\'accepte les conditions générales de location figurant sur le présent contrat, certifie proposer à la location un vélo en bon état de fonctionnement, tel que décrit ci-dessus, et accepte que celui-ci me soit restitué dans le même état d\'usure, déduction faite de l\'usure normale. »';
+    const declBLines = doc.splitTextToSize(declB, contentW);
+    doc.text(declBLines, margin + 5, y);
+    y += declBLines.length * 4 + 4;
+    drawSeparator();
     // Section 16 - Signatures
     if (y > pageH - 50) { doc.addPage(); y = margin; }
     sectionTitle('16', 'SIGNATURES ÉLECTRONIQUES');
