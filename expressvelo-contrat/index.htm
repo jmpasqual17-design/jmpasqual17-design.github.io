@@ -631,9 +631,12 @@
         </div>
       </div>
 
-      <!-- SECTION 5 : DURÉE (modifiée avec contrainte horaire) -->
+      <!-- SECTION 5 : DURÉE (avec contrainte horaire native) -->
       <div class="section">
-        <div class="section-header"><span class="section-number">5</span><span class="section-title">Durée de location</span></div>
+        <div class="section-header">
+          <span class="section-number">5</span>
+          <span class="section-title">Durée de location</span>
+        </div>
         <div class="grid-2">
           <div class="field">
             <label>Date de début <span class="required">*</span></label>
@@ -641,7 +644,8 @@
           </div>
           <div class="field">
             <label>Heure de début <span class="required">*</span></label>
-            <select name="date_debut_heure" required></select>
+            <input type="time" name="date_debut_heure" 
+                   min="08:00" max="21:00" step="1800" required>
             <span class="hint">De 08:00 à 21:00, toutes les 30 min</span>
           </div>
           <div class="field">
@@ -650,10 +654,14 @@
           </div>
           <div class="field">
             <label>Heure de fin <span class="required">*</span></label>
-            <select name="date_fin_heure" required></select>
+            <input type="time" name="date_fin_heure" 
+                   min="08:00" max="21:00" step="1800" required>
             <span class="hint">De 08:00 à 21:00, toutes les 30 min</span>
           </div>
-          <div class="field full"><label>Retard de restitution (€/h)</label><input type="number" name="retard_tarif" min="0" step="0.01" placeholder="0.00"></div>
+          <div class="field full">
+            <label>Retard de restitution (€/h)</label>
+            <input type="number" name="retard_tarif" min="0" step="0.01" placeholder="0.00">
+          </div>
         </div>
       </div>
 
@@ -880,41 +888,15 @@
     sigPadBailleur.fromData(bD); sigPadLocataire.fromData(lD);
   });
 
-  // Génération de la liste des créneaux horaires 08:00-20:30 toutes les 30 minutes
-  function populateTimeSlots() {
-    const slots = [];
-    for (let h = 8; h <= 20; h++) {
-      for (let m of [0, 30]) {
-        const hour = h.toString().padStart(2, '0');
-        const min = m.toString().padStart(2, '0');
-        slots.push(`${hour}:${min}`);
-      }
-    }
-    // Ajouter 21:00 si nécessaire, mais 20:30 + 30min = 21:00, inclure manuellement
-    slots.push('21:00');
-    return slots;
-  }
-
-  const debutHeureSelect = document.querySelector('[name="date_debut_heure"]');
-  const finHeureSelect = document.querySelector('[name="date_fin_heure"]');
-  const timeSlots = populateTimeSlots();
-  timeSlots.forEach(slot => {
-    const opt = document.createElement('option');
-    opt.value = slot;
-    opt.textContent = slot;
-    debutHeureSelect.appendChild(opt.cloneNode(true));
-    finHeureSelect.appendChild(opt);
-  });
-
-  // Assurer que la date de fin est postérieure à la date de début
+  // Validation des dates avec les nouveaux champs time
   function validateDates() {
-    const dateDebutDate = document.querySelector('[name="date_debut_date"]').value;
-    const dateDebutHeure = document.querySelector('[name="date_debut_heure"]').value;
-    const dateFinDate = document.querySelector('[name="date_fin_date"]').value;
-    const dateFinHeure = document.querySelector('[name="date_fin_heure"]').value;
-    if (!dateDebutDate || !dateDebutHeure || !dateFinDate || !dateFinHeure) return true;
-    const debut = new Date(`${dateDebutDate}T${dateDebutHeure}`);
-    const fin = new Date(`${dateFinDate}T${dateFinHeure}`);
+    const dd = document.querySelector('[name="date_debut_date"]').value;
+    const dh = document.querySelector('[name="date_debut_heure"]').value;
+    const fd = document.querySelector('[name="date_fin_date"]').value;
+    const fh = document.querySelector('[name="date_fin_heure"]').value;
+    if (!dd || !dh || !fd || !fh) return true; // pas encore saisi
+    const debut = new Date(`${dd}T${dh}`);
+    const fin = new Date(`${fd}T${fh}`);
     return fin > debut;
   }
 
@@ -1118,7 +1100,6 @@
 
     // 11. Pénalités
     sectionTitle('11', 'PÉNALITÉS');
-    // Tableau simplifié
     const penalties = [
       ['Retard de restitution', data.penalite_retard ? `${data.penalite_retard} €/h` : 'Non défini'],
       ['Perte accessoire', data.penalite_accessoire ? `${data.penalite_accessoire} €/accessoire` : 'Non défini'],
@@ -1174,7 +1155,6 @@
     sectionTitle('16', 'SIGNATURES ÉLECTRONIQUES');
     normalText(`Lieu : ${data.lieu || '-'}  |  Date : ${data.date_signature || '-'}`);
     y += 5;
-    // Bailler
     checkPageBreak(25);
     doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(26,26,46);
     doc.text('Bailleur (propriétaire) :', margin, y); y += 6;
@@ -1184,7 +1164,6 @@
       try { doc.addImage(data.signatureBailleur, 'PNG', margin, y, 50, 16); y += 18; } catch(e) { normalText('(Signature présente)', 9, [100,100,100]); y += 5; }
     } else { normalText('Non signé', 9, [200,100,100]); y += 5; }
     y += 6;
-    // Locataire
     checkPageBreak(25);
     doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(26,26,46);
     doc.text('Locataire (utilisateur) :', margin, y); y += 6;
