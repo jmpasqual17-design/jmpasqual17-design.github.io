@@ -215,34 +215,64 @@
       line-height: 1.6;
     }
 
-    .bike-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .bike-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      background: var(--gray-50);
-      border-radius: var(--radius);
-      border: 1px solid var(--gray-200);
+    /* Tableau d'inspection */
+    .inspection-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
     }
-    .bike-item .part-name {
-      font-size: 13px;
+    .inspection-table th {
+      background: var(--warning);
+      color: white;
+      padding: 8px 10px;
+      text-align: left;
       font-weight: 600;
-      color: var(--gray-700);
-      min-width: 85px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    .bike-item select, .bike-item input {
-      padding: 7px 10px;
+    .inspection-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--gray-200);
+      vertical-align: middle;
+    }
+    .inspection-table tr:nth-child(even) td {
+      background: #fff8f0;
+    }
+    .inspection-table .depart-state {
+      font-size: 11px;
+      color: #e67e00;
+      font-weight: 600;
+      background: #fff3e0;
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-align: center;
+      display: inline-block;
+      min-width: 60px;
+    }
+    .inspection-table .depart-note {
+      font-size: 10px;
+      color: #999;
+      font-style: italic;
+    }
+    .inspection-table select {
+      width: 100%;
+      padding: 6px 8px;
       border: 1px solid var(--gray-300);
-      border-radius: 6px;
-      font-size: 13px;
-      background: white;
-      flex: 1;
-      min-width: 85px;
-      height: 36px;
+      border-radius: 4px;
+      font-size: 12px;
       font-family: inherit;
+      height: 32px;
     }
-    .bike-item input { flex: 1.5; min-width: 100px; }
+    .inspection-table input {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid var(--gray-300);
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: inherit;
+      height: 32px;
+    }
 
     .accessory-item {
       display: flex;
@@ -277,6 +307,16 @@
       font-family: inherit;
     }
     .accessory-item input { flex: 1.5; min-width: 100px; }
+    .accessory-item .depart-state {
+      font-size: 11px;
+      color: #e67e00;
+      font-weight: 600;
+      background: #fff3e0;
+      padding: 4px 8px;
+      border-radius: 4px;
+      min-width: 60px;
+      text-align: center;
+    }
 
     .photo-upload {
       border: 2px dashed var(--gray-300);
@@ -430,10 +470,11 @@
       .header h1 { font-size: 22px; }
       .form-body { padding: 24px; }
       .grid-2, .grid-3 { grid-template-columns: 1fr; }
-      .bike-grid { grid-template-columns: 1fr; }
       .sign-grid { grid-template-columns: 1fr; }
       .actions { flex-direction: column; }
       .btn { width: 100%; }
+      .inspection-table { font-size: 11px; }
+      .inspection-table th, .inspection-table td { padding: 6px; }
     }
   </style>
 </head>
@@ -459,7 +500,7 @@
         <div class="section-header">
           <span class="section-number">1</span>
           <span class="section-title">Identification des parties</span>
-          <span class="section-subtitle">Informations obligatoires</span>
+          <span class="section-subtitle">Importé de l'état des lieux de départ</span>
         </div>
         <div class="grid-2">
           <div class="field">
@@ -484,20 +525,20 @@
         <div class="grid-3">
           <div class="field">
             <label>Date de début</label>
-            <input type="date" id="startDate" name="startDate">
+            <input type="date" id="startDate" name="startDate" readonly style="background:#f5f5f5;">
           </div>
           <div class="field">
             <label>Date de retour <span class="required">*</span></label>
             <input type="date" id="endDate" name="endDate" required>
           </div>
           <div class="field">
-            <label>Modèle du vélo <span class="required">*</span></label>
-            <input type="text" id="bikeModel" name="bikeModel" placeholder="Marque / modèle" required>
+            <label>Modèle du vélo</label>
+            <input type="text" id="bikeModel" name="bikeModel" placeholder="Marque / modèle" readonly style="background:#f5f5f5;">
           </div>
         </div>
         <div class="field full" style="margin-top:12px;">
           <label>Numéro de série</label>
-          <input type="text" id="serialNumber" name="serialNumber" placeholder="Numéro d'identification du vélo">
+          <input type="text" id="serialNumber" name="serialNumber" placeholder="Numéro d'identification du vélo" readonly style="background:#f5f5f5;">
         </div>
       </div>
 
@@ -508,58 +549,94 @@
           <span class="section-title">Inspection du vélo au retour</span>
         </div>
         <div class="info-box">
-          Comparer l'état du vélo à sa restitution avec l'état des lieux de départ. Signaler toute différence ou dommage constaté.
+          Comparer l'état du vélo à sa restitution avec l'état des lieux de départ. L'état de départ est rappelé en orange. Signaler toute différence ou dommage constaté.
         </div>
-        <div class="bike-grid">
-          <div class="bike-item"><span class="part-name">Cadre</span>
-            <select name="state_frame"><option value="">État</option><option value="Bon">Bon</option><option value="Rayé">Rayé</option><option value="Choc">Choc</option><option value="Rouille">Rouille</option><option value="Fissure">Fissure</option><option value="Cassé">Cassé</option></select>
-            <input type="text" name="note_frame" placeholder="Différence constatée">
-          </div>
-          <div class="bike-item"><span class="part-name">Guidon</span>
-            <select name="state_handlebar"><option value="">État</option><option value="Bon">Bon</option><option value="Rayé">Rayé</option><option value="Choc">Choc</option><option value="Rouille">Rouille</option><option value="Torsadé">Torsadé</option></select>
-            <input type="text" name="note_handlebar" placeholder="Différence constatée">
-          </div>
-          <div class="bike-item"><span class="part-name">Selle</span>
-            <select name="state_seat"><option value="">État</option><option value="Bon">Bon</option><option value="Rayé">Rayé</option><option value="Déchiré">Déchiré</option><option value="Usé">Usé</option><option value="Cassé">Cassé</option></select>
-            <input type="text" name="note_seat" placeholder="Différence constatée">
-          </div>
-          <div class="bike-item"><span class="part-name">Fourche</span>
-            <select name="state_fork"><option value="">État</option><option value="Bon">Bon</option><option value="Rayé">Rayé</option><option value="Choc">Choc</option><option value="Rouille">Rouille</option><option value="Fissure">Fissure</option></select>
-            <input type="text" name="note_fork" placeholder="Différence constatée">
-          </div>
-          <div class="bike-item"><span class="part-name">Roue avant</span>
-            <select name="state_wheel_front"><option value="">État</option><option value="Bon">Bon</option><option value="Voilé">Voilé</option><option value="Choc">Choc</option><option value="Cassé">Cassé</option></select>
-            <input type="text" name="note_wheel_front" placeholder="Différence constatée">
-          </div>
-          <div class="bike-item"><span class="part-name">Roue arrière</span>
-            <select name="state_wheel_rear"><option value="">État</option><option value="Bon">Bon</option><option value="Voilé">Voilé</option><option value="Choc">Choc</option><option value="Cassé">Cassé</option></select>
-            <input type="text" name="note_wheel_rear" placeholder="Différence constatée">
-          </div>
-          <div class="bike-item"><span class="part-name">Pneu avant</span>
-            <select name="state_tire_front"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Crevé">Crevé</option><option value="Fissuré">Fissuré</option></select>
-            <input type="text" name="note_tire_front" placeholder="Différence constatée">
-          </div>
-          <div class="bike-item"><span class="part-name">Pneu arrière</span>
-            <select name="state_tire_rear"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Crevé">Crevé</option><option value="Fissuré">Fissuré</option></select>
-            <input type="text" name="note_tire_rear" placeholder="Différence constatée">
-          </div>
-          <div class="bike-item"><span class="part-name">Freins</span>
-            <select name="state_brakes"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="À régler">À régler</option><option value="Défaillant">Défaillant</option></select>
-            <input type="text" name="note_brakes" placeholder="Différence constatée">
-          </div>
-          <div class="bike-item"><span class="part-name">Transmission</span>
-            <select name="state_transmission"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Bruyant">Bruyant</option><option value="À régler">À régler</option></select>
-            <input type="text" name="note_transmission" placeholder="Différence constatée">
-          </div>
-          <div class="bike-item"><span class="part-name">Chaîne</span>
-            <select name="state_chain"><option value="">État</option><option value="Bon">Bon</option><option value="Rouillée">Rouillée</option><option value="Détendue">Détendue</option><option value="Usée">Usée</option></select>
-            <input type="text" name="note_chain" placeholder="Différence constatée">
-          </div>
-          <div class="bike-item"><span class="part-name">Pédales</span>
-            <select name="state_pedals"><option value="">État</option><option value="Bon">Bon</option><option value="Usées">Usées</option><option value="Cassées">Cassées</option></select>
-            <input type="text" name="note_pedals" placeholder="Différence constatée">
-          </div>
-        </div>
+        
+        <table class="inspection-table">
+          <thead>
+            <tr>
+              <th style="width:15%;">Pièce</th>
+              <th style="width:20%;">État au départ</th>
+              <th style="width:25%;">État au retour</th>
+              <th style="width:40%;">Différence constatée</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Cadre</strong></td>
+              <td><span class="depart-state" id="depart_frame">-</span></td>
+              <td><select name="state_frame"><option value="">Sélectionner</option><option value="Bon">Bon</option><option value="Rayé">Rayé</option><option value="Choc">Choc</option><option value="Rouille">Rouille</option><option value="Fissure">Fissure</option><option value="Cassé">Cassé</option></select></td>
+              <td><input type="text" name="note_frame" placeholder="Différence constatée"></td>
+            </tr>
+            <tr>
+              <td><strong>Guidon</strong></td>
+              <td><span class="depart-state" id="depart_handlebar">-</span></td>
+              <td><select name="state_handlebar"><option value="">Sélectionner</option><option value="Bon">Bon</option><option value="Rayé">Rayé</option><option value="Choc">Choc</option><option value="Rouille">Rouille</option><option value="Torsadé">Torsadé</option></select></td>
+              <td><input type="text" name="note_handlebar" placeholder="Différence constatée"></td>
+            </tr>
+            <tr>
+              <td><strong>Selle</strong></td>
+              <td><span class="depart-state" id="depart_seat">-</span></td>
+              <td><select name="state_seat"><option value="">Sélectionner</option><option value="Bon">Bon</option><option value="Rayé">Rayé</option><option value="Déchiré">Déchiré</option><option value="Usé">Usé</option><option value="Cassé">Cassé</option></select></td>
+              <td><input type="text" name="note_seat" placeholder="Différence constatée"></td>
+            </tr>
+            <tr>
+              <td><strong>Fourche</strong></td>
+              <td><span class="depart-state" id="depart_fork">-</span></td>
+              <td><select name="state_fork"><option value="">Sélectionner</option><option value="Bon">Bon</option><option value="Rayé">Rayé</option><option value="Choc">Choc</option><option value="Rouille">Rouille</option><option value="Fissure">Fissure</option></select></td>
+              <td><input type="text" name="note_fork" placeholder="Différence constatée"></td>
+            </tr>
+            <tr>
+              <td><strong>Roue avant</strong></td>
+              <td><span class="depart-state" id="depart_wheel_front">-</span></td>
+              <td><select name="state_wheel_front"><option value="">Sélectionner</option><option value="Bon">Bon</option><option value="Voilé">Voilé</option><option value="Choc">Choc</option><option value="Cassé">Cassé</option></select></td>
+              <td><input type="text" name="note_wheel_front" placeholder="Différence constatée"></td>
+            </tr>
+            <tr>
+              <td><strong>Roue arrière</strong></td>
+              <td><span class="depart-state" id="depart_wheel_rear">-</span></td>
+              <td><select name="state_wheel_rear"><option value="">Sélectionner</option><option value="Bon">Bon</option><option value="Voilé">Voilé</option><option value="Choc">Choc</option><option value="Cassé">Cassé</option></select></td>
+              <td><input type="text" name="note_wheel_rear" placeholder="Différence constatée"></td>
+            </tr>
+            <tr>
+              <td><strong>Pneu avant</strong></td>
+              <td><span class="depart-state" id="depart_tire_front">-</span></td>
+              <td><select name="state_tire_front"><option value="">Sélectionner</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Crevé">Crevé</option><option value="Fissuré">Fissuré</option></select></td>
+              <td><input type="text" name="note_tire_front" placeholder="Différence constatée"></td>
+            </tr>
+            <tr>
+              <td><strong>Pneu arrière</strong></td>
+              <td><span class="depart-state" id="depart_tire_rear">-</span></td>
+              <td><select name="state_tire_rear"><option value="">Sélectionner</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Crevé">Crevé</option><option value="Fissuré">Fissuré</option></select></td>
+              <td><input type="text" name="note_tire_rear" placeholder="Différence constatée"></td>
+            </tr>
+            <tr>
+              <td><strong>Freins</strong></td>
+              <td><span class="depart-state" id="depart_brakes">-</span></td>
+              <td><select name="state_brakes"><option value="">Sélectionner</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="À régler">À régler</option><option value="Défaillant">Défaillant</option></select></td>
+              <td><input type="text" name="note_brakes" placeholder="Différence constatée"></td>
+            </tr>
+            <tr>
+              <td><strong>Transmission</strong></td>
+              <td><span class="depart-state" id="depart_transmission">-</span></td>
+              <td><select name="state_transmission"><option value="">Sélectionner</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Bruyant">Bruyant</option><option value="À régler">À régler</option></select></td>
+              <td><input type="text" name="note_transmission" placeholder="Différence constatée"></td>
+            </tr>
+            <tr>
+              <td><strong>Chaîne</strong></td>
+              <td><span class="depart-state" id="depart_chain">-</span></td>
+              <td><select name="state_chain"><option value="">Sélectionner</option><option value="Bon">Bon</option><option value="Rouillée">Rouillée</option><option value="Détendue">Détendue</option><option value="Usée">Usée</option></select></td>
+              <td><input type="text" name="note_chain" placeholder="Différence constatée"></td>
+            </tr>
+            <tr>
+              <td><strong>Pédales</strong></td>
+              <td><span class="depart-state" id="depart_pedals">-</span></td>
+              <td><select name="state_pedals"><option value="">Sélectionner</option><option value="Bon">Bon</option><option value="Usées">Usées</option><option value="Cassées">Cassées</option></select></td>
+              <td><input type="text" name="note_pedals" placeholder="Différence constatée"></td>
+            </tr>
+          </tbody>
+        </table>
+
         <div class="field full" style="margin-top:14px;">
           <label>Différences constatées par rapport à l'état des lieux de départ</label>
           <textarea id="generalNotes" name="generalNotes" placeholder="Décrire les dommages, anomalies, différences constatées..."></textarea>
@@ -575,32 +652,38 @@
         <div class="bike-grid">
           <div class="accessory-item">
             <label class="checkbox-label"><input type="checkbox" name="extras" value="helmet">Casque</label>
-            <select name="state_helmet"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Endommagé">Endommagé</option><option value="Manquant">Manquant</option></select>
+            <span class="depart-state" id="depart_acc_helmet" style="display:none;">-</span>
+            <select name="state_helmet"><option value="">État retour</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Endommagé">Endommagé</option><option value="Manquant">Manquant</option></select>
             <input type="text" name="note_helmet" placeholder="Note">
           </div>
           <div class="accessory-item">
             <label class="checkbox-label"><input type="checkbox" name="extras" value="lock">Antivol</label>
-            <select name="state_lock"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Défaillant">Défaillant</option><option value="Manquant">Manquant</option></select>
+            <span class="depart-state" id="depart_acc_lock" style="display:none;">-</span>
+            <select name="state_lock"><option value="">État retour</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Défaillant">Défaillant</option><option value="Manquant">Manquant</option></select>
             <input type="text" name="note_lock" placeholder="Note">
           </div>
           <div class="accessory-item">
             <label class="checkbox-label"><input type="checkbox" name="extras" value="lights">Éclairage</label>
-            <select name="state_lights"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Défaillant">Défaillant</option><option value="Manquant">Manquant</option></select>
+            <span class="depart-state" id="depart_acc_lights" style="display:none;">-</span>
+            <select name="state_lights"><option value="">État retour</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Défaillant">Défaillant</option><option value="Manquant">Manquant</option></select>
             <input type="text" name="note_lights" placeholder="Note">
           </div>
           <div class="accessory-item">
             <label class="checkbox-label"><input type="checkbox" name="extras" value="basket">Panier</label>
-            <select name="state_basket"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Cassé">Cassé</option><option value="Manquant">Manquant</option></select>
+            <span class="depart-state" id="depart_acc_basket" style="display:none;">-</span>
+            <select name="state_basket"><option value="">État retour</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Cassé">Cassé</option><option value="Manquant">Manquant</option></select>
             <input type="text" name="note_basket" placeholder="Note">
           </div>
           <div class="accessory-item">
             <label class="checkbox-label"><input type="checkbox" name="extras" value="repairkit">Kit réparation</label>
-            <select name="state_repairkit"><option value="">État</option><option value="Bon">Bon</option><option value="Incomplet">Incomplet</option><option value="Manquant">Manquant</option></select>
+            <span class="depart-state" id="depart_acc_repairkit" style="display:none;">-</span>
+            <select name="state_repairkit"><option value="">État retour</option><option value="Bon">Bon</option><option value="Incomplet">Incomplet</option><option value="Manquant">Manquant</option></select>
             <input type="text" name="note_repairkit" placeholder="Note">
           </div>
           <div class="accessory-item">
             <label class="checkbox-label"><input type="checkbox" name="extras" value="other">Autre</label>
-            <select name="state_other"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option></select>
+            <span class="depart-state" id="depart_acc_other" style="display:none;">-</span>
+            <select name="state_other"><option value="">État retour</option><option value="Bon">Bon</option><option value="Usé">Usé</option></select>
             <input type="text" name="note_other" placeholder="Détail">
           </div>
         </div>
@@ -720,12 +803,10 @@
   // ==========================================================
   (function() {
     const saved = localStorage.getItem('expressVeloEtatDepart');
-    console.log('🔍 Données lues du localStorage:', saved ? 'OK' : 'NULL');
     
     if (saved) {
       try {
         const data = JSON.parse(saved);
-        console.log('📦 Données parsées:', data);
 
         // Remplir les champs d'identification
         if (data.ownerName) document.getElementById('ownerName').value = data.ownerName;
@@ -736,16 +817,22 @@
         if (data.serialNumber) document.getElementById('serialNumber').value = data.serialNumber;
         if (data.startDate) document.getElementById('startDate').value = data.startDate;
 
-        // Préremplir les notes avec l'état de départ
+        // Remplir les états de départ dans le tableau
         const bikeParts = ['frame','handlebar','seat','fork','wheel_front','wheel_rear',
                            'tire_front','tire_rear','brakes','transmission','chain','pedals'];
         bikeParts.forEach(part => {
+          const departEl = document.getElementById('depart_' + part);
+          if (departEl && data['state_' + part]) {
+            departEl.textContent = data['state_' + part];
+            departEl.style.background = '#fff3e0';
+            departEl.style.color = '#e67e00';
+          }
+          // Préremplir les notes avec l'état de départ
           const noteEl = document.querySelector(`[name="note_${part}"]`);
-          if (noteEl) {
-            let placeholder = '';
-            if (data['state_'+part]) placeholder += `Départ: ${data['state_'+part]}`;
-            if (data['note_'+part]) placeholder += ` - ${data['note_'+part]}`;
-            noteEl.placeholder = placeholder || 'Différence constatée';
+          if (noteEl && data['state_' + part]) {
+            let placeholder = `Départ: ${data['state_' + part]}`;
+            if (data['note_' + part]) placeholder += ` - ${data['note_' + part]}`;
+            noteEl.placeholder = placeholder;
           }
         });
 
@@ -754,13 +841,14 @@
           data.extras.forEach(extra => {
             const cb = document.querySelector(`input[name="extras"][value="${extra}"]`);
             if (cb) cb.checked = true;
-            const stateEl = document.querySelector(`[name="state_${extra}"]`);
-            if (stateEl && data['state_'+extra]) {
-              stateEl.value = data['state_'+extra];
+            const departAccEl = document.getElementById('depart_acc_' + extra);
+            if (departAccEl && data['state_' + extra]) {
+              departAccEl.style.display = 'inline-block';
+              departAccEl.textContent = data['state_' + extra];
             }
             const noteEl = document.querySelector(`[name="note_${extra}"]`);
-            if (noteEl && data['state_'+extra]) {
-              noteEl.placeholder = `Départ: ${data['state_'+extra]}`;
+            if (noteEl && data['state_' + extra]) {
+              noteEl.placeholder = `Départ: ${data['state_' + extra]}`;
             }
           });
         }
@@ -768,7 +856,7 @@
         localStorage.removeItem('expressVeloEtatDepart');
         showToast('📋 Données de l\'état des lieux de départ importées', 'success');
       } catch(e) {
-        console.error('❌ Erreur parsing:', e);
+        console.error('Erreur parsing:', e);
       }
     } else {
       const params = new URLSearchParams(window.location.search);
@@ -798,9 +886,7 @@
     setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 4000);
   }
 
-  // ==========================================================
-  // PHOTOS
-  // ==========================================================
+  // Photos
   const photosInput = document.getElementById('photosInput');
   const photosPreview = document.getElementById('photosPreview');
   let photosDataUrls = [];
@@ -869,9 +955,7 @@
     renderPhotos();
   });
 
-  // ==========================================================
-  // SIGNATURES
-  // ==========================================================
+  // Signatures
   const canvasOwner = document.getElementById('signature-owner');
   const canvasRenter = document.getElementById('signature-renter');
   const ownerStatus = document.getElementById('ownerStatus');
@@ -1188,3 +1272,5 @@
 
   updateSignatureStatus();
 </script>
+</body>
+</html>
