@@ -167,8 +167,60 @@
         </div>
       </div>
 
-      <!-- SECTIONS 3 à 6 : Identiques à votre code existant -->
-      <!-- ... (tout le HTML des sections 3 à 6 reste inchangé) ... -->
+      <!-- SECTION 3 : CONTRÔLE DU VÉLO -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-number">3</span>
+          <span class="section-title">Inspection du vélo</span>
+        </div>
+        <div class="bike-grid">
+          <div class="bike-item"><span class="part-name">Cadre</span><select name="state_frame"><option value="">État</option><option value="Bon">Bon</option><option value="Rayé">Rayé</option><option value="Choc">Choc</option><option value="Rouille">Rouille</option><option value="Fissure">Fissure</option><option value="Cassé">Cassé</option></select><input type="text" name="note_frame" placeholder="Note"></div>
+          <div class="bike-item"><span class="part-name">Guidon</span><select name="state_handlebar"><option value="">État</option><option value="Bon">Bon</option><option value="Rayé">Rayé</option><option value="Choc">Choc</option><option value="Rouille">Rouille</option><option value="Torsadé">Torsadé</option></select><input type="text" name="note_handlebar" placeholder="Note"></div>
+          <div class="bike-item"><span class="part-name">Selle</span><select name="state_seat"><option value="">État</option><option value="Bon">Bon</option><option value="Rayé">Rayé</option><option value="Déchiré">Déchiré</option><option value="Usé">Usé</option><option value="Cassé">Cassé</option></select><input type="text" name="note_seat" placeholder="Note"></div>
+          <div class="bike-item"><span class="part-name">Fourche</span><select name="state_fork"><option value="">État</option><option value="Bon">Bon</option><option value="Rayé">Rayé</option><option value="Choc">Choc</option><option value="Rouille">Rouille</option><option value="Fissure">Fissure</option></select><input type="text" name="note_fork" placeholder="Note"></div>
+          <div class="bike-item"><span class="part-name">Roue avant</span><select name="state_wheel_front"><option value="">État</option><option value="Bon">Bon</option><option value="Voilé">Voilé</option><option value="Choc">Choc</option><option value="Cassé">Cassé</option></select><input type="text" name="note_wheel_front" placeholder="Note"></div>
+          <div class="bike-item"><span class="part-name">Roue arrière</span><select name="state_wheel_rear"><option value="">État</option><option value="Bon">Bon</option><option value="Voilé">Voilé</option><option value="Choc">Choc</option><option value="Cassé">Cassé</option></select><input type="text" name="note_wheel_rear" placeholder="Note"></div>
+          <div class="bike-item"><span class="part-name">Pneu avant</span><select name="state_tire_front"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Crevé">Crevé</option><option value="Fissuré">Fissuré</option></select><input type="text" name="note_tire_front" placeholder="Note"></div>
+          <div class="bike-item"><span class="part-name">Pneu arrière</span><select name="state_tire_rear"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Crevé">Crevé</option><option value="Fissuré">Fissuré</option></select><input type="text" name="note_tire_rear" placeholder="Note"></div>
+          <div class="bike-item"><span class="part-name">Freins</span><select name="state_brakes"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="À régler">À régler</option><option value="Défaillant">Défaillant</option></select><input type="text" name="note_brakes" placeholder="Note"></div>
+          <div class="bike-item"><span class="part-name">Transmission</span><select name="state_transmission"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Bruyant">Bruyant</option><option value="À régler">À régler</option></select><input type="text" name="note_transmission" placeholder="Note"></div>
+          <div class="bike-item"><span class="part-name">Chaîne</span><select name="state_chain"><option value="">État</option><option value="Bon">Bon</option><option value="Rouillée">Rouillée</option><option value="Détendue">Détendue</option><option value="Usée">Usée</option></select><input type="text" name="note_chain" placeholder="Note"></div>
+          <div class="bike-item"><span class="part-name">Pédales</span><select name="state_pedals"><option value="">État</option><option value="Bon">Bon</option><option value="Usées">Usées</option><option value="Cassées">Cassées</option></select><input type="text" name="note_pedals" placeholder="Note"></div>
+        </div>
+        <div class="field full" style="margin-top:14px;">
+          <label>Observations générales</label>
+          <textarea id="generalNotes" name="generalNotes" placeholder="État général, kilométrage estimé, anomalies..."></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION 4 : ACCESSOIRES -->
+      <div class="section">
+        <div class="section-header"><span class="section-number">4</span><span class="section-title">Accessoires fournis</span></div>
+        <div class="bike-grid">
+          <div class="accessory-item"><label class="checkbox-label"><input type="checkbox" name="extras" value="helmet">Casque</label><select name="state_helmet"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Endommagé">Endommagé</option></select><input type="text" name="note_helmet" placeholder="Note"></div>
+          <div class="accessory-item"><label class="checkbox-label"><input type="checkbox" name="extras" value="lock">Antivol</label><select name="state_lock"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Défaillant">Défaillant</option></select><input type="text" name="note_lock" placeholder="Note"></div>
+          <div class="accessory-item"><label class="checkbox-label"><input type="checkbox" name="extras" value="lights">Éclairage</label><select name="state_lights"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Défaillant">Défaillant</option></select><input type="text" name="note_lights" placeholder="Note"></div>
+          <div class="accessory-item"><label class="checkbox-label"><input type="checkbox" name="extras" value="basket">Panier</label><select name="state_basket"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option><option value="Cassé">Cassé</option></select><input type="text" name="note_basket" placeholder="Note"></div>
+          <div class="accessory-item"><label class="checkbox-label"><input type="checkbox" name="extras" value="repairkit">Kit réparation</label><select name="state_repairkit"><option value="">État</option><option value="Bon">Bon</option><option value="Incomplet">Incomplet</option></select><input type="text" name="note_repairkit" placeholder="Note"></div>
+          <div class="accessory-item"><label class="checkbox-label"><input type="checkbox" name="extras" value="other">Autre</label><select name="state_other"><option value="">État</option><option value="Bon">Bon</option><option value="Usé">Usé</option></select><input type="text" name="note_other" placeholder="Détail"></div>
+        </div>
+      </div>
+
+      <!-- SECTION 5 : PHOTOS -->
+      <div class="section">
+        <div class="section-header"><span class="section-number">5</span><span class="section-title">Photos du vélo</span><span class="section-subtitle">6 maximum</span></div>
+        <div class="photo-upload" id="photoDropZone"><div class="upload-icon">+</div><p class="upload-text">Cliquez ou déposez vos photos ici</p><p class="upload-hint">JPG, PNG</p><input id="photosInput" type="file" accept="image/*" multiple></div>
+        <div id="photosPreview" class="photos-preview"></div>
+      </div>
+
+      <!-- SECTION 6 : SIGNATURES -->
+      <div class="section">
+        <div class="section-header"><span class="section-number">6</span><span class="section-title">Signatures électroniques</span><span class="section-subtitle">Obligatoires</span></div>
+        <div class="sign-grid">
+          <div class="sign-box"><div class="sign-header"><span class="name">Propriétaire</span><span class="badge badge-owner">Bailleur</span></div><div class="mention">« Lu et approuvé »</div><canvas class="signature-canvas" id="signature-owner"></canvas><div class="sign-actions"><button type="button" class="btn-text" onclick="clearSignature('owner')">Effacer</button><span class="sign-status" id="ownerStatus">En attente</span></div></div>
+          <div class="sign-box"><div class="sign-header"><span class="name">Locataire</span><span class="badge badge-renter">Preneur</span></div><div class="mention">« Lu et approuvé »</div><canvas class="signature-canvas" id="signature-renter"></canvas><div class="sign-actions"><button type="button" class="btn-text" onclick="clearSignature('renter')">Effacer</button><span class="sign-status" id="renterStatus">En attente</span></div></div>
+        </div>
+      </div>
 
       <div class="actions">
         <button type="button" class="btn btn-primary" id="generateSendBtn">Signer et envoyer le document</button>
@@ -198,16 +250,13 @@
 
   document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
 
-  // ⚡ VALIDATION DES DATES EN TEMPS RÉEL
+  // Validation des dates en temps réel
   const startDateEl = document.getElementById('startDate');
   const endDateEl = document.getElementById('endDate');
   const dateErrorEl = document.getElementById('dateError');
 
   function validateDates() {
-    const startDate = startDateEl.value;
-    const endDate = endDateEl.value;
-    
-    if (startDate && endDate && endDate < startDate) {
+    if (startDateEl.value && endDateEl.value && endDateEl.value < startDateEl.value) {
       endDateEl.classList.add('error');
       dateErrorEl.classList.add('show');
       return false;
@@ -217,7 +266,6 @@
       return true;
     }
   }
-
   startDateEl.addEventListener('change', validateDates);
   endDateEl.addEventListener('change', validateDates);
 
@@ -382,7 +430,6 @@
     if (!rN||!rE) { showToast('Locataire requis','error'); return false; }
     if (!bM||!sD||!eD) { showToast('Vélo et dates requis','error'); return false; }
     
-    // ⚡ VALIDATION DES DATES
     if (eD < sD) {
       showToast('La date de fin doit être postérieure à la date de début', 'error');
       endDateEl.classList.add('error');
@@ -398,9 +445,116 @@
     return true;
   }
 
-  // PDF (fonction generatePDF inchangée)
+  // PDF
   function generatePDF(data) {
-    // ... (votre code existant)
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit:'mm', format:'a4' });
+    const pw=doc.internal.pageSize.getWidth(), ph=doc.internal.pageSize.getHeight();
+    const m=15, cw=pw-m*2;
+    let y=m;
+    doc.setFont('helvetica','bold').setFontSize(22).setTextColor(26,26,46);
+    doc.text('ÉTAT DES LIEUX DE DÉPART', pw/2, y+10, {align:'center'});
+    y+=16;
+    doc.setDrawColor(201,168,76).setLineWidth(0.8).line(m,y,pw-m,y); y+=6;
+    doc.setFont('helvetica','normal').setFontSize(9).setTextColor(100,100,100);
+    doc.text('Document contractuel — '+new Date().toLocaleDateString('fr-FR'), pw/2, y, {align:'center'});
+    y+=10;
+    const sep = ()=>{ doc.setDrawColor(220,220,220).setLineWidth(0.3).line(m,y,pw-m,y); y+=6; };
+    const title = (num,title)=>{
+      if (y>ph-25) { doc.addPage(); y=m; }
+      doc.setFont('helvetica','bold').setFontSize(14).setTextColor(26,26,46);
+      doc.text(num+'. '+title, m, y); y+=6;
+      doc.setDrawColor(26,26,46).setLineWidth(0.5).line(m,y,m+50,y); y+=6;
+    };
+
+    title('1','PARTIES');
+    doc.setFont('helvetica','bold').setFontSize(10);
+    doc.text('Propriétaire / Bailleur', m, y); y+=5;
+    doc.setFont('helvetica','normal').setFontSize(9);
+    doc.text('Nom : '+(data.ownerName||'-')+' | Email : '+(data.ownerEmail||'-'), m+5, y); y+=7;
+    doc.setFont('helvetica','bold').setFontSize(10);
+    doc.text('Locataire / Preneur', m, y); y+=5;
+    doc.setFont('helvetica','normal').setFontSize(9);
+    doc.text('Nom : '+(data.renterName||'-')+' | Email : '+(data.renterEmail||'-'), m+5, y); y+=8; sep();
+
+    title('2','LOCATION');
+    doc.setFont('helvetica','normal').setFontSize(9);
+    doc.text('Vélo : '+(data.bikeModel||'-')+' | N° série : '+(data.serialNumber||'-')+' | Période : '+(data.startDate||'-')+' au '+(data.endDate||'-'), m, y); y+=8; sep();
+
+    title('3','INSPECTION DU VÉLO');
+    const parts = [
+      {k:'frame',l:'Cadre'},{k:'handlebar',l:'Guidon'},{k:'seat',l:'Selle'},{k:'fork',l:'Fourche'},
+      {k:'wheel_front',l:'Roue avant'},{k:'wheel_rear',l:'Roue arrière'},{k:'tire_front',l:'Pneu avant'},
+      {k:'tire_rear',l:'Pneu arrière'},{k:'brakes',l:'Freins'},{k:'transmission',l:'Transmission'},
+      {k:'chain',l:'Chaîne'},{k:'pedals',l:'Pédales'}
+    ];
+    doc.setFillColor(240,240,240).rect(m,y,cw,6,'F');
+    doc.setFont('helvetica','bold').setFontSize(8).setTextColor(26,26,46);
+    doc.text('Pièce',m+2,y+4.5); doc.text('État',m+50,y+4.5); doc.text('Observation',m+100,y+4.5); y+=7;
+    doc.setFont('helvetica','normal').setFontSize(8).setTextColor(50,50,50);
+    parts.forEach((p,i)=>{
+      if (y>ph-20) { doc.addPage(); y=m; }
+      if (i%2===0) { doc.setFillColor(248,248,248).rect(m,y,cw,5.5,'F'); }
+      doc.text(p.l, m+2, y+4);
+      doc.text(data['state_'+p.k]||'-', m+50, y+4);
+      const n = data['note_'+p.k]||'-';
+      doc.text(n.length>45?n.substring(0,45)+'...':n, m+100, y+4);
+      y+=5.5;
+    });
+    y+=5;
+    doc.setFont('helvetica','bold').setFontSize(9); doc.text('Observations :', m, y); y+=5;
+    doc.setFont('helvetica','normal').setFontSize(8);
+    const obs = data.generalNotes||'Aucune';
+    doc.text(doc.splitTextToSize(obs, cw-5), m+3, y); y+=doc.splitTextToSize(obs, cw-5).length*4+6; sep();
+
+    title('4','ACCESSOIRES FOURNIS');
+    const accs = [{k:'helmet',l:'Casque'},{k:'lock',l:'Antivol'},{k:'lights',l:'Éclairage'},{k:'basket',l:'Panier'},{k:'repairkit',l:'Kit réparation'},{k:'other',l:'Autre'}];
+    let hasAcc=false;
+    accs.forEach(a=>{
+      if (data.extras&&data.extras.includes(a.k)) {
+        hasAcc=true;
+        doc.setFont('helvetica','bold').setFontSize(9).text(a.l+' :', m, y);
+        doc.setFont('helvetica','normal').setFontSize(8);
+        doc.text('État : '+(data['state_'+a.k]||'-')+' | Note : '+(data['note_'+a.k]||'-'), m+30, y);
+        y+=5;
+      }
+    });
+    if (!hasAcc) { doc.text('Aucun accessoire', m, y); y+=5; }
+    y+=5; sep();
+
+    if (data.photos&&data.photos.length) {
+      if (y>ph-50) { doc.addPage(); y=m; }
+      title('5','PHOTOS DU VÉLO');
+      for (let i=0; i<Math.min(data.photos.length,6); i++) {
+        if (y>ph-50) { doc.addPage(); y=m; }
+        doc.setFont('helvetica','bold').setFontSize(8).text('Photo '+(i+1), m, y); y+=4;
+        try {
+          const ip = doc.getImageProperties(data.photos[i]);
+          let iw=ip.width, ih=ip.height;
+          const mw=70, mh=45;
+          if (iw>mw) { ih=(ih*mw)/iw; iw=mw; }
+          if (ih>mh) { iw=(iw*mh)/ih; ih=mh; }
+          doc.addImage(data.photos[i],'JPEG',m,y,iw,ih);
+          y+=ih+6;
+        } catch(e) { doc.text('(Image non disponible)', m, y); y+=4; }
+      }
+      sep();
+    }
+
+    if (y>ph-60) { doc.addPage(); y=m; }
+    title('6','SIGNATURES ÉLECTRONIQUES');
+    doc.setFont('helvetica','bold').setFontSize(10).text('Propriétaire / Bailleur', m, y); y+=5;
+    doc.setFont('helvetica','italic').setFontSize(8).setTextColor(100,100,100).text('« Lu et approuvé »', m, y); y+=4;
+    if (data.signatureOwner) { try { doc.addImage(data.signatureOwner,'PNG',m,y,55,18); y+=20; } catch(e) { y+=6; } }
+    y+=8;
+    doc.setFont('helvetica','bold').setFontSize(10).setTextColor(26,26,46).text('Locataire / Preneur', m, y); y+=5;
+    doc.setFont('helvetica','italic').setFontSize(8).setTextColor(100,100,100).text('« Lu et approuvé »', m, y); y+=4;
+    if (data.signatureRenter) { try { doc.addImage(data.signatureRenter,'PNG',m,y,55,18); y+=20; } catch(e) { y+=6; } }
+    y+=12;
+    doc.setDrawColor(200,200,200).setLineWidth(0.5).line(m,y,pw-m,y); y+=5;
+    doc.setFont('helvetica','normal').setFontSize(7).setTextColor(150,150,150);
+    doc.text('Document signé électroniquement — Conforme eIDAS — Généré le '+new Date().toLocaleDateString('fr-FR'), pw/2, y, {align:'center'});
+    return doc.output('datauristring');
   }
 
   async function uploadPDF(b64, fn) {
@@ -440,7 +594,7 @@
         '&serial=' + encodeURIComponent((data.serialNumber||'').substring(0,50)) +
         '&start=' + encodeURIComponent((data.startDate||'').substring(0,10));
 
-      // ⚡ SAUVEGARDE POUR L'ÉTAT DES LIEUX DE RETOUR
+      // Sauvegarde pour l'état des lieux de retour
       try {
         localStorage.setItem('expressVeloEtatDepart', JSON.stringify(data));
         console.log('✅ Données sauvegardées pour le retour');
