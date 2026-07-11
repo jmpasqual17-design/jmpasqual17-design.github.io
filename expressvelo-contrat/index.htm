@@ -631,7 +631,7 @@
         </div>
       </div>
 
-      <!-- SECTION 5 : DURÉE (sans horaire) -->
+      <!-- SECTION 5 : DURÉE (sans aucune référence horaire) -->
       <div class="section">
         <div class="section-header">
           <span class="section-number">5</span>
@@ -640,11 +640,11 @@
         <div class="grid-2">
           <div class="field">
             <label>Date de début <span class="required">*</span></label>
-            <input type="date" name="date_debut_date" required>
+            <input type="date" name="date_debut" required>
           </div>
           <div class="field">
             <label>Date de fin <span class="required">*</span></label>
-            <input type="date" name="date_fin_date" required>
+            <input type="date" name="date_fin" required>
           </div>
           <div class="field full">
             <label>Retard de restitution (€/jour)</label>
@@ -813,13 +813,13 @@
     templateID: 'template_sozwa7c'
   };
 
-  (function() { 
-    try { 
-      emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey }); 
-      console.log('✅ EmailJS initialisé'); 
-    } catch(e) { 
-      console.error('❌ Erreur EmailJS:', e); 
-    } 
+  (function() {
+    try {
+      emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+      console.log('✅ EmailJS initialisé');
+    } catch(e) {
+      console.error('❌ Erreur EmailJS:', e);
+    }
   })();
 
   document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -877,13 +877,13 @@
   });
 
   function validateDates() {
-    const dd = document.querySelector('[name="date_debut_date"]').value;
-    const df = document.querySelector('[name="date_fin_date"]').value;
+    const dd = document.querySelector('[name="date_debut"]').value;
+    const df = document.querySelector('[name="date_fin"]').value;
     if (!dd || !df) return true;
     return new Date(df) > new Date(dd);
   }
 
-  document.querySelector('[name="date_fin_date"]').addEventListener('change', function() {
+  document.querySelector('[name="date_fin"]').addEventListener('change', function() {
     if (!validateDates()) {
       showToast('La date de fin doit être postérieure à la date de début.', 'error');
       this.value = '';
@@ -898,9 +898,7 @@
       if (k === 'extras') { if (!data.extras) data.extras = []; data.extras.push(v); }
       else data[k] = v;
     }
-    // Pour la compatibilité avec le PDF, on crée un champ date_debut/date_fin lisible
-    data.date_debut = data.date_debut_date || '';
-    data.date_fin = data.date_fin_date || '';
+    // Compatibilité PDF : on s'assure que date_debut et date_fin sont bien définis
     data.signatureBailleur = sigPadBailleur.isEmpty() ? '' : sigPadBailleur.toDataURL();
     data.signatureLocataire = sigPadLocataire.isEmpty() ? '' : sigPadLocataire.toDataURL();
     return data;
@@ -912,8 +910,8 @@
     const lN = document.querySelector('[name="locataire_nom"]').value.trim();
     const lE = document.querySelector('[name="locataire_email"]').value.trim();
     const vM = document.querySelector('[name="velo_modele"]').value.trim();
-    const dd = document.querySelector('[name="date_debut_date"]').value;
-    const df = document.querySelector('[name="date_fin_date"]').value;
+    const dd = document.querySelector('[name="date_debut"]').value;
+    const df = document.querySelector('[name="date_fin"]').value;
     if (!bN || !bE) { showToast('Informations du bailleur requises', 'error'); return false; }
     if (!lN || !lE) { showToast('Informations du locataire requises', 'error'); return false; }
     if (!vM || !dd || !df) { showToast('Vélo et dates requis', 'error'); return false; }
@@ -926,7 +924,7 @@
     return true;
   }
 
-  // PDF professionnel (identique à la version précédente, adapté aux dates sans heure)
+  // Génération PDF (identique à la version précédente, adaptée aux noms de champs)
   function generateNativePDF(data) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
@@ -1162,10 +1160,10 @@
       const rn = (data.locataire_nom || 'contrat').replace(/[^a-z0-9]/gi, '_').toLowerCase();
       const ds = new Date().toISOString().split('T')[0];
       const fn = 'CONTRAT_LOCATION_VELO_' + rn + '_' + ds + '.pdf';
-      
+
       showToast('Mise en ligne du PDF...', 'info');
       const pdfLink = await uploadPDF(pdfBase64, fn);
-      
+
       const cp = {
         bailleur_nom: data.bailleur_nom || '',
         bailleur_email: data.bailleur_email || '',
@@ -1179,15 +1177,15 @@
         date_signature: data.date_signature || '',
         pdf_link: pdfLink
       };
-      
+
       showToast('Envoi au bailleur...', 'info');
       await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, { ...cp, to_email: data.bailleur_email, to_name: data.bailleur_nom });
-      
+
       showToast('Envoi au locataire...', 'info');
       await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, { ...cp, to_email: data.locataire_email, to_name: data.locataire_nom });
-      
+
       showToast('Contrat envoyé aux deux parties', 'success');
-      
+
       setTimeout(() => {
         const contratData = {
           ownerName: data.bailleur_nom || '',
@@ -1201,16 +1199,16 @@
           contractSigned: true,
           contractDate: new Date().toISOString()
         };
-        
+
         try { localStorage.setItem('contratVeloData', JSON.stringify(contratData)); } catch(e) {}
-        
+
         const overlay = document.createElement('div');
         overlay.id = 'redirectionOverlay';
         overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:10000;';
-        
+
         const dialog = document.createElement('div');
         dialog.style.cssText = 'background:white;border-radius:16px;padding:40px;max-width:500px;width:90%;text-align:center;box-shadow:0 25px 80px rgba(0,0,0,0.4);';
-        
+
         dialog.innerHTML = `
           <div style="font-size:64px;margin-bottom:20px;">✅</div>
           <h2 style="color:#1a1a2e;margin-bottom:12px;font-size:22px;">Contrat envoyé avec succès !</h2>
@@ -1222,14 +1220,14 @@
           </div>
           <button id="btnDownload" style="background:transparent;color:#0f3460;border:none;padding:10px 20px;border-radius:8px;font-size:13px;cursor:pointer;text-decoration:underline;">📄 Télécharger une copie du contrat</button>
         `;
-        
+
         overlay.appendChild(dialog);
         document.body.appendChild(overlay);
-        
+
         document.getElementById('btnGoToEtatLieux').onclick = function() {
           window.location.href = 'https://jmpasqual17-design.github.io/';
         };
-        
+
         document.getElementById('btnLater').onclick = function() {
           document.body.removeChild(overlay);
           if (confirm('Voulez-vous télécharger une copie du contrat ?')) {
@@ -1237,19 +1235,19 @@
             document.body.appendChild(a); a.click(); document.body.removeChild(a);
           }
         };
-        
+
         document.getElementById('btnDownload').onclick = function() {
           const a = document.createElement('a'); a.href = pdfBase64; a.download = fn;
           document.body.appendChild(a); a.click(); document.body.removeChild(a);
           showToast('PDF téléchargé avec succès', 'success');
         };
-        
+
         overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
-        
+
       }, 1500);
-      
+
       return true;
-      
+
     } catch (error) {
       console.error('❌ Erreur sendWithEmailJS:', error);
       showToast('Erreur lors de l\'envoi: ' + (error.message || 'Erreur inconnue'), 'error');
