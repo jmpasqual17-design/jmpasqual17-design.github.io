@@ -721,84 +721,87 @@
   // ==========================================================
   // IMPORTATION DES DONNÉES DE L'ÉTAT DES LIEUX DE DÉPART
   // ==========================================================
-  (function() {
-    const saved = localStorage.getItem('expressVeloEtatDepart');
-    if (saved) {
-      try {
-        const data = JSON.parse(saved);
-        
-        // Remplir les champs d'identification
-        document.getElementById('ownerName').value = data.ownerName || '';
-        document.getElementById('ownerEmail').value = data.ownerEmail || '';
-        document.getElementById('renterName').value = data.renterName || '';
-        document.getElementById('renterEmail').value = data.renterEmail || '';
-        document.getElementById('bikeModel').value = data.bikeModel || '';
-        document.getElementById('serialNumber').value = data.serialNumber || '';
-        document.getElementById('startDate').value = data.startDate || '';
-        document.getElementById('endDate').value = ''; // La date de retour est à saisir
+ (function() {
+      const saved = localStorage.getItem('expressVeloEtatDepart');
+      console.log('🔍 Données lues du localStorage:', saved ? 'OK' : 'NULL');
+      
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          console.log('📦 Données parsées:', data);
 
-        // Préremplir les notes avec l'état de départ
-        const bikeParts = ['frame','handlebar','seat','fork','wheel_front','wheel_rear',
-                           'tire_front','tire_rear','brakes','transmission','chain','pedals'];
-        bikeParts.forEach(part => {
-          const noteEl = document.querySelector(`[name="note_${part}"]`);
-          if (noteEl) {
-            let placeholder = '';
-            if (data['state_'+part]) placeholder += `Départ: ${data['state_'+part]}`;
-            if (data['note_'+part]) placeholder += ` - ${data['note_'+part]}`;
-            noteEl.placeholder = placeholder || 'Différence constatée';
-          }
-        });
+          // Remplir les champs d'identification
+          if (data.ownerName) document.getElementById('ownerName').value = data.ownerName;
+          if (data.ownerEmail) document.getElementById('ownerEmail').value = data.ownerEmail;
+          if (data.renterName) document.getElementById('renterName').value = data.renterName;
+          if (data.renterEmail) document.getElementById('renterEmail').value = data.renterEmail;
+          if (data.bikeModel) document.getElementById('bikeModel').value = data.bikeModel;
+          if (data.serialNumber) document.getElementById('serialNumber').value = data.serialNumber;
+          if (data.startDate) document.getElementById('startDate').value = data.startDate;
+          // endDate reste vide (date de retour à saisir)
 
-        // Accessoires : cocher et indiquer l'état de départ
-        if (data.extras) {
-          data.extras.forEach(extra => {
-            const cb = document.querySelector(`input[name="extras"][value="${extra}"]`);
-            if (cb) cb.checked = true;
-            const stateEl = document.querySelector(`[name="state_${extra}"]`);
-            if (stateEl && data['state_'+extra]) {
-              stateEl.value = data['state_'+extra];
-            }
-            const noteEl = document.querySelector(`[name="note_${extra}"]`);
-            if (noteEl && data['state_'+extra]) {
-              noteEl.placeholder = `Départ: ${data['state_'+extra]}`;
+          // Préremplir les notes avec l'état de départ
+          const bikeParts = ['frame','handlebar','seat','fork','wheel_front','wheel_rear',
+                             'tire_front','tire_rear','brakes','transmission','chain','pedals'];
+          bikeParts.forEach(part => {
+            const noteEl = document.querySelector(`[name="note_${part}"]`);
+            if (noteEl) {
+              let placeholder = '';
+              if (data['state_'+part]) placeholder += `Départ: ${data['state_'+part]}`;
+              if (data['note_'+part]) placeholder += ` - ${data['note_'+part]}`;
+              noteEl.placeholder = placeholder || 'Différence constatée';
             }
           });
+
+          // Accessoires
+          if (data.extras) {
+            data.extras.forEach(extra => {
+              const cb = document.querySelector(`input[name="extras"][value="${extra}"]`);
+              if (cb) cb.checked = true;
+              const stateEl = document.querySelector(`[name="state_${extra}"]`);
+              if (stateEl && data['state_'+extra]) {
+                stateEl.value = data['state_'+extra];
+              }
+              const noteEl = document.querySelector(`[name="note_${extra}"]`);
+              if (noteEl && data['state_'+extra]) {
+                noteEl.placeholder = `Départ: ${data['state_'+extra]}`;
+              }
+            });
+          }
+
+          localStorage.removeItem('expressVeloEtatDepart');
+          showToast('📋 Données de l\'état des lieux de départ importées', 'success');
+        } catch(e) {
+          console.error('❌ Erreur parsing:', e);
         }
+      } else {
+        // Fallback URL
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('owner')) {
+          document.getElementById('ownerName').value = params.get('owner') || '';
+          document.getElementById('ownerEmail').value = params.get('ownerEmail') || '';
+          document.getElementById('renterName').value = params.get('renter') || '';
+          document.getElementById('renterEmail').value = params.get('renterEmail') || '';
+          document.getElementById('bikeModel').value = params.get('bike') || '';
+          document.getElementById('serialNumber').value = params.get('serial') || '';
+          document.getElementById('startDate').value = params.get('start') || '';
+          showToast('📋 Données importées depuis l\'URL', 'info');
+        } else {
+          showToast('📋 Aucune donnée trouvée - Formulaire vierge', 'info');
+        }
+      }
+    })();
 
-        localStorage.removeItem('expressVeloEtatDepart');
-        showToast('📋 Données de l\'état des lieux de départ importées', 'success');
-      } catch(e) {
-        console.error('Erreur import:', e);
-      }
-    } else {
-      // Fallback : récupération depuis l'URL
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('owner')) {
-        document.getElementById('ownerName').value = params.get('owner') || '';
-        document.getElementById('ownerEmail').value = params.get('ownerEmail') || '';
-        document.getElementById('renterName').value = params.get('renter') || '';
-        document.getElementById('renterEmail').value = params.get('renterEmail') || '';
-        document.getElementById('bikeModel').value = params.get('bike') || '';
-        document.getElementById('serialNumber').value = params.get('serial') || '';
-        document.getElementById('startDate').value = params.get('start') || '';
-      }
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'toast ' + type;
+      toast.textContent = message;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.add('show'));
+      setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 4000);
     }
-  })();
-
-  // ==========================================================
-  // TOAST
-  // ==========================================================
-  function showToast(message, type = 'info') {
-    const container = document.getElementById('toastContainer');
-    if (!container) return;
-    const toast = document.createElement('div');
-    toast.className = 'toast ' + type;
-    toast.textContent = message;
-    container.appendChild(toast);
-    requestAnimationFrame(() => toast.classList.add('show'));
-    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 4000);
-  }
 
   // ==========================================================
   // PHOTOS
