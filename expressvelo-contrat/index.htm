@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Contrat de location vélo</title>
 
+  <!-- Flatpickr CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css">
+  
   <style>
     :root {
       --primary: #1a1a2e;
@@ -216,6 +219,14 @@
       background-repeat: no-repeat;
       background-position: right 12px center;
       padding-right: 40px;
+    }
+
+    /* Style pour l'input flatpickr avec icône calendrier */
+    .flatpickr-input {
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23495057' class='bi bi-calendar3' viewBox='0 0 16 16'%3E%3Cpath d='M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z'/%3E%3Cpath d='M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 18px;
     }
 
     .info-box {
@@ -631,7 +642,7 @@
         </div>
       </div>
 
-      <!-- SECTION 5 : DURÉE (avec contrainte horaire native) -->
+      <!-- SECTION 5 : DURÉE avec flatpickr -->
       <div class="section">
         <div class="section-header">
           <span class="section-number">5</span>
@@ -639,24 +650,18 @@
         </div>
         <div class="grid-2">
           <div class="field">
-            <label>Date de début <span class="required">*</span></label>
-            <input type="date" name="date_debut_date" required>
+            <label>Date et heure de début <span class="required">*</span></label>
+            <input type="text" id="debut_picker" placeholder="Choisir une date et heure..." class="flatpickr-input" readonly required>
+            <span class="hint">Calendrier : 08h-21h, pas de 30 min</span>
+            <input type="hidden" name="date_debut_date" id="date_debut_date">
+            <input type="hidden" name="date_debut_heure" id="date_debut_heure">
           </div>
           <div class="field">
-            <label>Heure de début <span class="required">*</span></label>
-            <input type="time" name="date_debut_heure" 
-                   min="08:00" max="21:00" step="1800" required>
-            <span class="hint">De 08:00 à 21:00, toutes les 30 min</span>
-          </div>
-          <div class="field">
-            <label>Date de fin <span class="required">*</span></label>
-            <input type="date" name="date_fin_date" required>
-          </div>
-          <div class="field">
-            <label>Heure de fin <span class="required">*</span></label>
-            <input type="time" name="date_fin_heure" 
-                   min="08:00" max="21:00" step="1800" required>
-            <span class="hint">De 08:00 à 21:00, toutes les 30 min</span>
+            <label>Date et heure de fin <span class="required">*</span></label>
+            <input type="text" id="fin_picker" placeholder="Choisir une date et heure..." class="flatpickr-input" readonly required>
+            <span class="hint">Calendrier : 08h-21h, pas de 30 min</span>
+            <input type="hidden" name="date_fin_date" id="date_fin_date">
+            <input type="hidden" name="date_fin_heure" id="date_fin_heure">
           </div>
           <div class="field full">
             <label>Retard de restitution (€/h)</label>
@@ -812,9 +817,12 @@
 
 <div class="toast-container" id="toastContainer"></div>
 
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
 
 <script>
   'use strict';
@@ -888,28 +896,67 @@
     sigPadBailleur.fromData(bD); sigPadLocataire.fromData(lD);
   });
 
-  // Validation des dates avec les nouveaux champs time
+  // ---- Flatpickr configuration ----
+  function updateHiddenFields(selectedDates, dateStr, instance, dateFieldId, timeFieldId) {
+    if (selectedDates.length > 0) {
+      const d = selectedDates[0];
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      document.getElementById(dateFieldId).value = `${year}-${month}-${day}`;
+      document.getElementById(timeFieldId).value = `${hours}:${minutes}`;
+      // Déclencher un événement change sur le champ heure pour la validation
+      document.getElementById(timeFieldId).dispatchEvent(new Event('change'));
+    } else {
+      document.getElementById(dateFieldId).value = '';
+      document.getElementById(timeFieldId).value = '';
+    }
+  }
+
+  const fpDebut = flatpickr("#debut_picker", {
+    enableTime: true,
+    dateFormat: "d/m/Y H:i",
+    time_24hr: true,
+    minuteIncrement: 30,
+    minTime: "08:00",
+    maxTime: "21:00",
+    locale: "fr",
+    onChange: function(selectedDates, dateStr, instance) {
+      updateHiddenFields(selectedDates, dateStr, instance, 'date_debut_date', 'date_debut_heure');
+    }
+  });
+
+  const fpFin = flatpickr("#fin_picker", {
+    enableTime: true,
+    dateFormat: "d/m/Y H:i",
+    time_24hr: true,
+    minuteIncrement: 30,
+    minTime: "08:00",
+    maxTime: "21:00",
+    locale: "fr",
+    onChange: function(selectedDates, dateStr, instance) {
+      updateHiddenFields(selectedDates, dateStr, instance, 'date_fin_date', 'date_fin_heure');
+    }
+  });
+
+  // Validation des dates
   function validateDates() {
-    const dd = document.querySelector('[name="date_debut_date"]').value;
-    const dh = document.querySelector('[name="date_debut_heure"]').value;
-    const fd = document.querySelector('[name="date_fin_date"]').value;
-    const fh = document.querySelector('[name="date_fin_heure"]').value;
+    const dd = document.getElementById('date_debut_date').value;
+    const dh = document.getElementById('date_debut_heure').value;
+    const fd = document.getElementById('date_fin_date').value;
+    const fh = document.getElementById('date_fin_heure').value;
     if (!dd || !dh || !fd || !fh) return true;
     const debut = new Date(`${dd}T${dh}`);
     const fin = new Date(`${fd}T${fh}`);
     return fin > debut;
   }
 
-  document.querySelector('[name="date_fin_date"]').addEventListener('change', function() {
+  document.getElementById('date_fin_heure').addEventListener('change', function() {
     if (!validateDates()) {
       showToast('La date de fin doit être postérieure à la date de début.', 'error');
-      this.value = '';
-    }
-  });
-  document.querySelector('[name="date_fin_heure"]').addEventListener('change', function() {
-    if (!validateDates()) {
-      showToast('L\'heure de fin doit être postérieure à l\'heure de début.', 'error');
-      this.value = '';
+      // On pourrait effacer le champ flatpickr, mais on laisse l'utilisateur corriger
     }
   });
 
@@ -921,7 +968,6 @@
       if (k === 'extras') { if (!data.extras) data.extras = []; data.extras.push(v); }
       else data[k] = v;
     }
-    // Recomposer les dates complètes
     const dd = data.date_debut_date || '';
     const dh = data.date_debut_heure || '';
     const fdDate = data.date_fin_date || '';
@@ -939,10 +985,10 @@
     const lN = document.querySelector('[name="locataire_nom"]').value.trim();
     const lE = document.querySelector('[name="locataire_email"]').value.trim();
     const vM = document.querySelector('[name="velo_modele"]').value.trim();
-    const dd = document.querySelector('[name="date_debut_date"]').value;
-    const dh = document.querySelector('[name="date_debut_heure"]').value;
-    const fd = document.querySelector('[name="date_fin_date"]').value;
-    const fh = document.querySelector('[name="date_fin_heure"]').value;
+    const dd = document.getElementById('date_debut_date').value;
+    const dh = document.getElementById('date_debut_heure').value;
+    const fd = document.getElementById('date_fin_date').value;
+    const fh = document.getElementById('date_fin_heure').value;
     if (!bN || !bE) { showToast('Informations du bailleur requises', 'error'); return false; }
     if (!lN || !lE) { showToast('Informations du locataire requises', 'error'); return false; }
     if (!vM || !dd || !dh || !fd || !fh) { showToast('Vélo et dates requis', 'error'); return false; }
@@ -955,7 +1001,6 @@
     return true;
   }
 
-  // PDF professionnel complet (identique à la version précédente, déjà intégré)
   function generateNativePDF(data) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
@@ -991,7 +1036,6 @@
       });
     }
 
-    // En-tête
     doc.setFont('helvetica', 'bold'); doc.setFontSize(22); doc.setTextColor(26,26,46);
     doc.text('CONTRAT DE LOCATION VÉLO', pageW / 2, y + 10, { align: 'center' });
     y += 16;
@@ -1000,24 +1044,20 @@
     doc.text('Contrat entre particuliers — ' + new Date().toLocaleDateString('fr-FR'), pageW / 2, y, { align: 'center' });
     y += 10;
 
-    // Préambule
     italicText('Le présent contrat a pour objet de définir les conditions dans lesquelles le loueur met temporairement à disposition du Locataire le vélo décrit ci-après. Les parties déclarent agir en qualité de particuliers, être juridiquement capables de contracter et accepter l\'ensemble des stipulations du présent contrat sans réserve.');
     y += 4; drawSeparator();
 
-    // 1. Bailleur
     sectionTitle('1', 'BAILLEUR (PROPRIÉTAIRE)');
     normalText(`Nom : ${data.bailleur_nom || '-'}  |  Adresse : ${data.bailleur_adresse || '-'}`);
     normalText(`Tél : ${data.bailleur_tel || '-'}  |  Email : ${data.bailleur_email || '-'}`);
     y += 3; drawSeparator();
 
-    // 2. Locataire
     sectionTitle('2', 'LOCATAIRE (UTILISATEUR)');
     normalText(`Nom : ${data.locataire_nom || '-'}  |  Adresse : ${data.locataire_adresse || '-'}`);
     normalText(`Tél : ${data.locataire_tel || '-'}  |  Email : ${data.locataire_email || '-'}`);
     normalText(`Pièce d'identité : ${data.locataire_id || '-'}`);
     y += 3; drawSeparator();
 
-    // 3. Objet
     sectionTitle('3', 'OBJET DU CONTRAT');
     italicText('Le présent contrat porte sur la mise à disposition temporaire, à titre onéreux, d\'un vélo appartenant au Bailleur, identifié dans la fiche descriptive ci-dessous. Le Locataire reconnaît recevoir le vélo en bon état apparent de fonctionnement, sauf réserves expressément mentionnées dans l\'état des lieux contradictoire établi au départ.');
     doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(26,26,46); y += 4;
@@ -1027,7 +1067,6 @@
     normalText(`Valeur à neuf : ${data.velo_val_neuf ? data.velo_val_neuf + ' €' : '-'}  |  Valeur actuelle : ${data.velo_val_actuelle ? data.velo_val_actuelle + ' €' : '-'}`);
     y += 2; drawSeparator();
 
-    // 4. Accessoires
     sectionTitle('4', 'ACCESSOIRES FOURNIS');
     const accs = [
       { key: 'helmet', label: 'Casque' },
@@ -1048,20 +1087,17 @@
     if (!hasAcc) normalText('Aucun accessoire fourni.', 9, [50,50,50], 5);
     y += 3; drawSeparator();
 
-    // 5. Durée
     sectionTitle('5', 'DURÉE DE LOCATION');
     normalText(`Date de début : ${data.date_debut || '-'}  |  Date de fin : ${data.date_fin || '-'}`);
     normalText(`Tarif de retard : ${data.retard_tarif ? data.retard_tarif + ' €/h' : '-'}`);
     y += 3; drawSeparator();
 
-    // 6. Prix et paiement
     sectionTitle('6', 'PRIX, PAIEMENT ET DÉPÔT DE GARANTIE');
     normalText(`Tarif : ${data.tarif_location || '-'}  |  Montant total estimé : ${data.montant_total ? data.montant_total + ' €' : '-'}`);
     normalText(`Caution : ${data.caution ? data.caution + ' €' : '-'}  |  Mode de paiement : ${data.mode_paiement || '-'}`);
     italicText('Le dépôt de garantie ne constitue pas un paiement anticipé du prix de location. Il garantit notamment la restitution du vélo, des accessoires, ainsi que le paiement des éventuels dommages, frais, pénalités ou sommes restant dues par le Locataire. La caution est restituée au locataire à l\'issue de la location, déduction faite des éventuelles réparations nécessaires non couvertes par l\'usure normale.');
     y += 3; drawSeparator();
 
-    // 7. Assurance
     sectionTitle('7', 'ASSURANCE, FRANCHISE ET RESPONSABILITÉ');
     normalText(`Vol : ${data.assurance_vol || '-'}  |  Casse : ${data.assurance_casse || '-'}  |  Dommages : ${data.assurance_dom || '-'}`);
     normalText(`Batterie : ${data.assurance_batterie || '-'}  |  Franchise : ${data.franchise ? data.franchise + ' €' : '-'}`);
@@ -1070,7 +1106,6 @@
     normalText('Les parties sont invitées à vérifier que le vélo bénéficie d\'une assurance responsabilité civile.', 9, [50,50,50]);
     y += 3; drawSeparator();
 
-    // 8. Obligations Locataire
     sectionTitle('8', 'OBLIGATIONS DU LOCATAIRE');
     italicText('Le Locataire s\'oblige, pendant toute la durée de la location, à utiliser le vélo en bon père de famille, conformément à sa destination normale, aux règles de sécurité applicables et aux prescriptions éventuelles communiquées par le Bailleur.');
     bulletList(['Utiliser le vélo de manière prudente', 'Respecter le Code de la route', 'Maintenir le vélo en bon état', 'Utiliser systématiquement l\'antivol fourni', 'Ne pas transporter de passagers non prévus', 'Ne pas prêter ou sous-louer le vélo', 'Ne pas modifier le vélo', 'Restituer le vélo complet']);
@@ -1078,14 +1113,12 @@
     normalText('Vélos électriques (VAE) : Le locataire s\'interdit de démonter la batterie, de la recharger avec un chargeur non fourni, ou de l\'exposer à des températures extrêmes.', 9, [50,50,50]);
     y += 3; drawSeparator();
 
-    // 9. Obligations Bailleur
     sectionTitle('9', 'OBLIGATIONS DU BAILLEUR');
     italicText('Le Bailleur s\'engage à remettre au Locataire un vélo conforme à la description figurant au présent contrat, propre, entretenu et en état normal de fonctionnement, sous réserve des réserves expressément indiquées dans l\'état des lieux de départ.');
     bulletList(['Fournir un vélo en bon état de fonctionnement', 'Fournir les accessoires nécessaires', 'Informer le Locataire de tout défaut connu', 'Remettre un vélo propre et entretenu']);
     normalText('Vélos électriques (VAE) : En cas de panne de batterie pendant la location (hors faute du locataire), le loueur propose une solution de remplacement ou un remboursement proportionnel.', 9, [50,50,50]);
     y += 3; drawSeparator();
 
-    // 10. Responsabilité
     sectionTitle('10', 'RESPONSABILITÉ');
     normalText('Le Locataire demeure responsable du vélo, de ses équipements et accessoires pendant toute la durée de la location, depuis sa remise effective jusqu\'à sa restitution complète au Bailleur.');
     doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(50,50,50);
@@ -1097,7 +1130,6 @@
     bulletList(['Des accidents corporels du Locataire', 'Des objets transportés', 'Des pertes d\'exploitation éventuelles']);
     y += 3; drawSeparator();
 
-    // 11. Pénalités
     sectionTitle('11', 'PÉNALITÉS');
     const penalties = [
       ['Retard de restitution', data.penalite_retard ? `${data.penalite_retard} €/h` : 'Non défini'],
@@ -1117,20 +1149,17 @@
     italicText('Les pénalités et frais ci-dessus pourront être imputés sur le dépôt de garantie, sans préjudice de toute demande complémentaire si le montant des dommages excède le dépôt versé.');
     y += 3; drawSeparator();
 
-    // 12. Résiliation
     sectionTitle('12', 'RÉSILIATION');
     normalText('Le présent contrat pourra être résilié de plein droit, sans formalité judiciaire préalable, en cas de manquement grave de l\'une des parties à ses obligations, notamment en cas d\'usage dangereux, non conforme ou frauduleux du vélo.');
     bulletList(['Par le Bailleur en cas d\'usage dangereux ou non conforme', 'Par le Locataire à tout moment (sans remboursement sauf accord)', 'Immédiatement en cas de vol ou sinistre majeur']);
     y += 3; drawSeparator();
 
-    // 13. Données personnelles
     sectionTitle('13', 'DONNÉES PERSONNELLES');
     normalText('Les données personnelles échangées dans le cadre du présent contrat sont collectées uniquement pour l\'identification des parties, la gestion de la location, la sécurité du matériel et, le cas échéant, la gestion d\'un litige ou d\'un sinistre.');
     bulletList(['Identification des parties', 'Gestion de la location', 'Sécurité du matériel']);
     italicText('Chaque partie s\'engage à conserver ces informations de manière confidentielle, à ne pas les communiquer à des tiers sauf nécessité liée à l\'exécution du contrat, à une obligation légale, à une déclaration d\'assurance ou à une procédure amiable ou judiciaire.');
     y += 3; drawSeparator();
 
-    // 14. Droit applicable
     sectionTitle('14', 'DROIT APPLICABLE ET RÈGLEMENT DES LITIGES');
     normalText('Le présent contrat est soumis au droit français. En cas de différend relatif à sa validité, son interprétation ou son exécution, les parties s\'engagent à rechercher prioritairement une solution amiable. À défaut d\'accord amiable, le litige pourra être porté devant la juridiction compétente conformément aux règles de droit commun.');
     doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(50,50,50);
@@ -1142,19 +1171,16 @@
     normalText('5. Renonciation à l\'appel de la sentence.', 9, [50,50,50], 5);
     y += 3; drawSeparator();
 
-    // 15. Déclaration et engagements
     sectionTitle('15', 'DÉCLARATION ET ENGAGEMENTS DES PARTIES');
     italicText('« Le Locataire (utilisateur) déclare : Je certifie avoir pris connaissance et accepter les conditions générales de location figurant sur le présent contrat. Je reconnais avoir récupéré le vélo en bon état de fonctionnement, tel que décrit ci-dessus, et m\'engage à le restituer dans le même état d\'usure, déduction faite de l\'usure normale. »');
     y += 2;
     italicText('« Le Bailleur (propriétaire) déclare : J\'accepte les conditions générales de location figurant sur le présent contrat, certifie proposer à la location un vélo en bon état de fonctionnement, tel que décrit ci-dessus, et accepte que celui-ci me soit restitué dans le même état d\'usure, déduction faite de l\'usure normale. »');
     y += 3; drawSeparator();
 
-    // 16. Signatures
     if (y > pageH - 60) { doc.addPage(); y = margin; }
     sectionTitle('16', 'SIGNATURES ÉLECTRONIQUES');
     normalText(`Lieu : ${data.lieu || '-'}  |  Date : ${data.date_signature || '-'}`);
     y += 5;
-    // Bailler
     checkPageBreak(25);
     doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(26,26,46);
     doc.text('Bailleur (propriétaire) :', margin, y); y += 6;
@@ -1164,7 +1190,6 @@
       try { doc.addImage(data.signatureBailleur, 'PNG', margin, y, 50, 16); y += 18; } catch(e) { normalText('(Signature présente)', 9, [100,100,100]); y += 5; }
     } else { normalText('Non signé', 9, [200,100,100]); y += 5; }
     y += 6;
-    // Locataire
     checkPageBreak(25);
     doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(26,26,46);
     doc.text('Locataire (utilisateur) :', margin, y); y += 6;
@@ -1352,6 +1377,8 @@
       document.getElementById('contratForm').reset();
       sigPadBailleur.clear(); sigPadLocataire.clear();
       updateSignatureStatus();
+      fpDebut.clear();
+      fpFin.clear();
       showToast('Formulaire réinitialisé', 'info');
     }
   });
@@ -1362,17 +1389,23 @@
     try {
       const d = JSON.parse(s);
       Object.keys(d).forEach(k => {
-        if (['extras','signatureBailleur','signatureLocataire'].includes(k)) return;
+        if (['extras','signatureBailleur','signatureLocataire','date_debut_date','date_debut_heure','date_fin_date','date_fin_heure'].includes(k)) return;
         const el = document.querySelector('[name="'+k+'"]');
         if (el) el.value = d[k] || '';
       });
       if (d.extras) d.extras.forEach(v => { const cb = document.querySelector('input[name="extras"][value="'+v+'"]'); if(cb) cb.checked = true; });
+      // Restaurer flatpickr si possible
+      if (d.date_debut_date && d.date_debut_heure) {
+        fpDebut.setDate(`${d.date_debut_date}T${d.date_debut_heure}`);
+      }
+      if (d.date_fin_date && d.date_fin_heure) {
+        fpFin.setDate(`${d.date_fin_date}T${d.date_fin_heure}`);
+      }
     } catch(e) { localStorage.removeItem('contratVelo'); }
   })();
 
   updateSignatureStatus();
   console.log('🚀 Contrat de location prêt');
 </script>
-
 </body>
 </html>
