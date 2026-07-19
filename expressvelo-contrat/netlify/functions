@@ -1,1 +1,74 @@
+// netlify/functions/transaction.js
+const integrationSdk = require('sharetribe-flex-integration-sdk');
 
+const sdk = integrationSdk.createInstance({
+  clientId: process.env.SHARETRIBE_CLIENT_ID,
+  clientSecret: process.env.SHARETRIBE_CLIENT_SECRET
+});
+
+exports.handler = async function(event, context) {
+  const transactionId = event.path.split('/').pop();
+
+  if (!transactionId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ success: false, error: 'transactionId manquant' })
+    };
+  }
+
+  try {
+    console.log(`📥 Récupération transaction ${transactionId}...`);
+
+    const response = await sdk.transactions.show({
+      id: transactionId,
+      include: ['listing', 'author', 'customer']
+    });
+
+    const transaction = response.data.data;
+    const included = response.data.included || [];
+
+    const listing = included.find(i => i.type === 'listing');
+    const author = included.find(i => i.type === 'author');
+    const customer = included.find(i => i.type === 'customer');
+
+    // Construction des données
+    const contractData = {
+      loueur_nom: author?.attributes?.profile?.displayName || author?.attributes?.email || '',
+      loueur_email: author?.attributes?.email || '',
+      locataire_nom: customer?.attributes?.profile?.displayName || customer?.attributes?.email || '',
+      locataire_email: customer?.attributes?.email || '',
+      velo_modele: listing?.attributes?.title || '',
+      velo_type: listing?.attributes?.publicData?.type || 'mecanique',
+      velo_serie: listing?.attributes?.publicData?.serialNumber || '',
+      velo_couleur: listing?.attributes?.publicData?.color || '',
+      velo_km: listing?.attributes?.publicData?.kilometrage || '',
+      velo_val_neuf: listing?.attributes?.publicData?.valeurNeuf || '',
+      velo_val_actuelle: listing?.attributes?.publicData?.valeurActuelle || '',
+      date_debut: transaction?.attributes?.startDate || '',
+      date_fin: transaction?.attributes?.endDate || '',
+      montant_total: transaction?.attributes?.payinTotal ? (transaction.attributes.payinTotal / 100).toFixed(2) : '',
+      caution: transaction?.attributes?.payinTotal ? (transaction.attributes.payinTotal / 100).toFixed(2) : '',
+      tarif_location: transaction?.attributes?.payinTotal ? (transaction.attributes.payinTotal / 100 / 7).toFixed(2) : '',
+      transactionId: transactionId
+    };
+
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ success: true, data: contractData })
+    };
+
+  } catch (error) {
+    console.error('❌ Erreur:', error.message);
+    return {
+      statusCode: error.status || 500,
+      body: JSON.stringify({
+        success: false,
+        error: error.message || 'Erreur serveur'
+      })
+    };
+  }
+};
