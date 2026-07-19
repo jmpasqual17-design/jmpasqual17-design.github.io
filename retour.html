@@ -464,112 +464,17 @@
     .toast.success { background: #1b4332; }
     .toast.error { background: #5a1118; }
 
-    /* ----- MEDIA QUERIES ADAPTÉES POUR MOBILE ----- */
     @media (max-width: 768px) {
-      body { padding: 8px; }
-      .header { padding: 18px 16px; }
-      .header h1 { font-size: 19px; }
-      .header .meta { flex-direction: column; gap: 4px; }
-      .form-body { padding: 16px; }
-
-      .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 12px; }
-      .sign-grid { grid-template-columns: 1fr; gap: 16px; }
+      body { padding: 12px; }
+      .header { padding: 24px; }
+      .header h1 { font-size: 22px; }
+      .form-body { padding: 24px; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .sign-grid { grid-template-columns: 1fr; }
       .actions { flex-direction: column; }
-      .btn { width: 100%; font-size: 13px; padding: 10px 16px; min-width: unset; }
-
-      /* Tableau d'inspection défilable horizontalement */
-      .inspection-table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
-      }
-      .inspection-table th, .inspection-table td {
-        padding: 6px 8px;
-        font-size: 10px;
-      }
-      .inspection-table select, .inspection-table input {
-        font-size: 11px;
-        padding: 4px 6px;
-        height: 28px;
-      }
-      .inspection-table .depart-state {
-        font-size: 10px;
-        min-width: 50px;
-        padding: 3px 6px;
-      }
-
-      /* Accessoires : passage en colonne */
-      .accessory-item {
-        flex-wrap: wrap;
-        gap: 6px;
-        padding: 8px 10px;
-      }
-      .accessory-item .checkbox-label {
-        min-width: 100%;
-        font-size: 12px;
-      }
-      .accessory-item select,
-      .accessory-item input {
-        min-width: 0;
-        flex: 1 1 45%;
-        font-size: 12px;
-        padding: 6px 8px;
-        height: 32px;
-      }
-      .accessory-item input {
-        flex: 1 1 50%;
-      }
-      .accessory-item .depart-state {
-        display: none; /* masquer sur mobile pour gagner de la place */
-      }
-
-      .field input,
-      .field select,
-      .field textarea {
-        font-size: 12px;
-        padding: 8px 10px;
-      }
-
-      .photo-upload { padding: 18px 12px; }
-      .photo-upload .upload-text { font-size: 12px; }
-      .photo-upload .upload-hint { font-size: 10px; }
-      .photo-upload .upload-icon { width: 36px; height: 36px; font-size: 16px; }
-
-      .sign-box { padding: 14px 12px; }
-      .sign-box .sign-header .name { font-size: 13px; }
-      .signature-canvas { height: 70px !important; }
-
-      .section { margin-bottom: 20px; padding-bottom: 16px; }
-      .section-header { gap: 8px; margin-bottom: 14px; }
-      .section-title { font-size: 14px; }
-      .section-number { width: 26px; height: 26px; font-size: 11px; }
-
-      .info-box { font-size: 12px; padding: 10px 12px; }
-    }
-
-    @media (max-width: 520px) {
-      .grid-3 { grid-template-columns: 1fr; }
-
-      .accessory-item {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .accessory-item select,
-      .accessory-item input {
-        width: 100%;
-        flex: unset;
-      }
-
-      .header h1 { font-size: 17px; }
-      .header { padding: 14px 12px; }
-      .form-body { padding: 12px; }
-
-      /* Encore plus compact pour le tableau */
-      .inspection-table th, .inspection-table td {
-        padding: 4px 6px;
-        font-size: 9px;
-      }
+      .btn { width: 100%; }
+      .inspection-table { font-size: 11px; }
+      .inspection-table th, .inspection-table td { padding: 6px; }
     }
   </style>
 </head>
@@ -647,7 +552,6 @@
           Comparer l'état du vélo à sa restitution avec l'état des lieux de départ. L'état de départ est rappelé en orange. Signaler toute différence ou dommage constaté.
         </div>
         
-        <div style="overflow-x:auto;">
         <table class="inspection-table">
           <thead>
             <tr>
@@ -732,7 +636,6 @@
             </tr>
           </tbody>
         </table>
-        </div>
 
         <div class="field full" style="margin-top:14px;">
           <label>Différences constatées par rapport à l'état des lieux de départ</label>
@@ -878,7 +781,6 @@
 
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- Le reste du JavaScript est identique à votre code -->
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -896,7 +798,479 @@
 
   document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
-  // ... (tout le JavaScript reste identique à votre code actuel) ...
+  // ==========================================================
+  // IMPORTATION DES DONNÉES DE L'ÉTAT DES LIEUX DE DÉPART
+  // ==========================================================
+  (function() {
+    const saved = localStorage.getItem('expressVeloEtatDepart');
+    
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+
+        // Remplir les champs d'identification
+        if (data.ownerName) document.getElementById('ownerName').value = data.ownerName;
+        if (data.ownerEmail) document.getElementById('ownerEmail').value = data.ownerEmail;
+        if (data.renterName) document.getElementById('renterName').value = data.renterName;
+        if (data.renterEmail) document.getElementById('renterEmail').value = data.renterEmail;
+        if (data.bikeModel) document.getElementById('bikeModel').value = data.bikeModel;
+        if (data.serialNumber) document.getElementById('serialNumber').value = data.serialNumber;
+        if (data.startDate) document.getElementById('startDate').value = data.startDate;
+
+        // Remplir les états de départ dans le tableau
+        const bikeParts = ['frame','handlebar','seat','fork','wheel_front','wheel_rear',
+                           'tire_front','tire_rear','brakes','transmission','chain','pedals'];
+        bikeParts.forEach(part => {
+          const departEl = document.getElementById('depart_' + part);
+          if (departEl && data['state_' + part]) {
+            departEl.textContent = data['state_' + part];
+            departEl.style.background = '#fff3e0';
+            departEl.style.color = '#e67e00';
+          }
+          // Préremplir les notes avec l'état de départ
+          const noteEl = document.querySelector(`[name="note_${part}"]`);
+          if (noteEl && data['state_' + part]) {
+            let placeholder = `Départ: ${data['state_' + part]}`;
+            if (data['note_' + part]) placeholder += ` - ${data['note_' + part]}`;
+            noteEl.placeholder = placeholder;
+          }
+        });
+
+        // Accessoires : cocher et indiquer l'état de départ
+        if (data.extras) {
+          data.extras.forEach(extra => {
+            const cb = document.querySelector(`input[name="extras"][value="${extra}"]`);
+            if (cb) cb.checked = true;
+            const departAccEl = document.getElementById('depart_acc_' + extra);
+            if (departAccEl && data['state_' + extra]) {
+              departAccEl.style.display = 'inline-block';
+              departAccEl.textContent = data['state_' + extra];
+            }
+            const noteEl = document.querySelector(`[name="note_${extra}"]`);
+            if (noteEl && data['state_' + extra]) {
+              noteEl.placeholder = `Départ: ${data['state_' + extra]}`;
+            }
+          });
+        }
+
+        localStorage.removeItem('expressVeloEtatDepart');
+        showToast('📋 Données de l\'état des lieux de départ importées', 'success');
+      } catch(e) {
+        console.error('Erreur parsing:', e);
+      }
+    } else {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('owner')) {
+        document.getElementById('ownerName').value = params.get('owner') || '';
+        document.getElementById('ownerEmail').value = params.get('ownerEmail') || '';
+        document.getElementById('renterName').value = params.get('renter') || '';
+        document.getElementById('renterEmail').value = params.get('renterEmail') || '';
+        document.getElementById('bikeModel').value = params.get('bike') || '';
+        document.getElementById('serialNumber').value = params.get('serial') || '';
+        document.getElementById('startDate').value = params.get('start') || '';
+        showToast('📋 Données importées depuis l\'URL', 'info');
+      } else {
+        showToast('📋 Aucune donnée trouvée - Formulaire vierge', 'info');
+      }
+    }
+  })();
+
+  function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.textContent = message;
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 4000);
+  }
+
+  // Photos
+  const photosInput = document.getElementById('photosInput');
+  const photosPreview = document.getElementById('photosPreview');
+  let photosDataUrls = [];
+
+  function compressImage(file, maxWidth = 400, maxHeight = 300, quality = 0.4) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let w = img.width, h = img.height;
+          if (w > maxWidth) { h = (h * maxWidth) / w; w = maxWidth; }
+          if (h > maxHeight) { w = (w * maxHeight) / h; h = maxHeight; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function removePhoto(index) { photosDataUrls.splice(index, 1); renderPhotos(); }
+
+  function renderPhotos() {
+    photosPreview.innerHTML = '';
+    photosDataUrls.forEach((dataUrl, index) => {
+      const div = document.createElement('div');
+      div.className = 'photo-item';
+      div.innerHTML = '<img src="' + dataUrl + '" alt="Photo ' + (index + 1) + '"><button class="remove-photo" data-index="' + index + '">&times;</button>';
+      photosPreview.appendChild(div);
+    });
+    document.querySelectorAll('.photo-item .remove-photo').forEach(btn => {
+      btn.addEventListener('click', function(e) { e.stopPropagation(); removePhoto(parseInt(this.dataset.index)); });
+    });
+  }
+
+  photosInput.addEventListener('change', async (e) => {
+    const files = Array.from(e.target.files);
+    if (photosDataUrls.length + files.length > 6) { showToast('Maximum 6 photos', 'error'); return; }
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) continue;
+      try { photosDataUrls.push(await compressImage(file)); } catch(err) {}
+    }
+    renderPhotos();
+    photosInput.value = '';
+  });
+
+  const dropZone = document.getElementById('photoDropZone');
+  dropZone.addEventListener('click', () => photosInput.click());
+  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = '#e67e00'; });
+  dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = '#dee2e6'; });
+  dropZone.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = '#dee2e6';
+    const files = Array.from(e.dataTransfer.files);
+    if (photosDataUrls.length + files.length > 6) { showToast('Maximum 6 photos', 'error'); return; }
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) continue;
+      try { photosDataUrls.push(await compressImage(file)); } catch(err) {}
+    }
+    renderPhotos();
+  });
+
+  // Signatures
+  const canvasOwner = document.getElementById('signature-owner');
+  const canvasRenter = document.getElementById('signature-renter');
+  const ownerStatus = document.getElementById('ownerStatus');
+  const renterStatus = document.getElementById('renterStatus');
+
+  function resizeCanvas(canvas) {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = 90 * dpr;
+    canvas.style.height = '90px';
+    canvas.style.width = '100%';
+    canvas.getContext('2d').scale(dpr, dpr);
+  }
+  resizeCanvas(canvasOwner); resizeCanvas(canvasRenter);
+
+  const sigPadOwner = new SignaturePad(canvasOwner, { backgroundColor: 'white', penColor: '#1a1a2e', minWidth: 1.5, maxWidth: 3 });
+  const sigPadRenter = new SignaturePad(canvasRenter, { backgroundColor: 'white', penColor: '#1a1a2e', minWidth: 1.5, maxWidth: 3 });
+
+  function updateSignatureStatus() {
+    ownerStatus.textContent = sigPadOwner.isEmpty() ? 'En attente' : 'Signé';
+    ownerStatus.className = 'sign-status' + (sigPadOwner.isEmpty() ? '' : ' signed');
+    renterStatus.textContent = sigPadRenter.isEmpty() ? 'En attente' : 'Signé';
+    renterStatus.className = 'sign-status' + (sigPadRenter.isEmpty() ? '' : ' signed');
+  }
+
+  sigPadOwner.addEventListener('endStroke', updateSignatureStatus);
+  sigPadRenter.addEventListener('endStroke', updateSignatureStatus);
+
+  window.clearSignature = function(type) {
+    if (type === 'owner') sigPadOwner.clear();
+    else sigPadRenter.clear();
+    updateSignatureStatus();
+  };
+
+  window.addEventListener('resize', () => {
+    const oD = sigPadOwner.toData(), rD = sigPadRenter.toData();
+    resizeCanvas(canvasOwner); resizeCanvas(canvasRenter);
+    sigPadOwner.fromData(oD); sigPadRenter.fromData(rD);
+  });
+
+  function getFormData() {
+    const form = document.getElementById('etatForm');
+    const fd = new FormData(form);
+    const data = {};
+    for (const [k, v] of fd.entries()) {
+      if (k === 'extras') { if (!data.extras) data.extras = []; data.extras.push(v); }
+      else data[k] = v;
+    }
+    data.photos = photosDataUrls;
+    data.signatureOwner = sigPadOwner.isEmpty() ? '' : sigPadOwner.toDataURL();
+    data.signatureRenter = sigPadRenter.isEmpty() ? '' : sigPadRenter.toDataURL();
+    return data;
+  }
+
+  function validateForm() {
+    const oN = document.getElementById('ownerName').value.trim();
+    const oE = document.getElementById('ownerEmail').value.trim();
+    const rN = document.getElementById('renterName').value.trim();
+    const rE = document.getElementById('renterEmail').value.trim();
+    const bM = document.getElementById('bikeModel').value.trim();
+    const eD = document.getElementById('endDate').value;
+    if (!oN || !oE) { showToast('Informations du propriétaire requises', 'error'); return false; }
+    if (!rN || !rE) { showToast('Informations du locataire requises', 'error'); return false; }
+    if (!bM || !eD) { showToast('Modèle du vélo et date de retour requis', 'error'); return false; }
+    if (sigPadOwner.isEmpty()) { showToast('Le propriétaire doit signer', 'error'); return false; }
+    if (sigPadRenter.isEmpty()) { showToast('Le locataire doit signer', 'error'); return false; }
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!re.test(oE)) { showToast('Email du propriétaire invalide', 'error'); return false; }
+    if (!re.test(rE)) { showToast('Email du locataire invalide', 'error'); return false; }
+    return true;
+  }
+
+  function generateNativePDF(data) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+    const margin = 15;
+    const contentW = pageW - margin * 2;
+    let y = margin;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.setTextColor(230, 126, 0);
+    doc.text('ÉTAT DES LIEUX DE RETOUR', pageW / 2, y + 10, { align: 'center' });
+    y += 16;
+    doc.setDrawColor(201, 168, 76);
+    doc.setLineWidth(0.8);
+    doc.line(margin, y, pageW - margin, y);
+    y += 6;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Document de restitution — ' + new Date().toLocaleDateString('fr-FR'), pageW / 2, y, { align: 'center' });
+    y += 10;
+
+    function drawSeparator() { doc.setDrawColor(220,220,220); doc.setLineWidth(0.3); doc.line(margin, y, pageW - margin, y); y += 6; }
+    function sectionTitle(num, title) {
+      if (y > pageH - 25) { doc.addPage(); y = margin; }
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.setTextColor(26,26,46);
+      doc.text(num + '. ' + title, margin, y); y += 6;
+      doc.setDrawColor(230,126,0); doc.setLineWidth(0.5); doc.line(margin, y, margin + 50, y); y += 6;
+    }
+
+    sectionTitle('1', 'PARTIES');
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+    doc.text('Propriétaire : ' + (data.ownerName || '-') + ' | Email : ' + (data.ownerEmail || '-'), margin, y); y += 5;
+    doc.text('Locataire : ' + (data.renterName || '-') + ' | Email : ' + (data.renterEmail || '-'), margin, y); y += 8;
+    drawSeparator();
+
+    sectionTitle('2', 'LOCATION');
+    doc.text('Vélo : ' + (data.bikeModel || '-') + ' | N° série : ' + (data.serialNumber || '-') + ' | Retour le : ' + (data.endDate || '-'), margin, y); y += 8;
+    drawSeparator();
+
+    sectionTitle('3', 'INSPECTION AU RETOUR');
+    const bikeParts = [
+      { key: 'frame', label: 'Cadre' },{ key: 'handlebar', label: 'Guidon' },{ key: 'seat', label: 'Selle' },
+      { key: 'fork', label: 'Fourche' },{ key: 'wheel_front', label: 'Roue avant' },{ key: 'wheel_rear', label: 'Roue arrière' },
+      { key: 'tire_front', label: 'Pneu avant' },{ key: 'tire_rear', label: 'Pneu arrière' },{ key: 'brakes', label: 'Freins' },
+      { key: 'transmission', label: 'Transmission' },{ key: 'chain', label: 'Chaîne' },{ key: 'pedals', label: 'Pédales' }
+    ];
+    doc.setFillColor(230,126,0); doc.rect(margin, y, contentW, 6, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(255,255,255);
+    doc.text('Pièce', margin + 2, y + 4.5); doc.text('État retour', margin + 50, y + 4.5); doc.text('Différence', margin + 100, y + 4.5);
+    y += 7;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(50,50,50);
+    bikeParts.forEach((part, index) => {
+      if (y > pageH - 20) { doc.addPage(); y = margin; }
+      if (index % 2 === 0) { doc.setFillColor(255,248,240); doc.rect(margin, y, contentW, 5.5, 'F'); }
+      doc.text(part.label, margin + 2, y + 4);
+      doc.text(data['state_' + part.key] || '-', margin + 50, y + 4);
+      const note = data['note_' + part.key] || '-';
+      doc.text(note.length > 45 ? note.substring(0, 45) + '...' : note, margin + 100, y + 4);
+      y += 5.5;
+    });
+    y += 5;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.text('Différences constatées :', margin, y); y += 5;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+    const obs = data.generalNotes || 'Aucune';
+    doc.text(doc.splitTextToSize(obs, contentW - 5), margin + 3, y);
+    y += doc.splitTextToSize(obs, contentW - 5).length * 4 + 6;
+    drawSeparator();
+
+    sectionTitle('4', 'ACCESSOIRES RESTITUÉS');
+    const accessories = [{ key: 'helmet', label: 'Casque' },{ key: 'lock', label: 'Antivol' },{ key: 'lights', label: 'Éclairage' },{ key: 'basket', label: 'Panier' },{ key: 'repairkit', label: 'Kit réparation' },{ key: 'other', label: 'Autre' }];
+    let hasAcc = false;
+    accessories.forEach(acc => {
+      if (data.extras && data.extras.includes(acc.key)) {
+        hasAcc = true;
+        doc.text('• ' + acc.label + ' : ' + (data['state_' + acc.key] || 'Bon') + (data['note_' + acc.key] ? ' (' + data['note_' + acc.key] + ')' : ''), margin + 5, y); y += 5;
+      }
+    });
+    if (!hasAcc) { doc.text('Aucun accessoire', margin + 5, y); y += 5; }
+    y += 5;
+    drawSeparator();
+
+    if (data.photos && data.photos.length > 0) {
+      sectionTitle('5', 'PHOTOS AU RETOUR');
+      for (let i = 0; i < Math.min(data.photos.length, 6); i++) {
+        if (y > pageH - 50) { doc.addPage(); y = margin; }
+        try {
+          const imgProps = doc.getImageProperties(data.photos[i]);
+          const maxW = 70, maxH = 45;
+          let imgW = imgProps.width, imgH = imgProps.height;
+          if (imgW > maxW) { imgH = (imgH * maxW) / imgW; imgW = maxW; }
+          if (imgH > maxH) { imgW = (imgW * maxH) / imgH; imgH = maxH; }
+          doc.addImage(data.photos[i], 'JPEG', margin, y, imgW, imgH);
+          y += imgH + 6;
+        } catch(e) { y += 4; }
+      }
+      drawSeparator();
+    }
+
+    sectionTitle('6', 'FRAIS ET RETENUES');
+    doc.text('Réparations : ' + (data.frais_reparations || '-') + ' € | Nettoyage : ' + (data.frais_nettoyage || '-') + ' € | Retenue : ' + (data.retenue_caution || '-') + ' € | Caution restituée : ' + (data.caution_restituée || '-') + ' €', margin, y); y += 8;
+    drawSeparator();
+
+    if (y > pageH - 60) { doc.addPage(); y = margin; }
+    sectionTitle('7', 'SIGNATURES');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
+    doc.text('Propriétaire', margin, y); y += 5;
+    if (data.signatureOwner) { try { doc.addImage(data.signatureOwner, 'PNG', margin, y, 55, 18); y += 20; } catch(e) { y += 6; } }
+    y += 8;
+    doc.text('Locataire', margin, y); y += 5;
+    if (data.signatureRenter) { try { doc.addImage(data.signatureRenter, 'PNG', margin, y, 55, 18); y += 20; } catch(e) { y += 6; } }
+    y += 12;
+    doc.setDrawColor(200,200,200); doc.setLineWidth(0.5); doc.line(margin, y, pageW - margin, y); y += 5;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(150,150,150);
+    doc.text('Document signé électroniquement — Conforme au règlement eIDAS', pageW / 2, y, { align: 'center' });
+
+    return doc.output('datauristring');
+  }
+
+  async function uploadPDF(pdfBase64, fileName) {
+    try {
+      const base64Data = pdfBase64.split(',')[1] || pdfBase64;
+      const byteCharacters = atob(base64Data);
+      const byteArrays = [];
+      for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+        const slice = byteCharacters.slice(offset, offset + 512);
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) byteNumbers[i] = slice.charCodeAt(i);
+        byteArrays.push(new Uint8Array(byteNumbers));
+      }
+      const blob = new Blob(byteArrays, { type: 'application/pdf' });
+      const fd = new FormData();
+      fd.append('file', blob, fileName);
+      const response = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: fd });
+      if (response.ok) {
+        const result = await response.json();
+        return result.data.url.replace('https://tmpfiles.org/', 'https://tmpfiles.org/dl/');
+      }
+      throw new Error('Upload failed');
+    } catch(e) { return pdfBase64; }
+  }
+
+  async function sendWithEmailJS(data, pdfBase64) {
+    try {
+      const rn = (data.renterName || 'location').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const ds = new Date().toISOString().split('T')[0];
+      const fn = 'ETAT_DES_LIEUX_RETOUR_' + rn + '_' + ds + '.pdf';
+      showToast('Mise en ligne du PDF...', 'info');
+      const pdfLink = await uploadPDF(pdfBase64, fn);
+
+      const commonParams = {
+        proprietaire: data.ownerName, proprietaire_email: data.ownerEmail,
+        locataire: data.renterName, locataire_email: data.renterEmail,
+        velo: data.bikeModel, numero_serie: data.serialNumber || '-',
+        debut: data.startDate || '-', fin: data.endDate || '-',
+        observations: data.generalNotes || 'Aucune',
+        accessoires: (data.extras && data.extras.length > 0) ? data.extras.join(', ') : 'Aucun',
+        date_signature: new Date().toLocaleDateString('fr-FR'),
+        pdf_link: pdfLink
+      };
+
+      showToast('Envoi au propriétaire...', 'info');
+      await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, { ...commonParams, to_email: data.ownerEmail, to_name: data.ownerName });
+      showToast('Envoi au locataire...', 'info');
+      await emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, { ...commonParams, to_email: data.renterEmail, to_name: data.renterName });
+      showToast('Document envoyé aux deux parties', 'success');
+
+      if (confirm('✅ État des lieux de retour envoyé ! Télécharger une copie ?')) {
+        const a = document.createElement('a'); a.href = pdfBase64; a.download = fn;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      }
+      return true;
+    } catch(e) {
+      showToast('Erreur: ' + (e.message || 'Inconnue'), 'error');
+      const btn = document.getElementById('generateSendBtn');
+      if (btn) { btn.disabled = false; btn.innerHTML = 'Signer et envoyer le document'; }
+      return false;
+    }
+  }
+
+  document.getElementById('generateSendBtn').addEventListener('click', async function() {
+    if (!validateForm()) return;
+    this.disabled = true;
+    const oh = this.innerHTML;
+    this.innerHTML = '<span class="spinner"></span> Traitement...';
+    try {
+      const data = getFormData();
+      const pdfBase64 = generateNativePDF(data);
+      await sendWithEmailJS(data, pdfBase64);
+    } catch(e) { showToast('Erreur: ' + e.message, 'error'); }
+    this.disabled = false;
+    this.innerHTML = oh;
+  });
+
+  document.getElementById('downloadEtatBtn').addEventListener('click', function() {
+    const data = getFormData();
+    this.disabled = true;
+    try {
+      const pdfBase64 = generateNativePDF(data);
+      const rn = (data.renterName || 'location').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const a = document.createElement('a');
+      a.href = pdfBase64;
+      a.download = 'ETAT_DES_LIEUX_RETOUR_' + rn + '_' + new Date().toISOString().split('T')[0] + '.pdf';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      showToast('PDF téléchargé', 'success');
+    } catch(e) { showToast('Erreur', 'error'); }
+    this.disabled = false;
+  });
+
+  document.getElementById('saveEtatBtn').addEventListener('click', function() {
+    localStorage.setItem('expressVeloRetour', JSON.stringify(getFormData()));
+    showToast('Brouillon enregistré', 'success');
+  });
+
+  document.getElementById('resetFormBtn').addEventListener('click', function() {
+    if (confirm('Réinitialiser le formulaire ?')) {
+      document.getElementById('etatForm').reset();
+      sigPadOwner.clear(); sigPadRenter.clear();
+      photosDataUrls = []; renderPhotos();
+      updateSignatureStatus();
+      showToast('Formulaire réinitialisé', 'info');
+    }
+  });
+
+  (function() {
+    const s = localStorage.getItem('expressVeloRetour');
+    if (!s) return;
+    try {
+      const d = JSON.parse(s);
+      Object.keys(d).forEach(k => {
+        if (['extras','photos','signatureOwner','signatureRenter'].includes(k)) return;
+        const el = document.querySelector('[name="'+k+'"]');
+        if (el) el.value = d[k] || '';
+      });
+      if (d.extras) d.extras.forEach(v => { const cb = document.querySelector('input[name="extras"][value="'+v+'"]'); if(cb) cb.checked = true; });
+      if (d.photos && d.photos.length) { photosDataUrls = d.photos; renderPhotos(); }
+    } catch(e) { localStorage.removeItem('expressVeloRetour'); }
+  })();
+
+  updateSignatureStatus();
 </script>
 </body>
 </html>
